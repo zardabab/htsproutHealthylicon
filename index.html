@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>深耕計畫入口網：AI 賦能智慧醫療與照護</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        /* 2. Custom CSS Styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #343a40;
+        }
+        .header-banner {
+            background: linear-gradient(135deg, #0056b3, #007bff);
+            color: white;
+            padding: 60px 0;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .main-title {
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+        .section-title {
+            color: #007bff;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+        /* 核心系統卡片 (折頁引用) 樣式 */
+        .core-system-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+            border: 1px solid #dee2e6;
+            cursor: pointer; /* 讓使用者知道可以點擊 */
+            transition: all 0.3s ease;
+        }
+        .core-system-card:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-color: #007bff;
+        }
+        .card-header {
+            padding: 20px;
+            font-weight: bold;
+            font-size: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #0056b3;
+            background-color: #e9f5ff; /* 淺藍色背景 */
+            border-radius: 10px 10px 0 0;
+            border-bottom: none;
+        }
+        .card-content {
+            padding: 20px;
+            border-top: 1px solid #dee2e6;
+            display: none; /* 初始隱藏，由 jQuery 負責顯示 */
+        }
+        .toggle-icon {
+            transition: transform 0.3s ease;
+        }
+        .expanded .toggle-icon {
+            transform: rotate(180deg);
+        }
+        .content-table {
+            width: 100%;
+            margin-top: 15px;
+            border-collapse: collapse;
+        }
+        .content-table th, .content-table td {
+            padding: 8px 12px;
+            border: 1px solid #f0f2f5;
+            text-align: left;
+        }
+        .content-table th {
+            background-color: #f8f9fa;
+            width: 30%;
+        }
+        .link-button {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .link-button:hover {
+            background-color: #1e7e34;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-banner text-center">
+        <div class="container">
+            <h1 class="main-title"><i class="fas fa-brain me-3"></i>深耕計畫入口網</h1>
+            <p class="lead">AI 賦能智慧醫療與社區照護：打造可視化、高效能的整合服務</p>
+        </div>
+    </header>
+
+    <main class="container">
+
+        <h2 class="section-title">🚀 四大核心系統連結 (點擊展開)</h2>
+        
+        <div class="core-system-card" id="card-case-management">
+            <div class="card-header">
+                AI 智慧個管系統 <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+            </div>
+            <div class="card-content">
+                <p><strong>核心目標：</strong>提升個案管理效率，建立數位標準化的轉介流程和評估工具，協助個管師無縫接軌，預計減少工作時數約 15%。</p>
+                <table class="content-table">
+                    <thead><tr><th>項目</th><th>說明</th></tr></thead>
+                    <tbody>
+                        <tr><th>系統特色</th><td>智慧化評估與轉介流程，實現服務無縫接軌。</td></tr>
+                        <tr><th>預計上線</th><td>Q3 (7月) 將推出初版系統。</td></tr>
+                    </tbody>
+                </table>
+                <a href="#" class="link-button"><i class="fas fa-external-link-alt me-2"></i>進入系統</a>
+            </div>
+        </div>
+
+        <div class="core-system-card" id="card-indicator">
+            <div class="card-header">
+                智慧醫療指標顯示系統 <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+            </div>
+            <div class="card-content">
+                <p><strong>核心目標：</strong>即時監測計畫績效、服務成效與健康數據，協助管理單位與醫事人員進行數據驅動的決策。</p>
+                <table class="content-table">
+                    <thead><tr><th>項目</th><th>說明</th></tr></thead>
+                    <tbody>
+                        <tr><th>數據整合</th><td>整合健康量測站（心率、血壓等）與巡迴車的 IoT 數據。</td></tr>
+                        <tr><th>介面功能</th><td>提供 **3D 可視化健康數據儀表板**，供醫事人員與照服員使用。</td></tr>
+                    </tbody>
+                </table>
+                <a href="#" class="link-button"><i class="fas fa-chart-line me-2"></i>查看即時績效指標</a>
+            </div>
+        </div>
+
+        <div class="core-system-card" id="card-assistive">
+            <div class="card-header">
+                據點輔具介紹 <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+            </div>
+            <div class="card-content">
+                <p><strong>導入理念：</strong>以 AI 科技輔助復健與訓練，提升長者自我復能的效率與樂趣。</p>
+                <table class="content-table">
+                    <thead><tr><th>設備類別</th><th>主要功能</th></tr></thead>
+                    <tbody>
+                        <tr><th>AI 動作分析</th><td>用於復健評估，提供科學化的復健數據。</td></tr>
+                        <tr><th>VR 訓練設備</th><td>引進虛擬實境訓練，提供多元化的沉浸式復能訓練情境。</td></tr>
+                        <tr><th>穿戴式監測</th><td>導入穿戴式肌力監測設備，進行科學化健康追蹤。</td></tr>
+                    </tbody>
+                </table>
+                <a href="#" class="link-button"><i class="fas fa-robot me-2"></i>探索智慧輔具清單</a>
+            </div>
+        </div>
+        
+        <div class="core-system-card" id="card-facilities">
+            <div class="card-header">
+                據點設施介紹 <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+            </div>
+            <div class="card-content">
+                <p><strong>設施目標：</strong>打造標準化、智慧化的社區健康服務環境。</p>
+                <table class="content-table">
+                    <thead><tr><th>設施名稱</th><th>功能描述</th></tr></thead>
+                    <tbody>
+                        <tr><th>示範基地</th><td>完成「市立康」示範基地的資訊基礎建設。</td></tr>
+                        <tr><th>健康量測站</th><td>整合式健康量測站，為 IoT 數據收集的實體節點。</td></tr>
+                        <tr><th>遠距醫療平台</th><td>遠距醫療服務平台相關硬體與連線設備。</td></tr>
+                    </tbody>
+                </table>
+                <a href="#" class="link-button"><i class="fas fa-map-marker-alt me-2"></i>查看據點環境與開放時間</a>
+            </div>
+        </div>
+        
+        <h2 class="section-title mt-5">🗓️ 深耕計畫重要時程概覽</h2>
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <div class="card bg-info text-white h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Q1 啟動</h5>
+                        <p class="card-text">導入 AI 動作分析、VR 訓練；完成「市立康」示範基地資訊建設；建置「岡山健康雲」整合系統。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card bg-warning text-dark h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Q2 部署</h5>
+                        <p class="card-text">部署非接觸式生命監測；設計 AI 基礎培訓課程；整合 IoT 數據，提供 3D 可視化儀表板。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card bg-success text-white h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Q3 核心上線</h5>
+                        <p class="card-text">**AI 智慧個管系統初版上線**；自動化管理 IoT 設備；設置靜音空間與引進 EAP。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card bg-danger text-white h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Q4 認證與 AR</h5>
+                        <p class="card-text">導入 AR 實境訓練系統；建立「科技照服員」認證制度。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // 3. jQuery 互動式功能實現 (折頁引用/手風琴效果)
+        $(document).ready(function() {
+            
+            // 監聽所有 .core-system-card 的點擊事件
+            $('.core-system-card').on('click', function() {
+                // 找到被點擊卡片內的內容區塊
+                let $content = $(this).find('.card-content');
+                // 找到圖標
+                let $icon = $(this).find('.toggle-icon');
+                
+                // 展開/收合內容
+                $content.slideToggle(300, function() {
+                    // 在動畫完成後，檢查內容是否展開，並切換 CSS class
+                    if ($content.is(':visible')) {
+                        $(this).closest('.core-system-card').addClass('expanded');
+                    } else {
+                        $(this).closest('.core-system-card').removeClass('expanded');
+                    }
+                });
+            });
+
+            // 確保點擊連結按鈕時不會觸發折疊/展開事件
+            $('.link-button').on('click', function(e) {
+                // 阻止事件冒泡到父層的 .core-system-card
+                e.stopPropagation();
+                // 這裡可以加入導航邏輯，例如 window.location.href = $(this).attr('href');
+                alert("模擬連結點擊：您將前往 " + $(this).text().trim() + " 頁面。");
+            });
+
+        });
+    </script>
+</body>
+</html>
