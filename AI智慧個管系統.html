@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💡 AI 智慧個管系統 - 完整評估版</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="styles.css"> 
+
+</head>
+<body>
+
+    <div class="container-fluid">
+        
+        <h1 class="mb-4 text-center text-primary" id="main-title"><i class="fas fa-microchip"></i> AI 智慧個管系統 - 完整評估版</h1>
+
+        <div class="assessment-card">
+            
+            <ul class="nav nav-tabs" id="assessmentTab" role="tablist">
+                <li class="nav-item" role="presentation"><button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab" aria-controls="info" aria-selected="true"><i class="fas fa-user-circle"></i> 基本資料</button></li>
+                <li class="nav-item tab-configurable" data-tab-id="barthel" role="presentation"><button class="nav-link" id="barthel-tab" data-bs-toggle="tab" data-bs-target="#barthel" type="button" role="tab" aria-controls="barthel" aria-selected="false"><i class="fas fa-wheelchair"></i> 巴氏 (BI)</button></li><li class="nav-item tab-configurable" data-tab-id="berg" role="presentation"><button class="nav-link" id="berg-tab" data-bs-toggle="tab" data-bs-target="#berg" type="button" role="tab" aria-controls="berg" aria-selected="false"><i class="fas fa-running"></i> 伯格 (BBS)</button></li>
+                
+                <li class="nav-item tab-configurable" data-tab-id="gait" role="presentation"><button class="nav-link" id="gait-tab" data-bs-toggle="tab" data-bs-target="#gait" type="button" role="tab" aria-controls="gait" aria-selected="false"><i class="fas fa-walking"></i> 步行/6MWT</button></li>
+              
+                
+                <li class="nav-item" id="settings-nav-item" role="presentation" style="display: none;"><button class="nav-link bg-light" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button" role="tab" aria-controls="settings" aria-selected="false"><i class="fas fa-cogs"></i> **設定檔**</button></li>
+            </ul>
+
+            <div class="tab-content py-3" id="assessmentTabContent">
+                
+                <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                     <h3 class="mb-4 text-danger"><i class="fas fa-cogs"></i> 量表可視性設定</h3>
+                    <p class="text-muted">請勾選需要在導航列中顯示的評估量表。</p>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-check"><input class="form-check-input tab-toggler" type="checkbox" data-target="barthel" id="toggle-barthel" checked><label class="form-check-label" for="toggle-barthel">巴氏 (BI)</label></div>
+                            <div class="form-check"><input class="form-check-input tab-toggler" type="checkbox" data-target="iadl" id="toggle-iadl" checked><label class="form-check-label" for="toggle-iadl">工具性 ADL (IADL)</label></div>
+                            <div class="form-check"><input class="form-check-input tab-toggler" type="checkbox" data-target="berg" id="toggle-berg" checked><label class="form-check-label" for="toggle-berg">伯格 (BBS)</label></div>
+                            <div class="form-check"><input class="form-check-input tab-toggler" type="checkbox" data-target="mrs" id="toggle-mrs" checked><label class="form-check-label" for="toggle-mrs">蘭金 (mRS)</label></div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check"><input class="form-check-input tab-toggler" type="checkbox" data-target="cfs" id="toggle-cfs" checked><label class="form-check-label" for="toggle-cfs">衰弱 (CFS)</label></div>
+                            <div class="form-check"><input class="form-check-input tab-toggler" type="checkbox" data-target="nrs" id="toggle-nrs" checked><label class="form-check-label" for="toggle-nrs">疼痛 (NRS)</label></div>
+                            <div class="form-check"><input class="form-check-input tab-toggler" type="checkbox" data-target="gait" id="toggle-gait" checked><label class="form-check-label" for="toggle-gait">步行/6MWT</label></div>
+                             <div class="form-check"><input class="form-check-input tab-toggler" type="checkbox" data-target="gds" id="toggle-gds" checked><label class="form-check-label" for="toggle-gds">憂慮 (GDS-5)</label></div>
+                        </div>
+                        <div class="col-md-3">
+                             <div class="form-check"><input class="form-check-input tab-toggler" type="checkbox" data-target="spmsq" id="toggle-spmsq" checked><label class="form-check-label" for="toggle-spmsq">失智 (SPMSQ)</label></div>
+                            <div class="form-check"><input class="form-check-input tab-toggler" type="checkbox" data-target="cam" id="toggle-cam" checked><label class="form-check-label" for="toggle-cam">瞻妄 (CAM)</label></div>
+                            <div class="form-check"><input class="form-check-input tab-toggler" type="checkbox" data-target="mna" id="toggle-mna" checked><label class="form-check-label" for="toggle-mna">營養 (MNA-SF)</label></div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-check"><input class="form-check-input tab-toggler" type="checkbox" data-target="fma" id="toggle-fma" checked><label class="form-check-label" for="toggle-fma">傅格梅爾 (FMA)</label></div>
+                            <div class="form-check"><input class="form-check-input tab-toggler" type="checkbox" data-target="goat" id="toggle-goat" checked><label class="form-check-label" for="toggle-goat">腦傷認知 (GOAT)</label></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <h3 class="mb-4 text-primary">個案基本資料</h3>
+                            <div class="mb-3"><label for="patientName" class="form-label">姓名</label><input type="text" class="form-control" id="patientName" value="王大明"></div>
+                            <div class="mb-3"><label for="patientID" class="form-label">身分證字號</label><input type="text" class="form-control" id="patientID" value="A123456789"></div>
+                            <div class="mb-3">
+                                <label for="patientGender" class="form-label">性別</label>
+                                <select class="form-select" id="patientGender">
+                                    <option value="male">男</option>
+                                    <option value="female">女</option>
+                                    <option value="other">其他</option>
+                                </select>
+                            </div>
+                            <div class="mb-3"><label for="patientDOB" class="form-label">出生年月日</label><input type="date" class="form-control" id="patientDOB" value="1950-01-01"></div>
+                        </div>
+                        <div class="col-lg-6">
+                            <h3 class="mb-4 text-primary">評估資訊</h3>
+                            <p class="h5">今日日期：<span class="badge bg-secondary" id="assessmentDate"></span></p>
+                            <p class="h5">個案年齡：<span class="badge bg-primary" id="patientAge">--</span> 歲</p>
+                            <div class="alert alert-info mt-4">
+                                <h5 class="alert-heading">💡 系統提示</h5>
+                                <p class="mb-0">請依序完成左側評估量表，系統會自動計算總分與結果判讀。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="barthel" role="tabpanel" aria-labelledby="barthel-tab">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h3 class="mb-4 text-secondary">巴氏量表 (Barthel Index) - 日常生活活動功能評估 (Max: 100)</h3>
+                            <p class="text-muted fst-italic">請針對以下 10 個項目，選擇最適合的分數。</p>
+                            <form id="barthelForm">
+                                <div class="score-item">
+                                    <label class="score-item-label">1. 進食 (Feeding)</label>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_1" value="0" checked><label class="form-check-label">0 (不能)</label></div>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_1" value="5"><label class="form-check-label">5 (需協助)</label></div>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_1" value="10"><label class="form-check-label">10 (獨立)</label></div>
+                                </div>
+                                <div class="score-item">
+                                    <label class="score-item-label">2. 洗澡 (Bathing)</label>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_2" value="0" checked><label class="form-check-label">0 (需協助)</label></div>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_2" value="5"><label class="form-check-label">5 (獨立)</label></div>
+                                </div>
+                                <div class="score-item">
+                                    <label class="score-item-label">3. 儀容整潔 (Grooming)</label>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_3" value="0" checked><label class="form-check-label">0 (需協助)</label></div>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_3" value="5"><label class="form-check-label">5 (獨立)</label></div>
+                                </div>
+                                <div class="score-item">
+                                    <label class="score-item-label">4. 穿衣 (Dressing)</label>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_4" value="0" checked><label class="form-check-label">0 (不能)</label></div>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_4" value="5"><label class="form-check-label">5 (需協助)</label></div>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_4" value="10"><label class="form-check-label">10 (獨立)</label></div>
+                                </div>
+                                <div class="score-item">
+                                    <label class="score-item-label">5. 大便控制 (Bowel control)</label>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_5" value="0" checked><label class="form-check-label">0 (失禁)</label></div>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_5" value="5"><label class="form-check-label">5 (偶有失禁)</label></div>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_5" value="10"><label class="form-check-label">10 (有控制力)</label></div>
+                                </div>
+                                <div class="score-item">
+                                    <label class="score-item-label">6. 小便控制 (Bladder control)</label>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_6" value="0" checked><label class="form-check-label">0 (失禁或導尿管)</label></div>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_6" value="5"><label class="form-check-label">5 (偶有失禁)</label></div>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_6" value="10"><label class="form-check-label">10 (有控制力)</label></div>
+                                </div>
+                                <div class="score-item">
+                                    <label class="score-item-label">7. 上廁所 (Toilet use)</label>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_7" value="0" checked><label class="form-check-label">0 (需協助)</label></div>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_7" value="5"><label class="form-check-label">5 (大部分獨立)</label></div>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_7" value="10"><label class="form-check-label">10 (獨立)</label></div>
+                                </div>
+                                <div class="score-item">
+                                    <label class="score-item-label">8. 移位 (Transfer)</label>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_8" value="0" checked><label class="form-check-label">0 (不能)</label></div>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_8" value="5"><label class="form-check-label">5 (需大量協助)</label></div>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_8" value="10"><label class="form-check-label">10 (輕度協助/監護)</label></div>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_8" value="15"><label class="form-check-label">15 (獨立)</label></div>
+                                </div>
+                                <div class="score-item">
+                                    <label class="score-item-label">9. 平地行走 (Mobility)</label>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_9" value="0" checked><label class="form-check-label">0 (不能或輪椅需協助)</label></div>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_9" value="5"><label class="form-check-label">5 (輪椅獨立)</label></div>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_9" value="10"><label class="form-check-label">10 (需協助行走)</label></div>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_9" value="15"><label class="form-check-label">15 (獨立行走)</label></div>
+                                </div>
+                                <div class="score-item">
+                                    <label class="score-item-label">10. 上下樓梯 (Stairs)</label>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_10" value="0" checked><label class="form-check-label">0 (不能)</label></div>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_10" value="5"><label class="form-check-label">5 (需協助)</label></div>
+                                    <div class="form-check form-check-inline"><input class="form-check-input barthel-item" type="radio" name="barthel_10" value="10"><label class="form-check-label">10 (獨立)</label></div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="total-score-box bg-primary">
+                                <h4 class="mb-2">巴氏量表總分 / 滿分 100</h4>
+                                <div class="total-score-value" id="barthelTotalScore">0</div>
+                                <hr>
+                                <p class="mb-0 fw-light"><span id="barthelInterpretation" class="fw-bold">嚴重依賴</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="iadl" role="tabpanel" aria-labelledby="iadl-tab">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h3 class="mb-4 text-secondary">工具性日常生活活動功能 (IADL) - Lawton-Brody (Max: 8)</h3>
+                            <p class="text-muted fst-italic">請針對以下 8 個項目，選擇最適合的選項 (女性 8 題，男性 5 題)。</p>
+                            <form id="iadlForm">
+                                <div class="score-item-container">
+                                    <div class="score-item">
+                                        <label class="score-item-label">1. 使用電話 (Ability to use telephone)</label>
+                                        <div class="form-check"><input class="form-check-input iadl-item" type="radio" name="iadl_1" value="1" checked><label class="form-check-label">1 (獨立操作，包括查找號碼和撥號)</label></div>
+                                        <div class="form-check"><input class="form-check-input iadl-item" type="radio" name="iadl_1" value="0"><label class="form-check-label">0 (無法使用電話)</label></div>
+                                    </div>
+                                    <div class="score-item">
+                                        <label class="score-item-label">2. 購物 (Shopping)</label>
+                                        <div class="form-check"><input class="form-check-input iadl-item" type="radio" name="iadl_2" value="1" checked><label class="form-check-label">1 (獨立完成所有購物)</label></div>
+                                        <div class="form-check"><input class="form-check-input iadl-item" type="radio" name="iadl_2" value="0"><label class="form-check-label">0 (無法購物或需他人全程陪同)</label></div>
+                                    </div>
+                                    <div class="score-item">
+                                        <label class="score-item-label">3. 準備食物 (Food preparation)</label>
+                                        <div class="form-check"><input class="form-check-input iadl-item" type="radio" name="iadl_3" value="1" checked><label class="form-check-label">1 (獨立計畫、準備和烹飪食物)</label></div>
+                                        <div class="form-check"><input class="form-check-input iadl-item" type="radio" name="iadl_3" value="0"><label class="form-check-label">0 (無法準備或需他人全程協助)</label></div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="total-score-box bg-primary">
+                                <h4 class="mb-2">IADL 總分 / 滿分 8</h4>
+                                <div class="total-score-value" id="iadlTotalScore">0</div>
+                                <hr>
+                                <p class="mb-0 fw-light"><span id="iadlInterpretation" class="fw-bold">中/重度功能受損</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="berg" role="tabpanel" aria-labelledby="berg-tab">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h3 class="mb-4 text-secondary">伯格平衡量表 (Berg Balance Scale, BBS) - (Max: 56)</h3>
+                            <p class="text-muted fst-italic">請針對以下 14 個項目評估，每個項目 0-4 分。**總分 45 分以下為跌倒高風險。**</p>
+                            <form id="bergForm">
+                                <div class="score-item berg-item" data-value="4" data-item-id="1">
+                                    <label class="score-item-label">1. 由坐到站 (Sitting to standing)</label>
+                                    <div class="btn-group w-100 score-select-group" role="group">
+                                        <button type="button" class="btn btn-outline-info" data-score="0">0 (需大量協助)</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="1">1</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="2">2</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="3">3</button>
+                                        <button type="button" class="btn btn-outline-info active btn-info" data-score="4">4 (獨立完成)</button>
+                                    </div>
+                                </div>
+                                <div class="score-item berg-item" data-value="4" data-item-id="2">
+                                    <label class="score-item-label">2. 獨立站立 (Standing unsupported) - 2 分鐘</label>
+                                    <div class="btn-group w-100 score-select-group" role="group">
+                                        <button type="button" class="btn btn-outline-info" data-score="0">0 (< 30 秒)</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="1">1</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="2">2</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="3">3</button>
+                                        <button type="button" class="btn btn-outline-info active btn-info" data-score="4">4 (獨立 2 分鐘)</button>
+                                    </div>
+                                </div>
+                                <div class="score-item berg-item" data-value="4" data-item-id="3">
+                                    <label class="score-item-label">3. 獨立坐著 (Sitting unsupported) - 2 分鐘</label>
+                                    <div class="btn-group w-100 score-select-group" role="group">
+                                        <button type="button" class="btn btn-outline-info" data-score="0">0 (無法/需大量協助)</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="1">1</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="2">2</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="3">3</button>
+                                        <button type="button" class="btn btn-outline-info active btn-info" data-score="4">4 (獨立 2 分鐘)</button>
+                                    </div>
+                                </div>
+                                <div class="score-item berg-item" data-value="4" data-item-id="4">
+                                    <label class="score-item-label">4. 由站到坐 (Standing to sitting)</label>
+                                    <div class="btn-group w-100 score-select-group" role="group">
+                                        <button type="button" class="btn btn-outline-info" data-score="0">0 (摔倒/需大量協助)</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="1">1</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="2">2</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="3">3</button>
+                                        <button type="button" class="btn btn-outline-info active btn-info" data-score="4">4 (獨立平穩)</button>
+                                    </div>
+                                </div>
+                                <div class="score-item berg-item" data-value="4" data-item-id="5">
+                                    <label class="score-item-label">5. 轉位 (Transfers) - 床到椅</label>
+                                    <div class="btn-group w-100 score-select-group" role="group">
+                                        <button type="button" class="btn btn-outline-info" data-score="0">0 (需 2 人或無法完成)</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="1">1</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="2">2</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="3">3</button>
+                                        <button type="button" class="btn btn-outline-info active btn-info" data-score="4">4 (獨立完成)</button>
+                                    </div>
+                                </div>
+                                <div class="score-item berg-item" data-value="4" data-item-id="6">
+                                    <label class="score-item-label">6. 閉眼獨立站立 (Standing unsupported eyes closed) - 10 秒</label>
+                                    <div class="btn-group w-100 score-select-group" role="group">
+                                        <button type="button" class="btn btn-outline-info" data-score="0">0 (無法維持 3 秒)</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="1">1</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="2">2</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="3">3</button>
+                                        <button type="button" class="btn btn-outline-info active btn-info" data-score="4">4 (獨立維持 10 秒)</button>
+                                    </div>
+                                </div>
+                                <div class="score-item berg-item" data-value="4" data-item-id="7">
+                                    <label class="score-item-label">7. 併腳獨立站立 (Standing unsupported feet together) - 1 分鐘</label>
+                                    <div class="btn-group w-100 score-select-group" role="group">
+                                        <button type="button" class="btn btn-outline-info" data-score="0">0 (無法維持/需大量協助)</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="1">1</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="2">2</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="3">3</button>
+                                        <button type="button" class="btn btn-outline-info active btn-info" data-score="4">4 (獨立維持 1 分鐘)</button>
+                                    </div>
+                                </div>
+                                <div class="score-item berg-item" data-value="4" data-item-id="8">
+                                    <label class="score-item-label">8. 往前伸臂 (Reaching forward) - 至少 25 cm</label>
+                                    <div class="btn-group w-100 score-select-group" role="group">
+                                        <button type="button" class="btn btn-outline-info" data-score="0">0 (無法伸手/失去平衡)</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="1">1</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="2">2</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="3">3</button>
+                                        <button type="button" class="btn btn-outline-info active btn-info" data-score="4">4 (> 25 cm)</button>
+                                    </div>
+                                </div>
+                                <div class="score-item berg-item" data-value="4" data-item-id="9">
+                                    <label class="score-item-label">9. 從地板撿東西 (Retrieving object from floor)</label>
+                                    <div class="btn-group w-100 score-select-group" role="group">
+                                        <button type="button" class="btn btn-outline-info" data-score="0">0 (無法/失去平衡)</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="1">1</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="2">2</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="3">3</button>
+                                        <button type="button" class="btn btn-outline-info active btn-info" data-score="4">4 (獨立完成)</button>
+                                    </div>
+                                </div>
+                                <div class="score-item berg-item" data-value="4" data-item-id="10">
+                                    <label class="score-item-label">10. 轉頭往後看 (Turning to look behind) - 雙側</label>
+                                    <div class="btn-group w-100 score-select-group" role="group">
+                                        <button type="button" class="btn btn-outline-info" data-score="0">0 (失去平衡/需協助)</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="1">1</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="2">2</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="3">3</button>
+                                        <button type="button" class="btn btn-outline-info active btn-info" data-score="4">4 (獨立完成)</button>
+                                    </div>
+                                </div>
+                                <div class="score-item berg-item" data-value="4" data-item-id="11">
+                                    <label class="score-item-label">11. 轉 360 度 (Turning 360 degrees) - 雙側</label>
+                                    <div class="btn-group w-100 score-select-group" role="group">
+                                        <button type="button" class="btn btn-outline-info" data-score="0">0 (需協助或超過 4 步)</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="1">1</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="2">2</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="3">3</button>
+                                        <button type="button" class="btn btn-outline-info active btn-info" data-score="4">4 (4 步內完成)</button>
+                                    </div>
+                                </div>
+                                <div class="score-item berg-item" data-value="4" data-item-id="12">
+                                    <label class="score-item-label">12. 踏步/交替踏步 (Placing alternate foot on step) - 8 次</label>
+                                    <div class="btn-group w-100 score-select-group" role="group">
+                                        <button type="button" class="btn btn-outline-info" data-score="0">0 (需協助或無法維持)</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="1">1</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="2">2</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="3">3</button>
+                                        <button type="button" class="btn btn-outline-info active btn-info" data-score="4">4 (獨立完成 8 次)</button>
+                                    </div>
+                                </div>
+                                <div class="score-item berg-item" data-value="4" data-item-id="13">
+                                    <label class="score-item-label">13. 跨步獨立站立 (Standing unsupported one foot in front)</label>
+                                    <div class="btn-group w-100 score-select-group" role="group">
+                                        <button type="button" class="btn btn-outline-info" data-score="0">0 (無法擺位或維持 < 1 秒)</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="1">1</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="2">2</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="3">3</button>
+                                        <button type="button" class="btn btn-outline-info active btn-info" data-score="4">4 (維持 30 秒)</button>
+                                    </div>
+                                </div>
+                                <div class="score-item berg-item" data-value="4" data-item-id="14">
+                                    <label class="score-item-label">14. 單腳獨立站立 (Standing on one leg) - 10 秒</label>
+                                    <div class="btn-group w-100 score-select-group" role="group">
+                                        <button type="button" class="btn btn-outline-info" data-score="0">0 (無法維持 < 3 秒)</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="1">1</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="2">2</button>
+                                        <button type="button" class="btn btn-outline-info" data-score="3">3</button>
+                                        <button type="button" class="btn btn-outline-info active btn-info" data-score="4">4 (維持 > 10 秒)</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="total-score-box bg-success">
+                                <h4 class="mb-2">伯格總分 / 滿分 56</h4>
+                                <div class="total-score-value" id="bergTotalScore">56</div>
+                                <hr>
+                                <p class="mb-0 fw-light"><span id="bergInterpretation" class="fw-bold">低跌倒風險</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-pane fade" id="mrs" role="tabpanel" aria-labelledby="mrs-tab">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h3 class="mb-4 text-secondary">改良式蘭金量表 (Modified Rankin Scale, mRS) - (Max: 6)</h3>
+                            <p class="text-muted fst-italic">請選擇最符合個案失能狀況的等級。</p>
+                            <form id="mrsForm">
+                                <div class="score-item-container">
+                                    <label for="mrs-score" class="score-item-label">mRS 分數</label>
+                                    <select class="form-select" id="mrs-score">
+                                        <option value="0" selected>0: 無任何症狀</option>
+                                        <option value="1">1: 有症狀但無明顯殘障</option>
+                                        <option value="2">2: 輕度殘障 (影響工作能力)</option>
+                                        <option value="3">3: 中度殘障 (日常生活起居需要他人協助，但能自行走動)</option>
+                                        <option value="4">4: 中重度殘障 (日常生活起居和走動完全需要他人協助)</option>
+                                        <option value="5">5: 重度殘障 (臥床、完全需要他人料理)</option>
+                                        <option value="6">6: 死亡</option>
+                                    </select>
+                                    <div class="alert alert-warning mt-3">當前選取: <span id="mrsDescription">0: 無任何症狀</span></div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="total-score-box bg-primary">
+                                <h4 class="mb-2">mRS 分數 / 滿分 6</h4>
+                                <div class="total-score-value" id="mrsTotalScore">0</div>
+                                <hr>
+                                <p class="mb-0 fw-light"><span id="mrsInterpretation" class="fw-bold">功能輕微受損</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="cfs" role="tabpanel" aria-labelledby="cfs-tab">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h3 class="mb-4 text-secondary">臨床衰弱量表 (Clinical Frailty Scale, CFS) - (Max: 9)</h3>
+                            <p class="text-muted fst-italic">請在 1 到 9 之間選擇一個數字，描述個案的衰弱程度。</p>
+                            <div class="score-item-container mt-4">
+                                <label for="cfs-score" class="score-item-label mb-3">衰弱評分 (1 = 非常健康, 9 = 末期病患)</label>
+                                <input type="range" class="form-range" min="1" max="9" step="1" id="cfs-score" value="1">
+                                <p class="h4 text-center mt-3">當前評分：<span class="badge bg-success" id="cfs-score-display" data-for="cfs-score">1：非常健康</span></p>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="total-score-box bg-primary">
+                                <h4 class="mb-2">CFS 分數 / 滿分 9</h4>
+                                <div class="total-score-value" id="cfsTotalScore">1</div>
+                                <hr>
+                                <p class="mb-0 fw-light"><span id="cfsInterpretation" class="fw-bold">非衰弱/健康</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="nrs" role="tabpanel" aria-labelledby="nrs-tab">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h3 class="mb-4 text-secondary">疼痛數字評量表 (Numerical Rating Scale, NRS) - (Max: 10)</h3>
+                            <p class="text-muted fst-italic">請在 0 到 10 之間選擇一個數字，代表您過去 24 小時最劇烈的疼痛程度。</p>
+                            
+                            <div class="score-item-container mt-4">
+                                <label for="nrs-score-input" class="score-item-label mb-3">疼痛評分 (0 = 無痛, 10 = 最劇烈的疼痛)</label>
+                                <input type="range" class="form-range" min="0" max="10" step="1" id="nrs-score-input" value="0">
+                                <p class="h4 text-center mt-3">當前評分：<span class="badge bg-success" id="nrs-score-display" data-for="nrs-score-input">0：無痛</span></p>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="total-score-box bg-success">
+                                <h4 class="mb-2">NRS 疼痛分數 / 滿分 10</h4>
+                                <div class="total-score-value" id="nrsTotalScore">0</div>
+                                <hr>
+                                <p class="mb-0 fw-light"><span id="nrsInterpretation" class="fw-bold">無痛</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="gait" role="tabpanel" aria-labelledby="gait-tab">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h3 class="mb-4 text-secondary">步行速度/6 分鐘步行測試 (6MWT)</h3>
+                            <p class="text-muted fst-italic">請輸入步行測試數據以計算結果。</p>
+                            <div class="score-item-container">
+                                <h5 class="score-item-title">步行速度 (Gait Speed) - 假設 10 公尺</h5>
+                                <label for="gaitTime" class="form-label">完成 10 公尺所需時間 (秒)</label>
+                                <input type="number" class="form-control" id="gaitTime" value="10" min="0.1" step="0.1">
+                                <p class="mt-3">計算結果：<span class="badge bg-primary" id="gaitSpeed">0</span> m/s</p>
+                            </div>
+                            <div class="score-item-container">
+                                <h5 class="score-item-title">6 分鐘步行距離 (6MWT)</h5>
+                                <label for="sixMinsDistance" class="form-label">完成距離 (公尺)</label>
+                                <input type="number" class="form-control" id="sixMinsDistance" value="0" min="0">
+                                <p class="mt-3">計算結果：<span class="badge bg-primary" id="sixMinsInterpretation">--</span></p>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="total-score-box bg-primary" id="gaitBox">
+                                <h4 class="mb-2">步行速度判讀</h4>
+                                <p class="mb-0 fw-light"><span id="gaitInterpretation" class="fw-bold">無法完成</span></p>
+                            </div>
+                             <div class="total-score-box bg-secondary mt-3" id="sixMinsBox">
+                                <h4 class="mb-2">6MWT 表現</h4>
+                                <p class="mb-0 fw-light"><span id="sixMinsBoxInterpretation" class="fw-bold">無資料</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="gds" role="tabpanel" aria-labelledby="gds-tab">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h3 class="mb-4 text-secondary">老年憂鬱量表 (Geriatric Depression Scale, GDS-5) - (Max: 5)</h3>
+                            <p class="text-muted fst-italic">請針對過去一週的感受，回答以下 5 個問題。</p>
+                            <form id="gdsForm">
+                                <div class="score-item-container">
+                                    <div class="score-item">
+                                        <label class="score-item-label">1. 您是否對生活感到滿意？</label>
+                                        <select class="form-select" name="gds_1"><option value="0">是 (0分)</option><option value="1">否 (1分)</option></select>
+                                    </div>
+                                    <div class="score-item">
+                                        <label class="score-item-label">2. 您是否覺得生活充滿樂趣？</label>
+                                        <select class="form-select" name="gds_2"><option value="0">是 (0分)</option><option value="1">否 (1分)</option></select>
+                                    </div>
+                                    <div class="score-item">
+                                        <label class="score-item-label">3. 您是否覺得您的生活是空虛的？</label>
+                                        <select class="form-select" name="gds_3"><option value="1">是 (1分)</option><option value="0">否 (0分)</option></select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="total-score-box bg-primary">
+                                <h4 class="mb-2">GDS-5 總分 / 滿分 5</h4>
+                                <div class="total-score-value" id="gdsTotalScore">0</div>
+                                <hr>
+                                <p class="mb-0 fw-light"><span id="gdsInterpretation" class="fw-bold">無憂鬱傾向</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="spmsq" role="tabpanel" aria-labelledby="spmsq-tab">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h3 class="mb-4 text-secondary">簡易心智狀態問卷調查表 (SPMSQ) - (Max: 10 錯誤)</h3>
+                            <p class="text-muted fst-italic">請針對以下 10 個問題進行評估，計算錯誤題數。</p>
+                            <form id="spmsqForm">
+                                <div class="score-item-container">
+                                    <div class="score-item">
+                                        <label class="score-item-label">1. 今天是幾號？</label>
+                                        <select class="form-select" name="spmsq_1"><option value="0">正確 (0錯)</option><option value="1">錯誤 (1錯)</option></select>
+                                    </div>
+                                     <div class="score-item">
+                                        <label class="score-item-label">2. 今天是星期幾？</label>
+                                        <select class="form-select" name="spmsq_2"><option value="0">正確 (0錯)</option><option value="1">錯誤 (1錯)</option></select>
+                                    </div>
+                                    <div class="score-item">
+                                        <label class="score-item-label">3. 這是什麼地方？</label>
+                                        <select class="form-select" name="spmsq_3"><option value="0">正確 (0錯)</option><option value="1">錯誤 (1錯)</option></select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="total-score-box bg-primary">
+                                <h4 class="mb-2">錯誤題數 / 滿分 10</h4>
+                                <div class="total-score-value" id="spmsqTotalScore">0</div>
+                                <hr>
+                                <p class="mb-0 fw-light"><span id="spmsqInterpretation" class="fw-bold">認知功能正常</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="cam" role="tabpanel" aria-labelledby="cam-tab">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h3 class="mb-4 text-secondary">混亂評估法 (Confusion Assessment Method, CAM)</h3>
+                            <p class="text-muted fst-italic">評估以下四個特徵，以判斷是否有瞻妄 (Delirium)。</p>
+                            <form id="camForm">
+                                <div class="score-item-container">
+                                    <h5 class="score-item-title">特徵一：急性發作且波動的病程 (Acute Onset and Fluctuating Course)</h5>
+                                    <select class="form-select" id="cam-feat1"><option value="0">否 (0分)</option><option value="1">是 (1分)</option></select>
+                                </div>
+                                <div class="score-item-container">
+                                    <h5 class="score-item-title">特徵二：注意力不集中 (Inattention)</h5>
+                                    <select class="form-select" id="cam-feat2"><option value="0">否 (0分)</option><option value="1">是 (1分)</option></select>
+                                </div>
+                                <div class="score-item-container">
+                                    <h5 class="score-item-title">特徵三：組織化思考混亂 (Disorganized Thinking)</h5>
+                                    <select class="form-select" id="cam-feat3"><option value="0">否 (0分)</option><option value="1">是 (1分)</option></select>
+                                </div>
+                                <div class="score-item-container">
+                                    <h5 class="score-item-title">特徵四：意識程度改變 (Altered Level of Consciousness)</h5>
+                                    <select class="form-select" id="cam-feat4"><option value="0">否 (0分)</option><option value="1">是 (1分)</option></select>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="total-score-box bg-primary">
+                                <h4 class="mb-2">CAM 診斷結果</h4>
+                                <div class="total-score-value" id="camTotalScore"><i class="fas fa-check-circle"></i></div>
+                                <hr>
+                                <p class="mb-0 fw-light"><span id="camInterpretation" class="fw-bold">不符合瞻妄診斷</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="mna" role="tabpanel" aria-labelledby="mna-tab">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h3 class="mb-4 text-secondary">簡易營養評估量表短版 (MNA-SF) - (Max: 14)</h3>
+                            <p class="text-muted fst-italic">請回答以下 6 個問題，評估營養狀況。</p>
+                            <form id="mnaForm">
+                                <div class="score-item-container">
+                                    <div class="score-item">
+                                        <label class="score-item-label">1. 在過去三個月內，是否因食慾不振、消化問題、咀嚼或吞嚥困難而導致進食量減少？</label>
+                                        <select class="form-select mna-item" name="mna_1"><option value="2">無 (2分)</option><option value="1">中度減少 (1分)</option><option value="0">嚴重減少 (0分)</option></select>
+                                    </div>
+                                    <div class="score-item">
+                                        <label class="score-item-label">2. 在過去三個月內，是否體重減輕？</label>
+                                        <select class="form-select mna-item" name="mna_2"><option value="3">無體重減輕 (3分)</option><option value="2">減輕 1~3 公斤 (2分)</option><option value="1">不知道 (1分)</option><option value="0">減輕 > 3 公斤 (0分)</option></select>
+                                    </div>
+                                    <div class="score-item">
+                                        <label class="score-item-label">3. 行動能力如何？</label>
+                                        <select class="form-select mna-item" name="mna_3"><option value="2">可自由活動 (2分)</option><option value="1">只能下床/下樓 (1分)</option><option value="0">臥床或坐輪椅 (0分)</option></select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="total-score-box bg-primary">
+                                <h4 class="mb-2">MNA-SF 總分 / 滿分 14</h4>
+                                <div class="total-score-value" id="mnaTotalScore">0</div>
+                                <hr>
+                                <p class="mb-0 fw-light"><span id="mnaInterpretation" class="fw-bold">營養不良</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="fma" role="tabpanel" aria-labelledby="fma-tab">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h3 class="mb-4 text-secondary">傅格梅爾評估 (Fugl-Meyer Assessment, FMA) - (上肢 Max: 66)</h3>
+                            <p class="text-muted fst-italic">請針對運動功能進行評估，計算總分。</p>
+                            <form id="fmaForm">
+                                <div class="score-item-container">
+                                    <h5 class="score-item-title">上肢運動功能 - 肩膀/手肘/前臂</h5>
+                                    <div class="score-item">
+                                        <label class="score-item-label">1. 屈曲肩關節 (Shoulder Flexion)</label>
+                                        <div class="form-check form-check-inline"><input class="form-check-input fma-item" type="radio" name="fma_1" value="0" checked><label class="form-check-label">0 (無法完成)</label></div>
+                                        <div class="form-check form-check-inline"><input class="form-check-input fma-item" type="radio" name="fma_1" value="1"><label class="form-check-label">1 (部分完成)</label></div>
+                                        <div class="form-check form-check-inline"><input class="form-check-input fma-item" type="radio" name="fma_1" value="2"><label class="form-check-label">2 (完全完成)</label></div>
+                                    </div>
+                                    <div class="score-item">
+                                        <label class="score-item-label">2. 伸展肩關節 (Shoulder Abduction)</label>
+                                        <div class="form-check form-check-inline"><input class="form-check-input fma-item" type="radio" name="fma_2" value="0" checked><label class="form-check-label">0 (無法完成)</label></div>
+                                        <div class="form-check form-check-inline"><input class="form-check-input fma-item" type="radio" name="fma_2" value="1"><label class="form-check-label">1 (部分完成)</label></div>
+                                        <div class="form-check form-check-inline"><input class="form-check-input fma-item" type="radio" name="fma_2" value="2"><label class="form-check-label">2 (完全完成)</label></div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="total-score-box bg-primary">
+                                <h4 class="mb-2">FMA 總分 / (上肢 66)</h4>
+                                <div class="total-score-value" id="fmaTotalScore">0</div>
+                                <hr>
+                                <p class="mb-0 fw-light"><span id="fmaInterpretation" class="fw-bold">分數：0</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="goat" role="tabpanel" aria-labelledby="goat-tab">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h3 class="mb-4 text-secondary">腦傷認知功能評估 (GOAT) - (Max: 100)</h3>
+                            <p class="text-muted fst-italic">請根據個案回答，計算扣分總和。</p>
+                            <form id="goatForm">
+                                <div class="score-item-container">
+                                    <h5 class="score-item-title">時間定向力 (Time Orientation) - 共 25 分扣分</h5>
+                                    <label for="goat-orientation" class="form-label">時間定向力扣分 (0-25)</label>
+                                    <input type="number" class="form-control" id="goat-orientation" value="25" min="0" max="25">
+                                </div>
+                                <div class="score-item-container">
+                                    <h5 class="score-item-title">記憶與失憶 (Amnesia) - 共 75 分扣分</h5>
+                                    <label for="goat-amnesia" class="form-label">記憶/失憶相關扣分 (0-75)</label>
+                                    <input type="number" class="form-control" id="goat-amnesia" value="75" min="0" max="75">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="total-score-box bg-primary">
+                                <h4 class="mb-2">GOAT 總分 / 滿分 100</h4>
+                                <div class="total-score-value" id="goatTotalScore">0</div>
+                                <hr>
+                                <p class="mb-0 fw-light"><span id="goatInterpretation" class="fw-bold">中/重度認知障礙</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

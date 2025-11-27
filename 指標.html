@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>深耕計畫委員會 - 互動式指標儀表板 (已修正 KPI 顯示)</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+        .dashboard-header {
+            background-color: #0078d4 !important; /* Power BI Blue */
+        }
+        .section-title {
+            border-bottom: 2px solid #ddd;
+            margin: 20px 0 15px;
+            padding-bottom: 5px;
+        }
+        .section-title h2 {
+            color: #005a9e;
+            font-size: 20px;
+            margin: 0;
+        }
+        /* KPI 範疇標題樣式 */
+        .kpi-category-title {
+            background-color: #e3f2fd; 
+            color: #005a9e;
+            padding: 8px 15px;
+            margin-bottom: 10px;
+            margin-top: 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 18px;
+            width: 100%; 
+        }
+        /* KPI 卡片容器 */
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .kpi-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            width: calc(33.33% - 10px); /* 調整為三張卡片一行 */
+            min-width: 280px; /* 最小寬度確保手機上不會太小 */
+            box-sizing: border-box;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease;
+        }
+        .kpi-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+        .kpi-card h4 {
+            color: #555; /* 調整標題顏色，強調達成率 */
+            margin-top: 5px;
+            font-size: 15px;
+            min-height: 30px; 
+            font-weight: normal;
+        }
+        /* KPI 主要數值：達成率百分比 */
+        .kpi-value {
+            font-size: 28px; 
+            font-weight: bold;
+            color: #0078d4; /* 達成率使用主要藍色 */
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+        .kpi-target-info {
+            font-size: 12px;
+            color: #888;
+            border-top: 1px solid #eee;
+            padding-top: 5px;
+            margin-top: 5px;
+        }
+        /* 進度條調整：變高、顏色和圓角 */
+        .progress-bar-container {
+            height: 12px;
+            background-color: #e0e0e0;
+            border-radius: 6px;
+            margin-bottom: 10px; /* 移到最上方 */
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            transition: width 0.5s ease-in-out;
+            border-radius: 6px;
+        }
+
+        /* 統一圖表/表格卡片樣式 */
+        .chart-card, .data-table-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .chart-card h3, .data-table-card h3 {
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 0;
+            font-size: 18px;
+        }
+        /* 表格優化 */
+        #recruitment-table td, #finance-personnel-table td {
+            vertical-align: middle;
+        }
+        .tab-content {
+            min-height: 500px;
+        }
+        /* 確保 Chart.js 容器在 h-100 時能夠正確佔用空間 */
+        .chart-card canvas {
+            max-height: 300px; /* 限制圖表最大高度，避免過高 */
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="dashboard-header bg-primary text-white p-4 shadow-sm">
+        <h1 class="mb-0">🌱 深耕計畫委員會 - 互動式指標儀表板</h1>
+        <p class="mb-0 opacity-75">資料更新時間: 2025/11/25</p>
+    </div>
+
+    <div class="container-fluid p-4">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="kpi-tab" data-bs-toggle="tab" data-bs-target="#kpi" type="button" role="tab" aria-controls="kpi" aria-selected="true">
+                    ✨ 績效概覽 (KPI)
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="recruitment-tab" data-bs-toggle="tab" data-bs-target="#recruitment" type="button" role="tab" aria-controls="recruitment" aria-selected="false">
+                    👥 人力招募
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="finance-tab" data-bs-toggle="tab" data-bs-target="#finance" type="button" role="tab" aria-controls="finance" aria-selected="false">
+                    💰 經費預估
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content pt-3" id="myTabContent">
+            
+            <div class="tab-pane fade show active" id="kpi" role="tabpanel" aria-labelledby="kpi-tab">
+                <div class="section-title"><h2>關鍵績效指標 (KPI) - 年度目標達成概況</h2></div>
+                <div id="kpi-container">
+                    </div>
+            </div>
+
+            <div class="tab-pane fade" id="recruitment" role="tabpanel" aria-labelledby="recruitment-tab">
+                <div class="section-title"><h2>人力招募情形</h2></div>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="chart-card shadow-sm h-100 p-3">
+                            <h3>人力總覽</h3>
+                            <canvas id="recruitment-overview-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="data-table-card shadow-sm h-100 p-3">
+                            <h3>職務缺額明細</h3>
+                            <div class="table-responsive">
+                                <table id="recruitment-table" class="table table-hover table-bordered">
+                                    <thead>
+                                        <tr><th>職稱</th><th>編制</th><th>現有</th><th>缺額</th></tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="finance" role="tabpanel" aria-labelledby="finance-tab">
+                <div class="section-title"><h2>經費預估與分析</h2></div>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="chart-card shadow-sm h-100 p-3">
+                            <h3>經費項目佔總預算佔比</h3>
+                            <canvas id="finance-breakdown-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                         <div class="data-table-card shadow-sm h-100 p-3">
+                            <h3>人事費用明細 (年度)</h3>
+                            <div class="table-responsive">
+                                <table id="finance-personnel-table" class="table table-hover table-bordered table-sm">
+                                    <thead>
+                                        <tr><th>職稱</th><th>編制人數</th><th>月單價</th><th class="text-end">年度小計</th></tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // --- 數據模擬 (強調四大範疇和僅年度數據) ---
+
+            const kpiData = [
+                {
+                    category: "一、提升醫療服務品質與效率", 
+                    name: "多元獎酬收入", definition: "(1-1-1) >5%",
+                    currentYear: 0.015, targetYear: 0.05,
+                },
+                {
+                    category: "一、提升醫療服務品質與效率", 
+                    name: "流動工時", definition: "(1-1-2) >5%",
+                    currentYear: 0.02, targetYear: 0.05,
+                },
+                {
+                    category: "二、優化轉銜流程與資訊整合", 
+                    name: "轉銜流程資訊化", definition: "減少工作時數 15%",
+                    currentYear: 0.05, targetYear: 0.15,
+                },
+                {
+                    category: "三、規劃多元人才培訓與留任", 
+                    name: "科技照服員認證", definition: "制度正式上線",
+                    currentYear: "未建置", targetYear: "建置完成",
+                },
+                {
+                    category: "四、擴大健康照護科技應用", 
+                    name: "健康雲平台應用項數", definition: "擴大應用 4項",
+                    currentYear: 1, targetYear: 4,
+                },
+                {
+                    category: "四、擴大健康照護科技應用", 
+                    name: "AI 動作分析導入據點數", definition: "導入 3個據點",
+                    currentYear: 0, targetYear: 3,
+                },
+                {
+                    category: "一、提升醫療服務品質與效率", 
+                    name: "病患滿意度", definition: "維持 >90%",
+                    currentYear: 0.88, targetYear: 0.90,
+                },
+            ];
+            
+            // 人力招募數據 (保持不變)
+            const recruitmentRawData = [
+                { title: "資訊經理", total: 1, current: 1, gap: 0 },
+                { title: "資訊專員", total: 1, current: 0, gap: 1 },
+                { title: "計畫管理師", total: 2, current: 0, gap: 2 },
+                { title: "人資專員", total: 1, current: 1, gap: 0 },
+                { title: "研究助理", total: 5, current: 3, gap: 2 },
+                { title: "職能/物理治療師", total: 5, current: 1, gap: 4 },
+                { title: "護理督導", total: 1, current: 1, gap: 0 },
+                { title: "個管師", total: 4, current: 2, gap: 2 },
+                { title: "營養師", total: 1, current: 0, gap: 1 },
+                { title: "社工", total: 1, current: 0, gap: 1 },
+                { title: "心理師", total: 1, current: 0, gap: 1 },
+                { title: "司機", total: 2, current: 0, gap: 2 }
+            ];
+
+            // 經費預估數據 (保持不變)
+            const personnelDetailData = [
+                { title: "資訊經理", total: 1, monthlyPrice: 75000, subtotal: 1012500 },
+                { title: "資訊專員", total: 1, monthlyPrice: 45000, subtotal: 607500 },
+                { title: "計畫管理師", total: 2, monthlyPrice: 42000, subtotal: 1134000 },
+                { title: "人資專員", total: 1, monthlyPrice: 40000, subtotal: 540000 },
+                { title: "研究助理", total: 5, monthlyPrice: 40000, subtotal: 2700000 },
+                { title: "職能/物理治療師", total: 5, monthlyPrice: 55000, subtotal: 3712500 },
+                { title: "護理督導", total: 1, monthlyPrice: 65000, subtotal: 877500 },
+                { title: "個管師", total: 4, monthlyPrice: 40000, subtotal: 2160000 },
+                { title: "營養師", total: 1, monthlyPrice: 40000, subtotal: 540000 },
+                { title: "社工", total: 1, monthlyPrice: 40000, subtotal: 540000 },
+                { title: "心理師", total: 1, monthlyPrice: 40000, subtotal: 540000 },
+                { title: "司機", total: 2, monthlyPrice: 35000, subtotal: 945000 }
+            ];
+            
+            const totalPersonnelCost = 17531500;
+            const totalBudget = 25000000; 
+            const otherCost = totalBudget - totalPersonnelCost;
+
+            const financeData = {
+                totalBudget: totalBudget, 
+                personnelCost: totalPersonnelCost,
+                otherCost: otherCost, 
+                personnelDetail: personnelDetailData
+            };
+            
+            // 格式化金額 (加入千分位)
+            function formatCurrency(num) {
+                if (num === undefined || num === null) return 'N/A';
+                return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+
+            // --- 績效概覽 (KPI) 渲染 (更新：強調百分比與進度條在上) ---
+
+            function generateKpiCard(kpi) {
+                const value = kpi.currentYear;
+                const target = kpi.targetYear;
+                
+                let isStatus = typeof target === 'string'; // 判斷是否為「建置完成」等狀態類指標
+                let progressHtml = '';
+                let achievementText = 'N/A';
+                let targetInfoText = '';
+                let barColor = '#4a4a4a'; // 預設灰色
+
+                if (isStatus) {
+                    // 狀態類指標 (如：建置完成)
+                    const isAchieved = value === target;
+                    achievementText = isAchieved ? `<span style="color:#107c10;">✔ ${target}</span>` : `<span style="color:#e81123;">✘ ${value}</span>`;
+                    targetInfoText = `狀態目標: ${target}`;
+                    
+                    const displayProgress = isAchieved ? 100 : 30; // 未完成時進度條顯示30%作為進行中
+                    barColor = isAchieved ? '#107c10' : '#ffb900';
+
+                    progressHtml = `
+                        <div class="progress-bar-container" title="狀態: ${isAchieved ? '已達成' : '進行中'}">
+                            <div class="progress-bar-fill" style="width: ${displayProgress}%; background-color: ${barColor};"></div>
+                        </div>
+                    `;
+
+                } else {
+                    // 數值類指標
+                    const progressValue = (value / target) * 100;
+                    const displayProgress = Math.min(progressValue, 100);
+                    
+                    const isPercentageTarget = target < 1;
+                    
+                    if (isPercentageTarget) {
+                        targetInfoText = `現況/目標: ${(value * 100).toFixed(1)}% / ${(target * 100).toFixed(1)}%`;
+                    } else {
+                        targetInfoText = `現況/目標: ${value} / ${target}`;
+                    }
+                    
+                    // 達成率文字
+                    achievementText = `${displayProgress.toFixed(1)}%`;
+                    
+                    // 進度條顏色判斷
+                    barColor = displayProgress >= 100 ? '#107c10' : (displayProgress >= 80 ? '#0078d4' : (displayProgress >= 50 ? '#ffb900' : '#e81123'));
+
+                    progressHtml = `
+                        <div class="progress-bar-container" title="達成率: ${displayProgress.toFixed(1)}%">
+                            <div class="progress-bar-fill" style="width: ${displayProgress}%; background-color: ${barColor};"></div>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="kpi-card">
+                        ${progressHtml}
+                        <div class="kpi-value" style="color: ${barColor};">${achievementText}</div>
+                        <h4>${kpi.name}</h4>
+                        <div class="kpi-target-info">
+                            ${targetInfoText}<br>
+                            <span style="color: #666; font-style: italic;">定義: ${kpi.definition}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function renderKpiCards() {
+                const $kpiContainer = $('#kpi-container');
+                $kpiContainer.empty();
+                
+                const groupedKpis = kpiData.reduce((acc, kpi) => {
+                    const category = kpi.category || "未分類";
+                    if (!acc[category]) {
+                        acc[category] = [];
+                    }
+                    acc[category].push(kpi);
+                    return acc;
+                }, {});
+
+                for (const category in groupedKpis) {
+                    $kpiContainer.append(`<div class="kpi-category-title">${category}</div>`);
+                    
+                    // 只需一個卡片容器，每個 KPI 只需要一個卡片（年度目標）
+                    const $cardContainer = $('<div class="card-container"></div>');
+                    
+                    groupedKpis[category].forEach(kpi => {
+                        // 只渲染年度目標卡片
+                        $cardContainer.append(generateKpiCard(kpi));
+                    });
+
+                    $kpiContainer.append($cardContainer);
+                }
+            }
+
+            // --- 圖表實例管理 ---
+            let recruitmentChartInstance = null;
+            let financeChartInstance = null;
+
+            // --- 人力招募渲染 ---
+            function renderRecruitment() {
+                // ... (此部分邏輯保持不變，與上一個版本相同)
+                let totalHeadcount = 0;
+                let totalCurrent = 0;
+                let totalGap = 0;
+                
+                const $recruitmentTableBody = $('#recruitment-table tbody');
+                $recruitmentTableBody.empty();
+
+                recruitmentRawData.forEach(item => {
+                    totalHeadcount += item.total;
+                    totalCurrent += item.current;
+                    totalGap += item.gap;
+
+                    const tableRow = `
+                        <tr>
+                            <td>${item.title}</td>
+                            <td>${item.total}</td>
+                            <td>${item.current}</td>
+                            <td class="fw-bold" style="color: ${item.gap > 0 ? 'red' : 'green'};">${item.gap}</td>
+                        </tr>
+                    `;
+                    $recruitmentTableBody.append(tableRow);
+                });
+
+                const ctx = document.getElementById('recruitment-overview-chart').getContext('2d');
+                if (recruitmentChartInstance) {
+                    recruitmentChartInstance.destroy();
+                }
+
+                recruitmentChartInstance = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['現有人數', '缺額'],
+                        datasets: [{
+                            label: '人力總覽',
+                            data: [totalCurrent, totalGap],
+                            backgroundColor: ['#107c10', '#e81123'],
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'top' },
+                            title: {
+                                display: true,
+                                text: `總編制: ${totalHeadcount}人 (招募率: ${(totalCurrent / totalHeadcount * 100).toFixed(1)}%)`
+                            }
+                        }
+                    }
+                });
+            }
+
+            // --- 經費預估渲染 ---
+            function renderFinance() {
+                // ... (此部分邏輯保持不變，與上一個版本相同)
+                const ctxBreakdown = document.getElementById('finance-breakdown-chart').getContext('2d');
+                if (financeChartInstance) {
+                    financeChartInstance.destroy();
+                }
+
+                const personnelPercentage = (financeData.personnelCost / financeData.totalBudget) * 100;
+                const otherPercentage = (financeData.otherCost / financeData.totalBudget) * 100;
+
+                financeChartInstance = new Chart(ctxBreakdown, {
+                    type: 'pie',
+                    data: {
+                        labels: [`人事費 (${personnelPercentage.toFixed(1)}%)`, `其他費用 (${otherPercentage.toFixed(1)}%)`],
+                        datasets: [{
+                            data: [financeData.personnelCost, financeData.otherCost],
+                            backgroundColor: ['#0078d4', '#ffb900'], 
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'top' },
+                            title: {
+                                display: true,
+                                text: `總預算: NT$ ${formatCurrency(financeData.totalBudget)}`
+                            },
+                            tooltip: {
+                                 callbacks: {
+                                    label: function(context) {
+                                        let label = context.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        label += `NT$ ${formatCurrency(context.parsed)}`;
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                const $financeTableBody = $('#finance-personnel-table tbody');
+                $financeTableBody.empty();
+                
+                let tableTotalCost = 0;
+
+                financeData.personnelDetail.forEach(item => {
+                    tableTotalCost += item.subtotal;
+                    const tableRow = `
+                        <tr>
+                            <td>${item.title}</td>
+                            <td>${item.total} 人</td>
+                            <td>NT$ ${formatCurrency(item.monthlyPrice)}</td>
+                            <td class="text-end">NT$ ${formatCurrency(item.subtotal)}</td>
+                        </tr>
+                    `;
+                    $financeTableBody.append(tableRow);
+                });
+                
+                const totalRow = `
+                    <tr class="table-primary fw-bold">
+                        <td colspan="3" class="text-end">人事費總計 (經常門)</td>
+                        <td class="text-end">NT$ ${formatCurrency(tableTotalCost)}</td>
+                    </tr>
+                `;
+                $financeTableBody.append(totalRow);
+            }
+
+            // --- 啟動渲染與 Tab 互動 (保持上一次修正的邏輯) ---
+            
+            renderKpiCards();
+            renderRecruitment();
+            renderFinance();
+
+            const tabEl = document.getElementById('myTab');
+            tabEl.addEventListener('shown.bs.tab', function (event) {
+                const targetId = event.target.getAttribute('data-bs-target');
+                
+                setTimeout(() => {
+                    if (targetId === '#recruitment' && recruitmentChartInstance) {
+                        recruitmentChartInstance.resize();
+                    } 
+                    
+                    if (targetId === '#finance' && financeChartInstance) {
+                        financeChartInstance.resize();
+                    }
+                }, 10); 
+            });
+        });
+    </script>
+</body>
+</html>

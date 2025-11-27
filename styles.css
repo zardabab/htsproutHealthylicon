@@ -1,0 +1,78 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
+}
+.container-fluid {
+    max-width: 1500px;
+    padding-top: 20px;
+}
+.assessment-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin-bottom: 20px;
+}
+.nav-tabs .nav-link {
+    border: none;
+    color: #6c757d;
+    font-weight: bold;
+    padding: 15px 12px;
+    margin-right: 2px;
+    transition: all 0.3s ease;
+    border-radius: 8px 8px 0 0;
+    font-size: 0.9rem;
+}
+.nav-tabs .nav-link.active {
+    color: #007bff;
+    background-color: white;
+    border-bottom: 3px solid #007bff;
+}
+
+/* 評分項目容器 */
+.score-item-container {
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #f8f9fa;
+}
+.score-item-title {
+    font-weight: bold;
+    color: #343a40;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #ced4da;
+    padding-bottom: 5px;
+}
+/* 總分顯示區塊 (sticky effect) */
+.total-score-box {
+    background-color: #007bff;
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    position: sticky;
+    top: 20px; 
+    z-index: 10;
+}
+.total-score-value {
+    font-size: 3rem;
+    font-weight: 900;
+}
+/* 增加指標，使標題可被點擊，並有視覺回饋 */
+#main-title {
+    cursor: pointer;
+    user-select: none; 
+}
+
+/* 單一評分項目的排版 */
+.score-item {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px dotted #ccc;
+}
+.score-item-label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    display: block;
+}
