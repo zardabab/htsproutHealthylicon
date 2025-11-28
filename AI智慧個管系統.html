@@ -24,7 +24,8 @@
                 <li class="nav-item" role="presentation"><button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab" aria-controls="info" aria-selected="true"><i class="fas fa-user-circle"></i> 基本資料</button></li>
                 <li class="nav-item tab-configurable" data-tab-id="barthel" role="presentation"><button class="nav-link" id="barthel-tab" data-bs-toggle="tab" data-bs-target="#barthel" type="button" role="tab" aria-controls="barthel" aria-selected="false"><i class="fas fa-wheelchair"></i> 巴氏 (BI)</button></li><li class="nav-item tab-configurable" data-tab-id="berg" role="presentation"><button class="nav-link" id="berg-tab" data-bs-toggle="tab" data-bs-target="#berg" type="button" role="tab" aria-controls="berg" aria-selected="false"><i class="fas fa-running"></i> 伯格 (BBS)</button></li>
                 
-                <li class="nav-item tab-configurable" data-tab-id="gait" role="presentation"><button class="nav-link" id="gait-tab" data-bs-toggle="tab" data-bs-target="#gait" type="button" role="tab" aria-controls="gait" aria-selected="false"><i class="fas fa-walking"></i> 步行/6MWT</button></li>
+                <li class="nav-item tab-configurable" data-tab-id="gait" role="presentation"><button class="nav-link" id="gait-tab" data-bs-toggle="tab" data-bs-target="#gait" type="button" role="tab" aria-controls="gait" aria-selected="false"><i class="fas fa-walking"></i> 步行速度</button></li>
+                <li class="nav-item tab-configurable" data-tab-id="6mwt" role="presentation"><button class="nav-link" id="6mwt-tab" data-bs-toggle="tab" data-bs-target="#6mwt" type="button" role="tab" aria-controls="6mwt" aria-selected="false"><i class="fas fa-route"></i> 6MWT</button></li>
               
                 
                 <li class="nav-item" id="settings-nav-item" role="presentation" style="display: none;"><button class="nav-link bg-light" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button" role="tab" aria-controls="settings" aria-selected="false"><i class="fas fa-cogs"></i> **設定檔**</button></li>
@@ -45,7 +46,8 @@
                         <div class="col-md-3">
                             <div class="form-check"><input class="form-check-input tab-toggler" type="checkbox" data-target="cfs" id="toggle-cfs" checked><label class="form-check-label" for="toggle-cfs">衰弱 (CFS)</label></div>
                             <div class="form-check"><input class="form-check-input tab-toggler" type="checkbox" data-target="nrs" id="toggle-nrs" checked><label class="form-check-label" for="toggle-nrs">疼痛 (NRS)</label></div>
-                            <div class="form-check"><input class="form-check-input tab-toggler" type="checkbox" data-target="gait" id="toggle-gait" checked><label class="form-check-label" for="toggle-gait">步行/6MWT</label></div>
+                            <div class="form-check"><input class="form-check-input tab-toggler" type="checkbox" data-target="gait" id="toggle-gait" checked><label class="form-check-label" for="toggle-gait">步行速度</label></div>
+                            <div class="form-check"><input class="form-check-input tab-toggler" type="checkbox" data-target="6mwt" id="toggle-6mwt" checked><label class="form-check-label" for="toggle-6mwt">6MWT</label></div>
                              <div class="form-check"><input class="form-check-input tab-toggler" type="checkbox" data-target="gds" id="toggle-gds" checked><label class="form-check-label" for="toggle-gds">憂慮 (GDS-5)</label></div>
                         </div>
                         <div class="col-md-3">
@@ -442,29 +444,71 @@
                 <div class="tab-pane fade" id="gait" role="tabpanel" aria-labelledby="gait-tab">
                     <div class="row">
                         <div class="col-lg-8">
-                            <h3 class="mb-4 text-secondary">步行速度/6 分鐘步行測試 (6MWT)</h3>
+                            <h3 class="mb-4 text-secondary">步行速度測試 (Gait Speed Test)</h3>
+
+                            <div class="alert alert-info mb-4">
+                                <h5 class="alert-heading text-primary"><i class="fas fa-bullhorn"></i> 指導語：</h5>
+                                <div class="instruction-text">
+                                    <p class="mb-2"><strong>「我們現在要進行一項步行測試，距離是 5 公尺，目的是了解您的步行速度和行動能力。」</strong></p>
+                                    <p class="mb-2">「等我說『開始』時，請從起點走到那邊的終點線（指示方向）。」</p>
+                                    <p class="mb-2">「請走您平常走路的速度（不用特別快，也不要刻意慢）。」</p>
+                                    <p class="mb-2">「走到終點線後請停下來，不用再走回來。」</p>
+                                    <p class="mb-2">「如果您覺得不舒服或需要休息，請隨時告訴我。」</p>
+                                    <p class="mb-0 text-primary"><strong>「準備好了嗎？當我說『開始』的時候就可以開始走。」</strong></p>
+                                </div>
+                            </div>
+
                             <p class="text-muted fst-italic">請輸入步行測試數據以計算結果。</p>
                             <div class="score-item-container">
-                                <h5 class="score-item-title">步行速度 (Gait Speed) - 假設 10 公尺</h5>
-                                <label for="gaitTime" class="form-label">完成 10 公尺所需時間 (秒)</label>
+                                <h5 class="score-item-title">步行速度 (Gait Speed) - 5 公尺測試</h5>
+                                <label for="gaitTime" class="form-label">完成 5 公尺所需時間 (秒)</label>
                                 <input type="number" class="form-control" id="gaitTime" value="10" min="0.1" step="0.1">
-                                <p class="mt-3">計算結果：<span class="badge bg-primary" id="gaitSpeed">0</span> m/s</p>
-                            </div>
-                            <div class="score-item-container">
-                                <h5 class="score-item-title">6 分鐘步行距離 (6MWT)</h5>
-                                <label for="sixMinsDistance" class="form-label">完成距離 (公尺)</label>
-                                <input type="number" class="form-control" id="sixMinsDistance" value="0" min="0">
-                                <p class="mt-3">計算結果：<span class="badge bg-primary" id="sixMinsInterpretation">--</span></p>
+                                <p class="mt-3">計算結果：<span class="badge bg-primary" id="gaitSpeed">0.5</span> m/s</p>
                             </div>
                         </div>
                         <div class="col-lg-4">
                             <div class="total-score-box bg-primary" id="gaitBox">
                                 <h4 class="mb-2">步行速度判讀</h4>
-                                <p class="mb-0 fw-light"><span id="gaitInterpretation" class="fw-bold">無法完成</span></p>
+                                <div class="total-score-value" style="font-size: 2rem;">0.5</div>
+                                <p class="mb-0">公尺/秒</p>
+                                <hr>
+                                <p class="mb-0 fw-light"><span id="gaitInterpretation" class="fw-bold">正常範圍</span></p>
                             </div>
-                             <div class="total-score-box bg-secondary mt-3" id="sixMinsBox">
-                                <h4 class="mb-2">6MWT 表現</h4>
-                                <p class="mb-0 fw-light"><span id="sixMinsBoxInterpretation" class="fw-bold">無資料</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="6mwt" role="tabpanel" aria-labelledby="6mwt-tab">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h3 class="mb-4 text-secondary">6 分鐘步行測試 (6-Minute Walk Test, 6MWT)</h3>
+                            
+                            <div class="alert alert-warning mb-4">
+                                <h5 class="alert-heading text-warning"><i class="fas fa-bullhorn"></i> 指導語：</h5>
+                                <div class="instruction-text">
+                                    <p class="mb-2"><strong>「我們現在要進行一項六分鐘行走測試。這個測試的目的是要看看您的心肺耐力，也就是您在六分鐘之內能走多遠。」</strong></p>
+                                    <p class="mb-2">「您會在這條路線上來回走，路線長度是30公尺（或依實際測試場地標示）。六分鐘後，我會請您停下來。測試期間請盡量走得快但安全，不要跑步。」</p>
+                                    <p class="mb-2">「如果您覺得胸悶、頭暈、呼吸困難、腳痛或其他任何不舒服，請立刻告訴我，您可以隨時停下來或休息。」</p>
+                                    <p class="mb-2">「我會在每分鐘提醒您時間，並鼓勵您繼續走。當六分鐘結束時，我會說『停！』，請您在原地停下來。」</p>
+                                    <p class="mb-0 text-warning"><strong>「請問您準備好了嗎？好，我會說『開始』的時候就可以開始走。」</strong></p>
+                                </div>
+                            </div>
+
+                            <p class="text-muted fst-italic">請輸入6分鐘步行測試數據以計算結果。</p>
+                            <div class="score-item-container">
+                                <h5 class="score-item-title">6 分鐘步行距離</h5>
+                                <label for="sixMinsDistance" class="form-label">完成距離 (公尺)</label>
+                                <input type="number" class="form-control" id="sixMinsDistance" value="400" min="0">
+                                <p class="mt-3">結果判讀：<span class="badge bg-success" id="sixMinsInterpretation">良好</span></p>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="total-score-box bg-warning" id="sixMinsBox">
+                                <h4 class="mb-2">6MWT 結果</h4>
+                                <div class="total-score-value" style="font-size: 2rem;">400</div>
+                                <p class="mb-0">公尺</p>
+                                <hr>
+                                <p class="mb-0 fw-light"><span id="sixMinsBoxInterpretation" class="fw-bold">心肺功能良好</span></p>
                             </div>
                         </div>
                     </div>
