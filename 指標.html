@@ -146,7 +146,7 @@
                     👥 人力招募
                 </button>
             </li>
-            <li class="nav-item" role="presentation">
+            <li class="nav-item" role="presentation" style="display: none;">
                 <button class="nav-link" id="finance-tab" data-bs-toggle="tab" data-bs-target="#finance" type="button" role="tab" aria-controls="finance" aria-selected="false">
                     💰 經費預估
                 </button>
@@ -223,39 +223,94 @@
 
             const kpiData = [
                 {
-                    category: "一、提升醫療服務品質與效率", 
-                    name: "多元獎酬收入", definition: "(1-1-1) >5%",
-                    currentYear: 0.015, targetYear: 0.05,
+                    category: "一、優化醫療工作條件", 
+                    name: "多元獎酬收入", definition: "(1-1-1) 其他收入/個人目前收入 >5% | 負責人: 陳俊伍人資",
+                    currentYear: 0, targetYear: 0.05,
                 },
                 {
-                    category: "一、提升醫療服務品質與效率", 
-                    name: "流動工時", definition: "(1-1-2) >5%",
-                    currentYear: 0.02, targetYear: 0.05,
+                    category: "一、優化醫療工作條件", 
+                    name: "流動工時", definition: "(1-1-2) 業外專案服務工時/每月工時 >5% | 負責人: 陳俊伍人資",
+                    currentYear: 0, targetYear: 0.05,
                 },
                 {
-                    category: "二、優化轉銜流程與資訊整合", 
-                    name: "轉銜流程資訊化", definition: "減少工作時數 15%",
-                    currentYear: 0.05, targetYear: 0.15,
+                    category: "一、優化醫療工作條件", 
+                    name: "轉銜流程資訊化", definition: "(1-2-1) 建立數位標準化轉介流程，減少工作時數 15% | 負責人: 夏瑞鄉督導",
+                    currentYear: 0, targetYear: 0.15,
                 },
                 {
-                    category: "三、規劃多元人才培訓與留任", 
-                    name: "科技照服員認證", definition: "制度正式上線",
-                    currentYear: "未建置", targetYear: "建置完成",
+                    category: "二、規劃多元人才培訓", 
+                    name: "認證課程制度上線", definition: "(2-1-1) 透過認證課程制度正式上線，學習成效追蹤精準度，確保培育專業人才符合認證標準 | 負責人: 陳俊伍人資",
+                    currentYear: 0, targetYear: 1.00,
                 },
                 {
-                    category: "四、擴大健康照護科技應用", 
-                    name: "健康雲平台應用項數", definition: "擴大應用 4項",
-                    currentYear: 1, targetYear: 4,
+                    category: "二、規劃多元人才培訓", 
+                    name: "岡山健康雲平台應用", definition: "(2-2-1) 擴大「岡山健康雲」平台應用，整合病歷、復健進度、家屬回饋與社區資源，提升偏鄉地區數位醫療服務的可近性、整合性與效率 | 負責人: 夏瑞鄉督導",
+                    currentYear: 0, targetYear: 1.00,
                 },
                 {
-                    category: "四、擴大健康照護科技應用", 
-                    name: "AI 動作分析導入據點數", definition: "導入 3個據點",
-                    currentYear: 0, targetYear: 3,
+                    category: "三、導入智慧科技醫療", 
+                    name: "AI健康照顧方案數", definition: "(3-1-1) AI生成健康照顧方案數 (病種分類、年齡分類、照服員、病人、家屬) | 負責人: 楊智傑資訊經理",
+                    currentYear: 0, targetYear: 1.00,
                 },
                 {
-                    category: "一、提升醫療服務品質與效率", 
-                    name: "病患滿意度", definition: "維持 >90%",
-                    currentYear: 0.88, targetYear: 0.90,
+                    category: "三、導入智慧科技醫療", 
+                    name: "生命徵象數據上傳成功率", definition: "(3-2-1) 生命徵象數據上傳成功率 (上傳比數/測量比數數據傳輸成功比例%) | 負責人: 楊智傑資訊經理",
+                    currentYear: 0, targetYear: 0.95,
+                },
+                {
+                    category: "三、導入智慧科技醫療", 
+                    name: "出院病人銜接服務率", definition: "(3-3-1) 出院病人銜接示範中心服務 (接受示範中心服務人數/出院病人數) | 負責人: 夏瑞鄉督導",
+                    currentYear: 0, targetYear: 0.80,
+                },
+                {
+                    category: "三、導入智慧科技醫療", 
+                    name: "個管服務效率提升", definition: "(3-4-1) 出院準備服務個管服務解釋時間比率 (AI介入前後個管平均服務解釋時間差/原服務時間) | 負責人: 夏瑞鄉督導",
+                    currentYear: 0, targetYear: 0.30,
+                },
+                {
+                    category: "四、社會責任醫療永續", 
+                    name: "完成轉介人數", definition: "(4-1-1) 完成轉介人數 (轉入、轉出、社區、中心、醫院) | 負責人: 吳宜泰研究助理",
+                    currentYear: 0, targetYear: 1.00,
+                },
+                {
+                    category: "四、社會責任醫療永續", 
+                    name: "偏鄉居民巡迴醫療服務比例", definition: "(4-2-1) 接受巡迴車或遠距診療偏鄉居民比例 | 負責人: 吳宜泰研究助理",
+                    currentYear: 0, targetYear: 0.60,
+                },
+                {
+                    category: "四、社會責任醫療永續", 
+                    name: "計畫照顧模式受照人數", definition: "(4-3-1) 接受計畫照顧模式的人數 | 負責人: 楊智傑資訊經理",
+                    currentYear: 0, targetYear: 1.00,
+                },
+                {
+                    category: "四、社會責任醫療永續", 
+                    name: "照顧服務人員培訓比例", definition: "(4-4-1) 投入照顧服務人員/接受培訓人員 | 負責人: 陳俊伍人資",
+                    currentYear: 0, targetYear: 0.90,
+                },
+                {
+                    category: "四、社會責任醫療永續", 
+                    name: "PAC再入院率", definition: "(4-5-1) 同一疾病(PAC)年度內再入院次數/同一疾病(PAC)年度總就醫次數 | 負責人: 職能-邱蓮樺",
+                    currentYear: 0, targetYear: 0.15,
+                },
+                {
+                    category: "四、社會責任醫療永續", 
+                    name: "碳排指標統計數量", definition: "(4-6-1) 碳排統計與相關碳排指標數量 | 負責人: ---",
+                    currentYear: 0, targetYear: 1.00,
+                },
+                {
+                    category: "四、社會責任醫療永續", 
+                    name: "永續委員會會議次數", definition: "(4-7-1) 召開永續發展委員會會議次數 (以簽到表或會議紀錄為憑) | 負責人: ---",
+                    currentYear: 0, targetYear: 1.00,
+                },
+                {
+                    category: "四、社會責任醫療永續", 
+                    name: "永續發展報告書", definition: "(4-7-2) 發佈永續發展報告書 | 負責人: ---",
+                    currentYear: 0, targetYear: 1.00,
+                },
+                {
+                    category: "四、社會責任醫療永續", 
+                    name: "累計合作機構家數", definition: "(4-8-1) 累計合作機構家數 | 負責人: 夏瑞鄉督導",
+                    currentYear: 0, targetYear: 1.00,
                 },
             ];
             
@@ -361,14 +416,109 @@
                     `;
                 }
 
+                // 提取負責人資訊
+                const definitionParts = kpi.definition.split(' | 負責人: ');
+                const mainDefinition = definitionParts[0];
+                const responsiblePerson = definitionParts[1] || '未指定';
+
                 return `
                     <div class="kpi-card">
+                        <h3 style="
+                            color: #fff;
+                            font-size: 16px; 
+                            font-weight: 700; 
+                            font-family: 'Segoe UI', 'Arial', sans-serif;
+                            margin-bottom: 12px; 
+                            margin-top: 0; 
+                            line-height: 1.3;
+                            letter-spacing: 1px;
+                            position: relative;
+                            padding: 12px 20px;
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            border-radius: 15px;
+                            box-shadow: 
+                                0 8px 32px rgba(102, 126, 234, 0.3),
+                                0 0 0 1px rgba(255, 255, 255, 0.1),
+                                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                            animation: slideInGlow 0.8s ease-out forwards, pulseGlow 2s ease-in-out infinite alternate;
+                            transform: translateY(-20px);
+                            opacity: 0;
+                            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+                            overflow: hidden;
+                        ">
+                            <span style="
+                                position: relative;
+                                z-index: 2;
+                                display: flex;
+                                align-items: center;
+                                gap: 8px;
+                            ">
+                                <span style="
+                                    display: inline-block;
+                                    animation: bounce 2s ease-in-out infinite;
+                                ">🚀</span>
+                                ${kpi.name}
+                            </span>
+                            <div style="
+                                position: absolute;
+                                top: 0;
+                                left: -100%;
+                                width: 100%;
+                                height: 100%;
+                                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+                                animation: shimmer 3s ease-in-out infinite;
+                            "></div>
+                        </h3>
+                        <style>
+                            @keyframes slideInGlow {
+                                0% { 
+                                    transform: translateY(-30px) scale(0.8);
+                                    opacity: 0;
+                                    filter: blur(10px);
+                                }
+                                50% { 
+                                    transform: translateY(-5px) scale(1.05);
+                                    opacity: 0.7;
+                                    filter: blur(2px);
+                                }
+                                100% { 
+                                    transform: translateY(0) scale(1);
+                                    opacity: 1;
+                                    filter: blur(0);
+                                }
+                            }
+                            @keyframes pulseGlow {
+                                0% { 
+                                    box-shadow: 
+                                        0 8px 32px rgba(102, 126, 234, 0.3),
+                                        0 0 0 1px rgba(255, 255, 255, 0.1),
+                                        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                                }
+                                100% { 
+                                    box-shadow: 
+                                        0 12px 40px rgba(102, 126, 234, 0.5),
+                                        0 0 0 1px rgba(255, 255, 255, 0.2),
+                                        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+                                }
+                            }
+                            @keyframes shimmer {
+                                0% { left: -100%; }
+                                50% { left: 100%; }
+                                100% { left: 100%; }
+                            }
+                            @keyframes bounce {
+                                0%, 100% { transform: translateY(0) rotate(0deg); }
+                                25% { transform: translateY(-3px) rotate(-5deg); }
+                                75% { transform: translateY(-1px) rotate(5deg); }
+                            }
+                        </style>
                         ${progressHtml}
+                        <div style="font-size: 14px; color: #666; margin-bottom: 3px;">目前進度:</div>
                         <div class="kpi-value" style="color: ${barColor};">${achievementText}</div>
-                        <h4>${kpi.name}</h4>
                         <div class="kpi-target-info">
                             ${targetInfoText}<br>
-                            <span style="color: #666; font-style: italic;">定義: ${kpi.definition}</span>
+                            <span style="color: #666; font-style: italic;">定義: ${mainDefinition}</span><br>
+                            <span style="color: #0078d4; font-weight: bold; background-color: #f0f8ff; padding: 2px 6px; border-radius: 3px; font-size: 11px;">👤 ${responsiblePerson}</span>
                         </div>
                     </div>
                 `;
