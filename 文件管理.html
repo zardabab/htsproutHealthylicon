@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多元獎酬收入 - 文件管理系統</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .header-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+        .kpi-info-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #0078d4;
+        }
+        .file-upload-area {
+            border: 3px dashed #0078d4;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            background-color: #f8f9ff;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .file-upload-area:hover {
+            background-color: #e6f3ff;
+            border-color: #005a9e;
+        }
+        .file-upload-area.dragover {
+            background-color: #cce7ff;
+            border-color: #0078d4;
+            transform: scale(1.02);
+        }
+        .document-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border-left: 4px solid #28a745;
+        }
+        .document-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        .example-badge {
+            background-color: #28a745;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .upload-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+        .documents-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+        .file-type-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        .progress-indicator {
+            display: none;
+            margin-top: 20px;
+        }
+        .btn-primary {
+            background-color: #0078d4;
+            border-color: #0078d4;
+            border-radius: 25px;
+            padding: 10px 25px;
+        }
+        .btn-primary:hover {
+            background-color: #005a9e;
+            border-color: #005a9e;
+        }
+        .document-meta {
+            font-size: 0.9rem;
+            color: #6c757d;
+            margin-top: 10px;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status-completed { background-color: #d4edda; color: #155724; }
+        .status-pending { background-color: #fff3cd; color: #856404; }
+        .status-draft { background-color: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="header-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1><i class="fas fa-file-alt me-3"></i>多元獎酬收入 - 文件管理系統</h1>
+                    <p class="mb-0 fs-5">KPI (1-1-1) - 其他收入/個人目前收入 >5%</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="bg-white bg-opacity-20 rounded-3 p-3">
+                        <h5 class="mb-1">目標達成率</h5>
+                        <h2 class="mb-0 text-warning">0.0%</h2>
+                        <small>目標: 5.0%</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- KPI 詳細資訊 -->
+        <div class="kpi-info-card">
+            <div class="row">
+                <div class="col-md-8">
+                    <h4><i class="fas fa-info-circle text-primary me-2"></i>指標說明</h4>
+                    <p class="mb-2"><strong>定義：</strong>(1-1-1) 其他收入/個人目前收入 >5%</p>
+                    <p class="mb-2"><strong>負責人：</strong>陳俊伍人資</p>
+                    <p class="mb-2"><strong>計算方式：</strong>員工從多元獎酬方案獲得的額外收入佔其基本收入的百分比</p>
+                    <p class="mb-0"><strong>目標值：</strong>大於 5%，表示成功建立多元化收入來源</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="text-center">
+                        <i class="fas fa-coins text-warning" style="font-size: 4rem;"></i>
+                        <h6 class="mt-2">多元收入方案</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 檔案上傳區域 -->
+        <div class="upload-section">
+            <h4><i class="fas fa-cloud-upload-alt text-primary me-2"></i>文件上傳</h4>
+            <p class="text-muted mb-4">上傳相關佐證資料，支援 PDF、Word、Excel、圖片等格式</p>
+            
+            <div class="file-upload-area" id="fileUploadArea">
+                <div class="file-type-icon text-primary">
+                    <i class="fas fa-file-upload"></i>
+                </div>
+                <h5>拖拽文件到此處或點擊選擇文件</h5>
+                <p class="text-muted">支援格式: PDF, DOC, DOCX, XLS, XLSX, JPG, PNG (最大 10MB)</p>
+                <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" style="display: none;">
+                <button type="button" class="btn btn-primary mt-3" onclick="document.getElementById('fileInput').click();">
+                    <i class="fas fa-plus me-2"></i>選擇文件
+                </button>
+            </div>
+            
+            <div class="progress-indicator" id="progressIndicator">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                </div>
+                <p class="text-center mt-2">正在上傳文件...</p>
+            </div>
+        </div>
+
+        <!-- 文件列表 -->
+        <div class="documents-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4><i class="fas fa-folder-open text-primary me-2"></i>相關文件</h4>
+                <div>
+                    <button class="btn btn-outline-primary btn-sm me-2">
+                        <i class="fas fa-filter me-1"></i>篩選
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-download me-1"></i>批量下載
+                    </button>
+                </div>
+            </div>
+
+            <div class="row" id="documentsContainer">
+                <!-- 範例文件 1 -->
+                <div class="col-md-6 mb-3">
+                    <div class="document-card">
+                        <div class="d-flex align-items-start">
+                            <div class="me-3">
+                                <i class="fas fa-file-pdf text-danger" style="font-size: 2rem;"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <h6 class="mb-1">多元獎酬制度實施辦法</h6>
+                                    <span class="example-badge">範例</span>
+                                </div>
+                                <p class="mb-1 text-muted">詳細說明多元獎酬制度的實施方式、計算標準及申請流程</p>
+                                <div class="document-meta">
+                                    <i class="fas fa-calendar me-1"></i>2024-11-01
+                                    <i class="fas fa-user ms-3 me-1"></i>陳俊伍
+                                    <i class="fas fa-file-pdf ms-3 me-1"></i>2.3 MB
+                                    <span class="status-badge status-completed">已審核</span>
+                                </div>
+                                <div class="mt-2">
+                                    <button class="btn btn-sm btn-outline-primary me-2">
+                                        <i class="fas fa-eye me-1"></i>預覽
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success">
+                                        <i class="fas fa-download me-1"></i>下載
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 範例文件 2 -->
+                <div class="col-md-6 mb-3">
+                    <div class="document-card">
+                        <div class="d-flex align-items-start">
+                            <div class="me-3">
+                                <i class="fas fa-file-excel text-success" style="font-size: 2rem;"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <h6 class="mb-1">員工額外收入統計表</h6>
+                                    <span class="example-badge">範例</span>
+                                </div>
+                                <p class="mb-1 text-muted">2024年度各部門員工多元收入統計資料及分析報告</p>
+                                <div class="document-meta">
+                                    <i class="fas fa-calendar me-1"></i>2024-11-15
+                                    <i class="fas fa-user ms-3 me-1"></i>人力資源部
+                                    <i class="fas fa-file-excel ms-3 me-1"></i>1.8 MB
+                                    <span class="status-badge status-completed">已審核</span>
+                                </div>
+                                <div class="mt-2">
+                                    <button class="btn btn-sm btn-outline-primary me-2">
+                                        <i class="fas fa-eye me-1"></i>預覽
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success">
+                                        <i class="fas fa-download me-1"></i>下載
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 範例文件 3 -->
+                <div class="col-md-6 mb-3">
+                    <div class="document-card">
+                        <div class="d-flex align-items-start">
+                            <div class="me-3">
+                                <i class="fas fa-file-word text-primary" style="font-size: 2rem;"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <h6 class="mb-1">專案獎金發放記錄</h6>
+                                    <span class="example-badge">範例</span>
+                                </div>
+                                <p class="mb-1 text-muted">記錄各項專案完成後的獎金發放情況及受益員工名單</p>
+                                <div class="document-meta">
+                                    <i class="fas fa-calendar me-1"></i>2024-10-30
+                                    <i class="fas fa-user ms-3 me-1"></i>財務部
+                                    <i class="fas fa-file-word ms-3 me-1"></i>0.9 MB
+                                    <span class="status-badge status-pending">待審核</span>
+                                </div>
+                                <div class="mt-2">
+                                    <button class="btn btn-sm btn-outline-primary me-2">
+                                        <i class="fas fa-eye me-1"></i>預覽
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success">
+                                        <i class="fas fa-download me-1"></i>下載
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 範例文件 4 -->
+                <div class="col-md-6 mb-3">
+                    <div class="document-card">
+                        <div class="d-flex align-items-start">
+                            <div class="me-3">
+                                <i class="fas fa-file-image text-warning" style="font-size: 2rem;"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <h6 class="mb-1">獎酬制度說明會照片</h6>
+                                    <span class="example-badge">範例</span>
+                                </div>
+                                <p class="mb-1 text-muted">多元獎酬制度員工說明會現場照片及簽到表</p>
+                                <div class="document-meta">
+                                    <i class="fas fa-calendar me-1"></i>2024-09-20
+                                    <i class="fas fa-user ms-3 me-1"></i>行政部
+                                    <i class="fas fa-file-image ms-3 me-1"></i>5.2 MB
+                                    <span class="status-badge status-completed">已審核</span>
+                                </div>
+                                <div class="mt-2">
+                                    <button class="btn btn-sm btn-outline-primary me-2">
+                                        <i class="fas fa-eye me-1"></i>預覽
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success">
+                                        <i class="fas fa-download me-1"></i>下載
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 範例文件 5 -->
+                <div class="col-md-6 mb-3">
+                    <div class="document-card">
+                        <div class="d-flex align-items-start">
+                            <div class="me-3">
+                                <i class="fas fa-file-pdf text-danger" style="font-size: 2rem;"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <h6 class="mb-1">績效獎金計算標準</h6>
+                                    <span class="example-badge">範例</span>
+                                </div>
+                                <p class="mb-1 text-muted">建立績效評核與獎金發放的標準化計算方式</p>
+                                <div class="document-meta">
+                                    <i class="fas fa-calendar me-1"></i>2024-08-15
+                                    <i class="fas fa-user ms-3 me-1"></i>人力資源部
+                                    <i class="fas fa-file-pdf ms-3 me-1"></i>1.1 MB
+                                    <span class="status-badge status-draft">草稿</span>
+                                </div>
+                                <div class="mt-2">
+                                    <button class="btn btn-sm btn-outline-primary me-2">
+                                        <i class="fas fa-eye me-1"></i>預覽
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success">
+                                        <i class="fas fa-download me-1"></i>下載
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 範例文件 6 -->
+                <div class="col-md-6 mb-3">
+                    <div class="document-card">
+                        <div class="d-flex align-items-start">
+                            <div class="me-3">
+                                <i class="fas fa-file-excel text-success" style="font-size: 2rem;"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <h6 class="mb-1">收入比例分析報告</h6>
+                                    <span class="example-badge">範例</span>
+                                </div>
+                                <p class="mb-1 text-muted">分析各部門員工額外收入佔總收入比例的詳細數據</p>
+                                <div class="document-meta">
+                                    <i class="fas fa-calendar me-1"></i>2024-11-20
+                                    <i class="fas fa-user ms-3 me-1"></i>財務分析師
+                                    <i class="fas fa-file-excel ms-3 me-1"></i>3.4 MB
+                                    <span class="status-badge status-pending">待審核</span>
+                                </div>
+                                <div class="mt-2">
+                                    <button class="btn btn-sm btn-outline-primary me-2">
+                                        <i class="fas fa-eye me-1"></i>預覽
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success">
+                                        <i class="fas fa-download me-1"></i>下載
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 檔案上傳功能
+        const fileUploadArea = document.getElementById('fileUploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const progressIndicator = document.getElementById('progressIndicator');
+        const documentsContainer = document.getElementById('documentsContainer');
+
+        // 拖拽功能
+        fileUploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            fileUploadArea.classList.add('dragover');
+        });
+
+        fileUploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            fileUploadArea.classList.remove('dragover');
+        });
+
+        fileUploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            fileUploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        });
+
+        // 點擊上傳
+        fileUploadArea.addEventListener('click', function() {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', function() {
+            handleFiles(this.files);
+        });
+
+        // 處理檔案上傳
+        function handleFiles(files) {
+            if (files.length === 0) return;
+
+            // 顯示進度條
+            progressIndicator.style.display = 'block';
+            const progressBar = progressIndicator.querySelector('.progress-bar');
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 30;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    
+                    // 上傳完成後隱藏進度條並添加到文件列表
+                    setTimeout(() => {
+                        progressIndicator.style.display = 'none';
+                        addUploadedFiles(files);
+                        progressBar.style.width = '0%';
+                    }, 500);
+                }
+                progressBar.style.width = progress + '%';
+            }, 100);
+        }
+
+        // 添加已上傳的檔案到列表
+        function addUploadedFiles(files) {
+            Array.from(files).forEach(file => {
+                const fileCard = createFileCard(file);
+                documentsContainer.insertAdjacentHTML('afterbegin', fileCard);
+            });
+        }
+
+        // 創建檔案卡片
+        function createFileCard(file) {
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+            const fileSize = (file.size / 1024 / 1024).toFixed(2);
+            const currentDate = new Date().toLocaleDateString('zh-TW');
+            
+            let iconClass = 'fas fa-file';
+            let iconColor = 'text-secondary';
+            
+            switch(fileExtension) {
+                case 'pdf':
+                    iconClass = 'fas fa-file-pdf';
+                    iconColor = 'text-danger';
+                    break;
+                case 'doc':
+                case 'docx':
+                    iconClass = 'fas fa-file-word';
+                    iconColor = 'text-primary';
+                    break;
+                case 'xls':
+                case 'xlsx':
+                    iconClass = 'fas fa-file-excel';
+                    iconColor = 'text-success';
+                    break;
+                case 'jpg':
+                case 'jpeg':
+                case 'png':
+                    iconClass = 'fas fa-file-image';
+                    iconColor = 'text-warning';
+                    break;
+            }
+
+            return `
+                <div class="col-md-6 mb-3">
+                    <div class="document-card" style="border-left-color: #007bff;">
+                        <div class="d-flex align-items-start">
+                            <div class="me-3">
+                                <i class="${iconClass} ${iconColor}" style="font-size: 2rem;"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <h6 class="mb-1">${file.name}</h6>
+                                    <span class="badge bg-primary">新上傳</span>
+                                </div>
+                                <p class="mb-1 text-muted">剛剛上傳的文件</p>
+                                <div class="document-meta">
+                                    <i class="fas fa-calendar me-1"></i>${currentDate}
+                                    <i class="fas fa-user ms-3 me-1"></i>目前用戶
+                                    <i class="${iconClass} ms-3 me-1"></i>${fileSize} MB
+                                    <span class="status-badge status-pending">待審核</span>
+                                </div>
+                                <div class="mt-2">
+                                    <button class="btn btn-sm btn-outline-primary me-2">
+                                        <i class="fas fa-eye me-1"></i>預覽
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success">
+                                        <i class="fas fa-download me-1"></i>下載
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 模擬按鈕功能
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('btn-outline-primary') && e.target.textContent.includes('預覽')) {
+                alert('預覽功能：此功能將開啟文件預覽視窗');
+            } else if (e.target.classList.contains('btn-outline-success') && e.target.textContent.includes('下載')) {
+                alert('下載功能：文件下載中...');
+            } else if (e.target.textContent.includes('篩選')) {
+                alert('篩選功能：可依文件類型、上傳日期、狀態進行篩選');
+            } else if (e.target.textContent.includes('批量下載')) {
+                alert('批量下載功能：將選中的所有文件打包下載');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -22,8 +22,10 @@
             
             <ul class="nav nav-tabs" id="assessmentTab" role="tablist">
                 <li class="nav-item" role="presentation"><button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab" aria-controls="info" aria-selected="true"><i class="fas fa-user-circle"></i> 基本資料</button></li>
-                <li class="nav-item tab-configurable" data-tab-id="barthel" role="presentation"><button class="nav-link" id="barthel-tab" data-bs-toggle="tab" data-bs-target="#barthel" type="button" role="tab" aria-controls="barthel" aria-selected="false"><i class="fas fa-wheelchair"></i> 巴氏 (BI)</button></li><li class="nav-item tab-configurable" data-tab-id="berg" role="presentation"><button class="nav-link" id="berg-tab" data-bs-toggle="tab" data-bs-target="#berg" type="button" role="tab" aria-controls="berg" aria-selected="false"><i class="fas fa-running"></i> 伯格 (BBS)</button></li>
-                
+                <li class="nav-item tab-configurable" data-tab-id="barthel" role="presentation"><button class="nav-link" id="barthel-tab" data-bs-toggle="tab" data-bs-target="#barthel" type="button" role="tab" aria-controls="barthel" aria-selected="false"><i class="fas fa-wheelchair"></i> 巴氏 (BI)</button></li>
+                <li class="nav-item tab-configurable" data-tab-id="iadl" role="presentation"><button class="nav-link" id="iadl-tab" data-bs-toggle="tab" data-bs-target="#iadl" type="button" role="tab" aria-controls="iadl" aria-selected="false"><i class="fas fa-tasks"></i> 工具性 ADL</button></li>
+                <li class="nav-item tab-configurable" data-tab-id="berg" role="presentation"><button class="nav-link" id="berg-tab" data-bs-toggle="tab" data-bs-target="#berg" type="button" role="tab" aria-controls="berg" aria-selected="false"><i class="fas fa-running"></i> 伯格 (BBS)</button></li>
+                <li class="nav-item tab-configurable" data-tab-id="mrs" role="presentation"><button class="nav-link" id="mrs-tab" data-bs-toggle="tab" data-bs-target="#mrs" type="button" role="tab" aria-controls="mrs" aria-selected="false"><i class="fas fa-chart-line"></i> 蘭金 (mRS)</button></li>
                 <li class="nav-item tab-configurable" data-tab-id="gait" role="presentation"><button class="nav-link" id="gait-tab" data-bs-toggle="tab" data-bs-target="#gait" type="button" role="tab" aria-controls="gait" aria-selected="false"><i class="fas fa-walking"></i> 步行速度</button></li>
                 <li class="nav-item tab-configurable" data-tab-id="6mwt" role="presentation"><button class="nav-link" id="6mwt-tab" data-bs-toggle="tab" data-bs-target="#6mwt" type="button" role="tab" aria-controls="6mwt" aria-selected="false"><i class="fas fa-route"></i> 6MWT</button></li>
               
@@ -80,7 +82,17 @@
                         </div>
                         <div class="col-lg-6">
                             <h3 class="mb-4 text-primary">評估資訊</h3>
-                            <p class="h5">今日日期：<span class="badge bg-secondary" id="assessmentDate"></span></p>
+                            <div class="mb-3">
+                                <label for="assessmentDateInput" class="form-label">評估日期</label>
+                                <input type="date" class="form-control" id="assessmentDateInput" value="">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">評估類型</label>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="evaluationTypeSwitch">
+                                    <label class="form-check-label" for="evaluationTypeSwitch" id="evaluationTypeLabel">初評</label>
+                                </div>
+                            </div>
                             <p class="h5">個案年齡：<span class="badge bg-primary" id="patientAge">--</span> 歲</p>
                             <div class="alert alert-info mt-4">
                                 <h5 class="alert-heading">💡 系統提示</h5>
@@ -165,6 +177,14 @@
                                 <hr>
                                 <p class="mb-0 fw-light"><span id="barthelInterpretation" class="fw-bold">嚴重依賴</span></p>
                             </div>
+                            <div class="mt-3">
+                                <button class="btn btn-success btn-sm me-2" onclick="saveAssessment('barthel')">
+                                    <i class="fas fa-save"></i> 儲存資料
+                                </button>
+                                <button class="btn btn-info btn-sm" onclick="exportToExcel('barthel')">
+                                    <i class="fas fa-file-excel"></i> 匯出Excel
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -200,6 +220,14 @@
                                 <div class="total-score-value" id="iadlTotalScore">0</div>
                                 <hr>
                                 <p class="mb-0 fw-light"><span id="iadlInterpretation" class="fw-bold">中/重度功能受損</span></p>
+                            </div>
+                            <div class="mt-3">
+                                <button class="btn btn-success btn-sm me-2" onclick="saveAssessment('iadl')">
+                                    <i class="fas fa-save"></i> 儲存資料
+                                </button>
+                                <button class="btn btn-info btn-sm" onclick="exportToExcel('iadl')">
+                                    <i class="fas fa-file-excel"></i> 匯出Excel
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -360,6 +388,14 @@
                                 <hr>
                                 <p class="mb-0 fw-light"><span id="bergInterpretation" class="fw-bold">低跌倒風險</span></p>
                             </div>
+                            <div class="mt-3">
+                                <button class="btn btn-success btn-sm me-2" onclick="saveAssessment('berg')">
+                                    <i class="fas fa-save"></i> 儲存資料
+                                </button>
+                                <button class="btn btn-info btn-sm" onclick="exportToExcel('berg')">
+                                    <i class="fas fa-file-excel"></i> 匯出Excel
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -392,6 +428,14 @@
                                 <hr>
                                 <p class="mb-0 fw-light"><span id="mrsInterpretation" class="fw-bold">功能輕微受損</span></p>
                             </div>
+                            <div class="mt-3">
+                                <button class="btn btn-success btn-sm me-2" onclick="saveAssessment('mrs')">
+                                    <i class="fas fa-save"></i> 儲存資料
+                                </button>
+                                <button class="btn btn-info btn-sm" onclick="exportToExcel('mrs')">
+                                    <i class="fas fa-file-excel"></i> 匯出Excel
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -413,6 +457,14 @@
                                 <div class="total-score-value" id="cfsTotalScore">1</div>
                                 <hr>
                                 <p class="mb-0 fw-light"><span id="cfsInterpretation" class="fw-bold">非衰弱/健康</span></p>
+                            </div>
+                            <div class="mt-3">
+                                <button class="btn btn-success btn-sm me-2" onclick="saveAssessment('cfs')">
+                                    <i class="fas fa-save"></i> 儲存資料
+                                </button>
+                                <button class="btn btn-info btn-sm" onclick="exportToExcel('cfs')">
+                                    <i class="fas fa-file-excel"></i> 匯出Excel
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -436,6 +488,14 @@
                                 <div class="total-score-value" id="nrsTotalScore">0</div>
                                 <hr>
                                 <p class="mb-0 fw-light"><span id="nrsInterpretation" class="fw-bold">無痛</span></p>
+                            </div>
+                            <div class="mt-3">
+                                <button class="btn btn-success btn-sm me-2" onclick="saveAssessment('nrs')">
+                                    <i class="fas fa-save"></i> 儲存資料
+                                </button>
+                                <button class="btn btn-info btn-sm" onclick="exportToExcel('nrs')">
+                                    <i class="fas fa-file-excel"></i> 匯出Excel
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -474,6 +534,14 @@
                                 <hr>
                                 <p class="mb-0 fw-light"><span id="gaitInterpretation" class="fw-bold">正常範圍</span></p>
                             </div>
+                            <div class="mt-3">
+                                <button class="btn btn-success btn-sm me-2" onclick="saveAssessment('gait')">
+                                    <i class="fas fa-save"></i> 儲存資料
+                                </button>
+                                <button class="btn btn-info btn-sm" onclick="exportToExcel('gait')">
+                                    <i class="fas fa-file-excel"></i> 匯出Excel
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -510,6 +578,14 @@
                                 <hr>
                                 <p class="mb-0 fw-light"><span id="sixMinsBoxInterpretation" class="fw-bold">心肺功能良好</span></p>
                             </div>
+                            <div class="mt-3">
+                                <button class="btn btn-success btn-sm me-2" onclick="saveAssessment('6mwt')">
+                                    <i class="fas fa-save"></i> 儲存資料
+                                </button>
+                                <button class="btn btn-info btn-sm" onclick="exportToExcel('6mwt')">
+                                    <i class="fas fa-file-excel"></i> 匯出Excel
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -543,6 +619,14 @@
                                 <hr>
                                 <p class="mb-0 fw-light"><span id="gdsInterpretation" class="fw-bold">無憂鬱傾向</span></p>
                             </div>
+                            <div class="mt-3">
+                                <button class="btn btn-success btn-sm me-2" onclick="saveAssessment('gds')">
+                                    <i class="fas fa-save"></i> 儲存資料
+                                </button>
+                                <button class="btn btn-info btn-sm" onclick="exportToExcel('gds')">
+                                    <i class="fas fa-file-excel"></i> 匯出Excel
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -575,6 +659,14 @@
                                 <div class="total-score-value" id="spmsqTotalScore">0</div>
                                 <hr>
                                 <p class="mb-0 fw-light"><span id="spmsqInterpretation" class="fw-bold">認知功能正常</span></p>
+                            </div>
+                            <div class="mt-3">
+                                <button class="btn btn-success btn-sm me-2" onclick="saveAssessment('spmsq')">
+                                    <i class="fas fa-save"></i> 儲存資料
+                                </button>
+                                <button class="btn btn-info btn-sm" onclick="exportToExcel('spmsq')">
+                                    <i class="fas fa-file-excel"></i> 匯出Excel
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -611,6 +703,14 @@
                                 <hr>
                                 <p class="mb-0 fw-light"><span id="camInterpretation" class="fw-bold">不符合瞻妄診斷</span></p>
                             </div>
+                            <div class="mt-3">
+                                <button class="btn btn-success btn-sm me-2" onclick="saveAssessment('cam')">
+                                    <i class="fas fa-save"></i> 儲存資料
+                                </button>
+                                <button class="btn btn-info btn-sm" onclick="exportToExcel('cam')">
+                                    <i class="fas fa-file-excel"></i> 匯出Excel
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -643,6 +743,14 @@
                                 <div class="total-score-value" id="mnaTotalScore">0</div>
                                 <hr>
                                 <p class="mb-0 fw-light"><span id="mnaInterpretation" class="fw-bold">營養不良</span></p>
+                            </div>
+                            <div class="mt-3">
+                                <button class="btn btn-success btn-sm me-2" onclick="saveAssessment('mna')">
+                                    <i class="fas fa-save"></i> 儲存資料
+                                </button>
+                                <button class="btn btn-info btn-sm" onclick="exportToExcel('mna')">
+                                    <i class="fas fa-file-excel"></i> 匯出Excel
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -678,6 +786,14 @@
                                 <hr>
                                 <p class="mb-0 fw-light"><span id="fmaInterpretation" class="fw-bold">分數：0</span></p>
                             </div>
+                            <div class="mt-3">
+                                <button class="btn btn-success btn-sm me-2" onclick="saveAssessment('fma')">
+                                    <i class="fas fa-save"></i> 儲存資料
+                                </button>
+                                <button class="btn btn-info btn-sm" onclick="exportToExcel('fma')">
+                                    <i class="fas fa-file-excel"></i> 匯出Excel
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -707,6 +823,14 @@
                                 <hr>
                                 <p class="mb-0 fw-light"><span id="goatInterpretation" class="fw-bold">中/重度認知障礙</span></p>
                             </div>
+                            <div class="mt-3">
+                                <button class="btn btn-success btn-sm me-2" onclick="saveAssessment('goat')">
+                                    <i class="fas fa-save"></i> 儲存資料
+                                </button>
+                                <button class="btn btn-info btn-sm" onclick="exportToExcel('goat')">
+                                    <i class="fas fa-file-excel"></i> 匯出Excel
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -717,6 +841,40 @@
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Excel export libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    
+    <script>
+        // 初始化評估日期和評估類型
+        document.addEventListener('DOMContentLoaded', function() {
+            // 設定評估日期為今日
+            const today = new Date();
+            const formattedDate = today.toISOString().split('T')[0];
+            document.getElementById('assessmentDateInput').value = formattedDate;
+            
+            // 設定評估類型切換開關
+            const evaluationSwitch = document.getElementById('evaluationTypeSwitch');
+            const evaluationLabel = document.getElementById('evaluationTypeLabel');
+            
+            // 切換開關事件處理
+            evaluationSwitch.addEventListener('change', function() {
+                if (this.checked) {
+                    evaluationLabel.textContent = '復評';
+                    evaluationLabel.className = 'form-check-label text-warning fw-bold';
+                } else {
+                    evaluationLabel.textContent = '初評';
+                    evaluationLabel.className = 'form-check-label text-primary fw-bold';
+                }
+            });
+            
+            // 初始狀態設定為初評
+            evaluationSwitch.checked = false;
+            evaluationLabel.textContent = '初評';
+            evaluationLabel.className = 'form-check-label text-primary fw-bold';
+        });
+    </script>
+    
     <script src="script.js"></script>
 </body>
 </html>

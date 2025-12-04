@@ -125,13 +125,38 @@
         .chart-card canvas {
             max-height: 300px; /* 限制圖表最大高度，避免過高 */
         }
+        /* 可點選的 KPI 卡片樣式 */
+        .clickable-kpi {
+            cursor: pointer !important;
+            pointer-events: all !important;
+        }
+        .clickable-kpi:hover {
+            transform: translateY(-5px) scale(1.02) !important;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2) !important;
+            background-color: #f8f9fa !important;
+        }
+        .clickable-kpi:active {
+            transform: translateY(-3px) scale(1.01) !important;
+        }
     </style>
 </head>
 <body>
     
     <div class="dashboard-header bg-primary text-white p-4 shadow-sm">
-        <h1 class="mb-0">🌱 深耕計畫委員會 - 互動式指標儀表板</h1>
-        <p class="mb-0 opacity-75">資料更新時間: 2025/11/25</p>
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="mb-0">🌱 深耕計畫委員會 - 互動式指標儀表板</h1>
+                <p class="mb-0 opacity-75">資料更新時間: 2025/11/25</p>
+            </div>
+            <div>
+                <button class="btn btn-light me-2" onclick="window.open('排班程式.html', '_blank')" title="開啟排班系統">
+                    <i class="fas fa-calendar-alt me-1"></i>排班系統
+                </button>
+                <button class="btn btn-outline-light" onclick="window.open('文件管理.html', '_blank')" title="開啟文件管理">
+                    <i class="fas fa-folder me-1"></i>文件管理
+                </button>
+            </div>
+        </div>
     </div>
 
     <div class="container-fluid p-4">
@@ -365,7 +390,7 @@
 
             // --- 績效概覽 (KPI) 渲染 (更新：強調百分比與進度條在上) ---
 
-            function generateKpiCard(kpi) {
+            function generateKpiCard(kpi, index) {
                 const value = kpi.currentYear;
                 const target = kpi.targetYear;
                 
@@ -421,8 +446,15 @@
                 const mainDefinition = definitionParts[0];
                 const responsiblePerson = definitionParts[1] || '未指定';
 
+                // 判斷是否為第一個指標，如果是則添加點選功能
+                const isFirstKpi = index === 0;
+                const cardClass = isFirstKpi ? 'kpi-card clickable-kpi' : 'kpi-card';
+                const clickHandler = isFirstKpi ? 'onclick="openDocumentManagement(); return false;"' : '';
+                const hoverStyle = isFirstKpi ? 'cursor: pointer; transition: all 0.3s ease; position: relative;' : '';
+                const clickIcon = isFirstKpi ? '<span style="position: absolute; top: 10px; right: 15px; color: #0078d4; font-size: 1.2em; z-index: 10;">📁</span>' : '';
+
                 return `
-                    <div class="kpi-card">
+                    <div class="${cardClass}" ${clickHandler} style="${hoverStyle}">${clickIcon}
                         <h3 style="
                             color: #fff;
                             font-size: 16px; 
@@ -452,12 +484,16 @@
                                 display: flex;
                                 align-items: center;
                                 gap: 8px;
+                                justify-content: space-between;
+                                width: 100%;
                             ">
-                                <span style="
-                                    display: inline-block;
-                                    animation: bounce 2s ease-in-out infinite;
-                                ">🚀</span>
-                                ${kpi.name}
+                                <span style="display: flex; align-items: center; gap: 8px;">
+                                    <span style="
+                                        display: inline-block;
+                                        animation: bounce 2s ease-in-out infinite;
+                                    ">🚀</span>
+                                    ${kpi.name}
+                                </span>
                             </span>
                             <div style="
                                 position: absolute;
@@ -519,6 +555,7 @@
                             ${targetInfoText}<br>
                             <span style="color: #666; font-style: italic;">定義: ${mainDefinition}</span><br>
                             <span style="color: #0078d4; font-weight: bold; background-color: #f0f8ff; padding: 2px 6px; border-radius: 3px; font-size: 11px;">👤 ${responsiblePerson}</span>
+                            ${isFirstKpi ? '<br><small style="color: #0078d4; font-weight: bold; margin-top: 5px; display: block;"><i class="fas fa-mouse-pointer"></i> 點擊查看文件管理</small>' : ''}
                         </div>
                     </div>
                 `;
@@ -543,9 +580,16 @@
                     // 只需一個卡片容器，每個 KPI 只需要一個卡片（年度目標）
                     const $cardContainer = $('<div class="card-container"></div>');
                     
-                    groupedKpis[category].forEach(kpi => {
+                    groupedKpis[category].forEach((kpi, index) => {
+                        // 計算全局索引 - 計算當前分類之前所有分類的KPI總數
+                        const categoriesArray = Object.keys(groupedKpis);
+                        const currentCategoryIndex = categoriesArray.indexOf(category);
+                        const globalIndex = categoriesArray.slice(0, currentCategoryIndex).reduce((acc, cat) => {
+                            return acc + groupedKpis[cat].length;
+                        }, 0) + index;
+                        
                         // 只渲染年度目標卡片
-                        $cardContainer.append(generateKpiCard(kpi));
+                        $cardContainer.append(generateKpiCard(kpi, globalIndex));
                     });
 
                     $kpiContainer.append($cardContainer);
@@ -706,6 +750,17 @@
                 }, 10); 
             });
         });
+
+        // 開啟文件管理網頁的函數
+        function openDocumentManagement() {
+            console.log('點擊了第一個 KPI 卡片，正在開啟文件管理頁面...');
+            try {
+                window.open('文件管理.html', '_blank');
+            } catch (error) {
+                console.error('開啟文件管理頁面時出錯:', error);
+                alert('無法開啟文件管理頁面，請檢查文件是否存在。');
+            }
+        }
     </script>
 </body>
 </html>

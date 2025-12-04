@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>員工排班管理系統</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .header-section {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 30px 0;
+            margin-bottom: 30px;
+        }
+        .control-panel {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+        .schedule-table {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+        .shift-cell {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 60px;
+            border: 1px solid #dee2e6;
+            padding: 8px;
+        }
+        .shift-cell:hover {
+            background-color: #f8f9fa;
+            transform: scale(1.02);
+        }
+        .shift-morning {
+            background-color: #fff3cd !important;
+            border-left: 4px solid #ffc107;
+        }
+        .shift-afternoon {
+            background-color: #d4edda !important;
+            border-left: 4px solid #28a745;
+        }
+        .shift-night {
+            background-color: #d1ecf1 !important;
+            border-left: 4px solid #17a2b8;
+        }
+        .shift-off {
+            background-color: #f8d7da !important;
+            border-left: 4px solid #dc3545;
+        }
+        .employee-badge {
+            display: inline-block;
+            background-color: #0078d4;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin: 1px;
+        }
+        .shift-legend {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        .btn-shift {
+            margin: 2px;
+            padding: 4px 8px;
+            font-size: 0.8rem;
+        }
+        .employee-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #0078d4;
+        }
+        .stats-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border-top: 4px solid #28a745;
+        }
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 5px;
+        }
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .modal-body {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .schedule-table table {
+            font-size: 0.9rem;
+        }
+        .schedule-table th {
+            background-color: #f8f9fa;
+            text-align: center;
+            font-weight: 600;
+            padding: 15px 8px;
+        }
+        .schedule-table td {
+            text-align: center;
+            vertical-align: middle;
+            padding: 5px;
+        }
+        .today-highlight {
+            background-color: #e7f3ff !important;
+            border: 2px solid #0078d4 !important;
+        }
+        .shift-dropdown {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            z-index: 10;
+        }
+        .conflict-alert {
+            background-color: #f8d7da;
+            border: 2px solid #dc3545;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1><i class="fas fa-calendar-alt me-3"></i>員工排班管理系統 - One Radish, One Hole</h1>
+                    <p class="mb-0 fs-5">蘿蔔坑位制 · 智能排班 · 效率管理 · 人力優化</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="bg-white bg-opacity-20 rounded-3 p-3">
+                        <h5 class="mb-1">本月班表</h5>
+                        <h2 class="mb-0 text-warning" id="currentMonth">2024年12月</h2>
+                        <small>已排班: <span id="scheduledCount">285</span>/320</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <!-- 控制面板 -->
+        <div class="control-panel">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <div class="stats-number" id="totalEmployees">24</div>
+                        <div>員工總數</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card" style="border-top-color: #ffc107;">
+                        <div class="stats-number" style="color: #ffc107;" id="onDutyToday">8</div>
+                        <div>今日值班</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card" style="border-top-color: #17a2b8;">
+                        <div class="stats-number" style="color: #17a2b8;" id="schedulingRate">89%</div>
+                        <div>排班完成率</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card" style="border-top-color: #dc3545;">
+                        <div class="stats-number" style="color: #dc3545;" id="conflictCount">3</div>
+                        <div>衝突警示</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row align-items-center mb-3">
+                <div class="col-md-6">
+                    <div class="calendar-nav">
+                        <button class="btn btn-outline-secondary" onclick="changeMonth(-1)">
+                            <i class="fas fa-chevron-left"></i> 上月
+                        </button>
+                        <h4 class="mb-0" id="displayMonth">2024年12月</h4>
+                        <button class="btn btn-outline-secondary" onclick="changeMonth(1)">
+                            下月 <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-6 text-end">
+                    <button class="btn btn-success me-2" onclick="autoSchedule()">
+                        <i class="fas fa-magic"></i> 自動排班
+                    </button>
+                    <button class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#employeeModal">
+                        <i class="fas fa-users"></i> 員工管理
+                    </button>
+                    <button class="btn btn-info me-2" onclick="exportSchedule()">
+                        <i class="fas fa-download"></i> 匯出班表
+                    </button>
+                    <button class="btn btn-secondary me-2" onclick="window.open('指標.html', '_blank')">
+                        <i class="fas fa-chart-bar"></i> 返回指標
+                    </button>
+                    <button class="btn btn-warning" onclick="clearSchedule()">
+                        <i class="fas fa-eraser"></i> 清空班表
+                    </button>
+                </div>
+            </div>
+
+            <!-- 班別圖例 -->
+            <div class="shift-legend">
+                <div class="legend-item">
+                    <div class="legend-color shift-morning"></div>
+                    <span>早班 (08:00-16:00)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color shift-afternoon"></div>
+                    <span>中班 (16:00-24:00)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color shift-night"></div>
+                    <span>夜班 (00:00-08:00)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color shift-off"></div>
+                    <span>休假</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 排班表格 -->
+        <div class="schedule-table">
+            <h4><i class="fas fa-table me-2"></i>月份排班表</h4>
+            <div class="table-responsive">
+                <table class="table table-bordered" id="scheduleTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 150px;">員工姓名</th>
+                            <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th>
+                            <th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th>
+                            <th>15</th><th>16</th><th>17</th><th>18</th><th>19</th><th>20</th><th>21</th>
+                            <th>22</th><th>23</th><th>24</th><th>25</th><th>26</th><th>27</th><th>28</th>
+                            <th>29</th><th>30</th><th>31</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scheduleTableBody">
+                        <!-- 排班表內容將由JavaScript生成 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 員工管理模態視窗 -->
+    <div class="modal fade" id="employeeModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-users me-2"></i>員工管理</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" id="newEmployeeName" placeholder="輸入員工姓名">
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-select" id="newEmployeeDept">
+                                <option value="">選擇部門</option>
+                                <option value="護理部">護理部</option>
+                                <option value="復健科">復健科</option>
+                                <option value="營養科">營養科</option>
+                                <option value="社工部">社工部</option>
+                                <option value="行政部">行政部</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-success mb-3" onclick="addEmployee()">
+                        <i class="fas fa-plus"></i> 新增員工
+                    </button>
+                    <div id="employeeList">
+                        <!-- 員工列表將由JavaScript生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 排班編輯模態視窗 -->
+    <div class="modal fade" id="shiftModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">編輯班別</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">員工: <span id="editEmployeeName"></span></label>
+                        <label class="form-label">日期: <span id="editDate"></span></label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">選擇班別:</label>
+                        <div class="btn-group d-grid gap-2">
+                            <button class="btn btn-outline-warning" onclick="setShift('morning')">
+                                <i class="fas fa-sun"></i> 早班 (08:00-16:00)
+                            </button>
+                            <button class="btn btn-outline-success" onclick="setShift('afternoon')">
+                                <i class="fas fa-clock"></i> 中班 (16:00-24:00)
+                            </button>
+                            <button class="btn btn-outline-info" onclick="setShift('night')">
+                                <i class="fas fa-moon"></i> 夜班 (00:00-08:00)
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="setShift('off')">
+                                <i class="fas fa-bed"></i> 休假
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">備註:</label>
+                        <textarea class="form-control" id="shiftNote" rows="3" placeholder="特殊注意事項..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="saveShift()">儲存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 員工資料
+        let employees = [
+            { id: 1, name: '王小明', dept: '護理部', position: '護理師' },
+            { id: 2, name: '李美玲', dept: '護理部', position: '護理師' },
+            { id: 3, name: '張志強', dept: '復健科', position: '物理治療師' },
+            { id: 4, name: '陳淑惠', dept: '復健科', position: '職能治療師' },
+            { id: 5, name: '林佳蓉', dept: '營養科', position: '營養師' },
+            { id: 6, name: '黃建華', dept: '社工部', position: '社工師' },
+            { id: 7, name: '吳雅芳', dept: '護理部', position: '護理師' },
+            { id: 8, name: '劉家豪', dept: '行政部', position: '行政人員' },
+            { id: 9, name: '蔡佩君', dept: '護理部', position: '護理師' },
+            { id: 10, name: '鄭明德', dept: '復健科', position: '物理治療師' },
+            { id: 11, name: '許雅文', dept: '營養科', position: '營養師' },
+            { id: 12, name: '曾志偉', dept: '社工部', position: '社工師' }
+        ];
+
+        // 班表資料 (employee_id: {date: shift_type})
+        let scheduleData = {};
+
+        // 當前顯示月份
+        let currentDate = new Date();
+
+        // 目前編輯的資料
+        let currentEditData = {};
+
+        // 初始化
+        $(document).ready(function() {
+            initializeSchedule();
+            renderScheduleTable();
+            renderEmployeeList();
+            updateStats();
+            highlightToday();
+        });
+
+        // 初始化班表資料
+        function initializeSchedule() {
+            employees.forEach(emp => {
+                scheduleData[emp.id] = generateRandomSchedule();
+            });
+        }
+
+        // 生成隨機班表（模擬已有資料）
+        function generateRandomSchedule() {
+            const shifts = ['morning', 'afternoon', 'night', 'off'];
+            const schedule = {};
+            const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                // 70% 機率有排班，30% 機率休假
+                if (Math.random() > 0.3) {
+                    schedule[day] = shifts[Math.floor(Math.random() * 3)]; // 只選前三種班別
+                } else {
+                    schedule[day] = 'off';
+                }
+            }
+            return schedule;
+        }
+
+        // 渲染排班表格
+        function renderScheduleTable() {
+            const tbody = document.getElementById('scheduleTableBody');
+            const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+            
+            tbody.innerHTML = '';
+            
+            employees.forEach(emp => {
+                const row = document.createElement('tr');
+                
+                // 員工名稱欄
+                const nameCell = document.createElement('td');
+                nameCell.innerHTML = `
+                    <div class="fw-bold">${emp.name}</div>
+                    <small class="text-muted">${emp.dept}</small>
+                `;
+                row.appendChild(nameCell);
+                
+                // 日期欄位
+                for (let day = 1; day <= 31; day++) {
+                    const cell = document.createElement('td');
+                    cell.className = 'shift-cell';
+                    
+                    if (day <= daysInMonth) {
+                        const shift = scheduleData[emp.id] && scheduleData[emp.id][day] ? scheduleData[emp.id][day] : '';
+                        cell.className += ` shift-${shift}`;
+                        cell.innerHTML = getShiftDisplay(shift);
+                        cell.onclick = () => openShiftModal(emp.id, day);
+                        
+                        // 今日高亮
+                        if (day === new Date().getDate() && 
+                            currentDate.getMonth() === new Date().getMonth() && 
+                            currentDate.getFullYear() === new Date().getFullYear()) {
+                            cell.classList.add('today-highlight');
+                        }
+                    } else {
+                        cell.style.backgroundColor = '#f8f9fa';
+                        cell.style.opacity = '0.3';
+                    }
+                    
+                    row.appendChild(cell);
+                }
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        // 取得班別顯示文字
+        function getShiftDisplay(shift) {
+            const displays = {
+                'morning': '<i class="fas fa-sun text-warning"></i><br><small>早班</small>',
+                'afternoon': '<i class="fas fa-clock text-success"></i><br><small>中班</small>',
+                'night': '<i class="fas fa-moon text-info"></i><br><small>夜班</small>',
+                'off': '<i class="fas fa-bed text-danger"></i><br><small>休假</small>'
+            };
+            return displays[shift] || '<small class="text-muted">未排</small>';
+        }
+
+        // 開啟班別編輯視窗
+        function openShiftModal(employeeId, day) {
+            const employee = employees.find(emp => emp.id === employeeId);
+            currentEditData = { employeeId, day };
+            
+            document.getElementById('editEmployeeName').textContent = employee.name;
+            document.getElementById('editDate').textContent = `${currentDate.getFullYear()}年${currentDate.getMonth() + 1}月${day}日`;
+            
+            const modal = new bootstrap.Modal(document.getElementById('shiftModal'));
+            modal.show();
+        }
+
+        // 設定班別
+        function setShift(shiftType) {
+            const { employeeId, day } = currentEditData;
+            
+            if (!scheduleData[employeeId]) {
+                scheduleData[employeeId] = {};
+            }
+            
+            scheduleData[employeeId][day] = shiftType;
+            renderScheduleTable();
+            updateStats();
+            
+            const modal = bootstrap.Modal.getInstance(document.getElementById('shiftModal'));
+            modal.hide();
+        }
+
+        // 儲存班別
+        function saveShift() {
+            // 這裡可以添加儲存到後端的邏輯
+            console.log('班別已儲存');
+        }
+
+        // 渲染員工列表
+        function renderEmployeeList() {
+            const container = document.getElementById('employeeList');
+            container.innerHTML = '';
+            
+            employees.forEach(emp => {
+                const card = document.createElement('div');
+                card.className = 'employee-card';
+                card.innerHTML = `
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <h6 class="mb-1">${emp.name}</h6>
+                            <small class="text-muted">${emp.dept} - ${emp.position}</small>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <button class="btn btn-sm btn-outline-danger" onclick="removeEmployee(${emp.id})">
+                                <i class="fas fa-trash"></i> 移除
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // 新增員工
+        function addEmployee() {
+            const name = document.getElementById('newEmployeeName').value.trim();
+            const dept = document.getElementById('newEmployeeDept').value;
+            
+            if (!name || !dept) {
+                alert('請輸入員工姓名和選擇部門');
+                return;
+            }
+            
+            const newId = Math.max(...employees.map(e => e.id)) + 1;
+            employees.push({
+                id: newId,
+                name: name,
+                dept: dept,
+                position: '職員'
+            });
+            
+            scheduleData[newId] = {};
+            
+            document.getElementById('newEmployeeName').value = '';
+            document.getElementById('newEmployeeDept').value = '';
+            
+            renderEmployeeList();
+            renderScheduleTable();
+            updateStats();
+        }
+
+        // 移除員工
+        function removeEmployee(employeeId) {
+            if (confirm('確定要移除此員工嗎？')) {
+                employees = employees.filter(emp => emp.id !== employeeId);
+                delete scheduleData[employeeId];
+                
+                renderEmployeeList();
+                renderScheduleTable();
+                updateStats();
+            }
+        }
+
+        // 自動排班
+        function autoSchedule() {
+            if (confirm('自動排班將會覆蓋現有的部分班表，確定要繼續嗎？')) {
+                employees.forEach(emp => {
+                    scheduleData[emp.id] = generateRandomSchedule();
+                });
+                
+                renderScheduleTable();
+                updateStats();
+                alert('自動排班完成！');
+            }
+        }
+
+        // 清空班表
+        function clearSchedule() {
+            if (confirm('確定要清空所有班表嗎？此操作無法復原。')) {
+                employees.forEach(emp => {
+                    scheduleData[emp.id] = {};
+                });
+                
+                renderScheduleTable();
+                updateStats();
+                alert('班表已清空！');
+            }
+        }
+
+        // 匯出班表
+        function exportSchedule() {
+            alert('班表匯出功能：將會生成Excel檔案供下載');
+        }
+
+        // 更改月份
+        function changeMonth(direction) {
+            currentDate.setMonth(currentDate.getMonth() + direction);
+            document.getElementById('displayMonth').textContent = 
+                `${currentDate.getFullYear()}年${currentDate.getMonth() + 1}月`;
+            document.getElementById('currentMonth').textContent = 
+                `${currentDate.getFullYear()}年${currentDate.getMonth() + 1}月`;
+            
+            renderScheduleTable();
+            updateStats();
+        }
+
+        // 更新統計資料
+        function updateStats() {
+            const totalEmployees = employees.length;
+            const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+            const today = new Date().getDate();
+            
+            let onDutyToday = 0;
+            let totalScheduled = 0;
+            let totalSlots = totalEmployees * daysInMonth;
+            
+            employees.forEach(emp => {
+                const schedule = scheduleData[emp.id] || {};
+                
+                // 計算今日值班人數
+                if (schedule[today] && schedule[today] !== 'off') {
+                    onDutyToday++;
+                }
+                
+                // 計算已排班總數
+                Object.keys(schedule).forEach(day => {
+                    if (schedule[day]) {
+                        totalScheduled++;
+                    }
+                });
+            });
+            
+            const schedulingRate = Math.round((totalScheduled / totalSlots) * 100);
+            
+            document.getElementById('totalEmployees').textContent = totalEmployees;
+            document.getElementById('onDutyToday').textContent = onDutyToday;
+            document.getElementById('schedulingRate').textContent = schedulingRate + '%';
+            document.getElementById('scheduledCount').textContent = totalScheduled;
+            document.getElementById('conflictCount').textContent = Math.floor(Math.random() * 5); // 模擬衝突數
+        }
+
+        // 高亮今日
+        function highlightToday() {
+            const today = new Date().getDate();
+            if (currentDate.getMonth() === new Date().getMonth() && 
+                currentDate.getFullYear() === new Date().getFullYear()) {
+                // 已在 renderScheduleTable 中處理
+            }
+        }
+    </script>
+</body>
+</html>
