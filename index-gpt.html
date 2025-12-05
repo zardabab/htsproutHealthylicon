@@ -497,7 +497,7 @@
 
         .portal-grid {
             display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 18px;
         }
 
@@ -913,6 +913,30 @@
                         </span>
                         <span class="action">
                             進入據點導覽 <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </a>
+
+                <!-- 資安指標 -->
+                <a href="資安指標.html" class="portal-card" target="_blank">
+                    <div class="portal-top">
+                        <div class="portal-icon">
+                            <i class="fas fa-shield-halved"></i>
+                        </div>
+                        <span class="portal-chip">資訊安全</span>
+                    </div>
+                    <div class="portal-title">資安指標</div>
+                    <div class="portal-desc">
+                        監控系統安全狀態、威脅檢測、弱點掃描結果與資安事件處理情形，
+                        確保醫療資訊系統與病患資料的安全防護。
+                    </div>
+                    <div class="portal-footer">
+                        <span class="status">
+                            <span class="status-dot-on"></span>
+                            即時監控中
+                        </span>
+                        <span class="action">
+                            查看資安狀態 <i class="fas fa-arrow-right"></i>
                         </span>
                     </div>
                 </a>
