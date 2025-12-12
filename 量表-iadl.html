@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工具性日常生活活動量表評估</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8f4f8 100%);
+        }
+        
+        .assessment-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+            margin-bottom: 2rem;
+        }
+        
+        .version-info {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .assessment-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .scoring-item {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid #667eea;
+        }
+        
+        .score-radio {
+            margin: 1rem 0;
+        }
+        
+        .score-radio input[type="radio"] {
+            margin-right: 0.5rem;
+        }
+        
+        .total-score-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .score-value {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+        
+        .interpretation {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        
+        .btn-group-custom {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .back-nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .back-nav a {
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .back-nav a:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid px-4 py-4">
+        <div class="back-nav">
+            <a href="量表系統.html" class="btn btn-outline-secondary"><i class="fas fa-list me-2"></i>量表列表</a>
+            <a href="AI個案管理名單.html" class="btn btn-outline-primary"><i class="fas fa-users me-2"></i>個案名單</a>
+        </div>
+        
+        <div class="assessment-header">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h1><i class="fas fa-tasks me-3"></i>工具性日常生活活動量表</h1>
+                    <h5 class="mt-2 opacity-75">IADL (Instrumental ADL)</h5>
+                    <div class="version-info">
+                        <strong>版本：v1.0</strong> | 滿分：8 分 | 評估類型：<span id="assessmentType">初評</span>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-light" onclick="window.history.back()"><i class="fas fa-times fs-5"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="assessment-card">
+            <h3 class="mb-4"><i class="fas fa-info-circle me-2"></i>量表說明</h3>
+            <p>工具性日常生活活動量表（IADL）評估個案進行較複雜日常生活活動的能力，包括使用電話、購物、準備食物、居家清潔、洗衣、交通工具使用、自我照顧藥物管理和金錢管理等。</p>
+            <p class="text-muted">共8項評估項目，每項評分0-1分。</p>
+        </div>
+        
+        <form id="iadl-form">
+            <div class="assessment-card">
+                <h4 class="mb-4">評估項目</h4>
+                
+                <div class="scoring-item">
+                    <h5>1. 使用電話 <span class="badge bg-primary">0 / 1分</span></h5>
+                    <div class="score-radio">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="phone" value="0" id="phone0" checked>
+                            <label class="form-check-label" for="phone0">完全無法使用 (0分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="phone" value="1" id="phone1">
+                            <label class="form-check-label" for="phone1">能使用電話 (1分)</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scoring-item">
+                    <h5>2. 購物 <span class="badge bg-primary">0 / 1分</span></h5>
+                    <div class="score-radio">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="shopping" value="0" id="shopping0" checked>
+                            <label class="form-check-label" for="shopping0">完全無法購物 (0分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="shopping" value="1" id="shopping1">
+                            <label class="form-check-label" for="shopping1">能獨立購物 (1分)</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scoring-item">
+                    <h5>3. 準備食物 <span class="badge bg-primary">0 / 1分</span></h5>
+                    <div class="score-radio">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="cooking" value="0" id="cooking0" checked>
+                            <label class="form-check-label" for="cooking0">完全無法準備 (0分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="cooking" value="1" id="cooking1">
+                            <label class="form-check-label" for="cooking1">能準備食物 (1分)</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scoring-item">
+                    <h5>4. 居家清潔 <span class="badge bg-primary">0 / 1分</span></h5>
+                    <div class="score-radio">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="housework" value="0" id="housework0" checked>
+                            <label class="form-check-label" for="housework0">完全無法清潔 (0分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="housework" value="1" id="housework1">
+                            <label class="form-check-label" for="housework1">能進行清潔 (1分)</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scoring-item">
+                    <h5>5. 洗衣 <span class="badge bg-primary">0 / 1分</span></h5>
+                    <div class="score-radio">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="laundry" value="0" id="laundry0" checked>
+                            <label class="form-check-label" for="laundry0">完全無法洗衣 (0分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="laundry" value="1" id="laundry1">
+                            <label class="form-check-label" for="laundry1">能獨立洗衣 (1分)</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scoring-item">
+                    <h5>6. 交通工具使用 <span class="badge bg-primary">0 / 1分</span></h5>
+                    <div class="score-radio">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="transportation" value="0" id="transportation0" checked>
+                            <label class="form-check-label" for="transportation0">完全無法使用 (0分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="transportation" value="1" id="transportation1">
+                            <label class="form-check-label" for="transportation1">能使用交通工具 (1分)</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scoring-item">
+                    <h5>7. 自我照顧 <span class="badge bg-primary">0 / 1分</span></h5>
+                    <div class="score-radio">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="selfcare" value="0" id="selfcare0" checked>
+                            <label class="form-check-label" for="selfcare0">完全無法自理 (0分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="selfcare" value="1" id="selfcare1">
+                            <label class="form-check-label" for="selfcare1">能獨立自理 (1分)</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scoring-item">
+                    <h5>8. 金錢管理 <span class="badge bg-primary">0 / 1分</span></h5>
+                    <div class="score-radio">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="finances" value="0" id="finances0" checked>
+                            <label class="form-check-label" for="finances0">完全無法管理 (0分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="finances" value="1" id="finances1">
+                            <label class="form-check-label" for="finances1">能獨立管理 (1分)</label>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+            
+            <div class="total-score-box">
+                <h4>總分</h4>
+                <div class="score-value" id="totalScore">0</div>
+                <div class="interpretation">
+                    <strong>判讀結果：</strong> <span id="interpretation">-</span>
+                </div>
+            </div>
+            
+            <div class="btn-group-custom">
+                <button type="button" class="btn btn-primary" onclick="calculateScore()">
+                    <i class="fas fa-calculator me-2"></i>計算分數
+                </button>
+                <button type="button" class="btn btn-success" onclick="saveAssessment()">
+                    <i class="fas fa-save me-2"></i>儲存評估
+                </button>
+                <button type="button" class="btn btn-warning" onclick="resetForm()">
+                    <i class="fas fa-redo me-2"></i>重新開始
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 解析 URL 參數
+            const urlParams = new URLSearchParams(window.location.search);
+            const stage = urlParams.get('stage') || '初評';
+            document.getElementById('assessmentType').textContent = stage;
+            
+            // 添加 change 事件監聽器以實時更新分數
+            document.querySelectorAll('input[type="radio"]').forEach(input => {
+                input.addEventListener('change', calculateScore);
+            });
+            
+            // 初始計算分數
+            calculateScore();
+        });
+        
+        function calculateScore() {
+            let total = 0;
+            const items = {};
+            
+            // 獲取所有 radio 按鈕的值
+            document.querySelectorAll('input[type="radio"]').forEach(input => {
+                const name = input.name;
+                if (input.checked) {
+                    items[name] = parseInt(input.value);
+                }
+            });
+            
+            // 計算總分
+            for (let key in items) {
+                total += items[key];
+            }
+            
+            document.getElementById('totalScore').textContent = total;
+            
+            // 顯示判讀結果
+            let interpretation = '';
+            if (total === 8) {
+                interpretation = '完全獨立 - 所有工具性日常生活活動完全獨立';
+            } else if (total >= 6) {
+                interpretation = '輕度依賴 - 大部分工具性日常生活活動獨立';
+            } else if (total >= 4) {
+                interpretation = '中度依賴 - 部分工具性日常生活活動需要協助';
+            } else if (total >= 2) {
+                interpretation = '重度依賴 - 大多數工具性日常生活活動需要協助';
+            } else {
+                interpretation = '完全依賴 - 所有工具性日常生活活動都需要協助';
+            }
+            
+            document.getElementById('interpretation').textContent = interpretation;
+            
+            console.log('計算結果:', {total, items});
+        }
+        
+        function saveAssessment() {
+            const total = document.getElementById('totalScore').textContent;
+            alert(`評估已儲存！\nIADL 評分：${total}分\n\n此功能將連接到後端資料庫保存。`);
+        }
+        
+        function resetForm() {
+            document.getElementById('iadl-form').reset();
+            // 找出每個 radio 群組的第一個選項（通常是 0 分）
+            document.querySelectorAll('input[type="radio"][value="0"]').forEach(input => {
+                input.checked = true;
+            });
+            calculateScore();
+        }
+    </script>
+</body>
+</html>
