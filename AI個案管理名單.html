@@ -273,9 +273,11 @@
                                 <th scope="col" style="width: 120px;"><i class="fas fa-user me-2"></i>姓名</th>
                                 <th scope="col" style="width: 100px;"><i class="fas fa-tag me-2"></i>類型</th>
                                 <th scope="col" style="width: 150px;"><i class="fas fa-notes-medical me-2"></i>狀況</th>
+                                <th scope="col" style="width: 140px;"><i class="fas fa-hotel me-2"></i>入住時間</th>
+                                <th scope="col" style="width: 140px;"><i class="fas fa-sync-alt me-2"></i>複評時間</th>
+                                <th scope="col" style="width: 140px;"><i class="fas fa-clipboard-check me-2"></i>結評時間</th>
+                                <th scope="col" style="width: 140px;"><i class="fas fa-sign-out-alt me-2"></i>出院時間</th>
                                 <th scope="col"><i class="fas fa-tasks me-2"></i>評估進度</th>
-                                <th scope="col" style="width: 140px;"><i class="fas fa-user-md me-2"></i>個管師</th>
-                                <th scope="col" style="width: 120px;"><i class="fas fa-flag-checkered me-2"></i>結案</th>
                             </tr>
                         </thead>
                         <tbody id="caseListBody">
@@ -292,17 +294,16 @@
     <script>
         // Demo Data
         const conditions = ['脆骨', '神經損傷', '腦中風', '衰弱高齡'];
-        const managers = ['林護理師', '王物治師', '陳營養師', '張復健師', '李社工師'];
         
         const cases = [
-            { id: 'C001', name: '王大明', type: 'PAC', condition: '腦中風', manager: '林護理師', status: { '初評': true, '22天複評': false, '42天複評': false, '64天複評': false, '82天複評': false }, closed: false },
-            { id: 'C002', name: '李小華', type: 'PAC', condition: '神經損傷', manager: '王物治師', status: { '初評': true, '22天複評': true, '42天複評': false, '64天複評': false, '82天複評': false }, closed: false },
-            { id: 'C003', name: '張志豪', type: 'PAC', condition: '脆骨', manager: '陳營養師', status: { '初評': false, '22天複評': false, '42天複評': false, '64天複評': false, '82天複評': false }, closed: false },
-            { id: 'C004', name: '陳淑芬', type: 'PAC', condition: '衰弱高齡', manager: '張復健師', status: { '初評': true, '22天複評': true, '42天複評': true, '64天複評': false, '82天複評': false }, closed: false },
-            { id: 'C005', name: '林美玲', type: 'PAC', condition: '腦中風', manager: '李社工師', status: { '初評': true, '22天複評': true, '42天複評': true, '64天複評': true, '82天複評': true }, closed: true }
+            { id: 'C001', name: '王大明', type: 'PAC', condition: '腦中風', admissionDate: '2024-11-01', reviewDate: '2024-11-23', finalReviewDate: '2024-12-20', dischargeDate: '2025-01-05', status: { '初評': true, '22天複評': false, '42天複評': false, '64天複評': false, '82天複評': false, '結評': false }, closed: false },
+            { id: 'C002', name: '李小華', type: 'PAC', condition: '神經損傷', admissionDate: '2024-10-15', reviewDate: '2024-11-06', finalReviewDate: '2024-12-05', dischargeDate: '2025-01-10', status: { '初評': true, '22天複評': true, '42天複評': false, '64天複評': false, '82天複評': false, '結評': false }, closed: false },
+            { id: 'C003', name: '張志豪', type: 'PAC', condition: '脆骨', admissionDate: '2024-12-01', reviewDate: '2024-12-23', finalReviewDate: '2025-01-20', dischargeDate: '2025-02-10', status: { '初評': false, '22天複評': false, '42天複評': false, '64天複評': false, '82天複評': false, '結評': false }, closed: false },
+            { id: 'C004', name: '陳淑芬', type: 'PAC', condition: '衰弱高齡', admissionDate: '2024-09-28', reviewDate: '2024-10-20', finalReviewDate: '2024-11-18', dischargeDate: '2024-12-20', status: { '初評': true, '22天複評': true, '42天複評': true, '64天複評': false, '82天複評': false, '結評': false }, closed: false },
+            { id: 'C005', name: '林美玲', type: 'PAC', condition: '腦中風', admissionDate: '2024-08-10', reviewDate: '2024-09-01', finalReviewDate: '2024-10-01', dischargeDate: '2024-11-05', status: { '初評': true, '22天複評': true, '42天複評': true, '64天複評': true, '82天複評': true, '結評': true }, closed: true }
         ];
 
-        const milestones = ['初評', '22天複評', '42天複評', '64天複評', '82天複評'];
+        const milestones = ['初評', '22天複評', '42天複評', '64天複評', '82天複評', '結評'];
 
         // 狀況圖示對應
         const conditionIcons = {
@@ -347,9 +348,11 @@
                     <td><i class="fas fa-user-circle text-primary me-2"></i>${c.name}</td>
                     <td><span class="badge bg-primary">${c.type}</span></td>
                     <td><span class="badge-condition ${conditionClass}"><i class="fas ${conditionIcon}"></i>${c.condition}</span></td>
+                    <td>${c.admissionDate}</td>
+                    <td>${c.reviewDate}</td>
+                    <td>${c.finalReviewDate}</td>
+                    <td>${c.dischargeDate}</td>
                     <td>${buttonsHtml}</td>
-                    <td><span class="case-manager"><i class="fas fa-user-nurse"></i>${c.manager}</span></td>
-                    <td>${caseStatusHtml}</td>
                 `;
                 tbody.appendChild(tr);
             });
