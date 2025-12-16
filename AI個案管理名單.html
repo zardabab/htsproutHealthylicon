@@ -677,11 +677,7 @@
                     <td><strong>${escapeHtml(c.id)}</strong></td>
                     <td><i class="fas fa-user-circle text-primary me-2"></i>${escapeHtml(c.name)}</td>
                     <td><span class="badge bg-primary">${escapeHtml(c.type)}</span></td>
-                    <td><span class="badge-condition ${escapeHtml(conditionClass)}">${escapeHtml(c.condition)}</span></td>
-                    <td><strong>${c.id}</strong></td>
-                    <td><i class="fas fa-user-circle text-primary me-2"></i>${c.name}</td>
-                    <td><span class="badge bg-primary">${c.type}</span></td>
-                    <td><span class="badge-condition ${conditionClass}"><i class="fas ${conditionIcon}"></i>${c.condition}</span></td>
+                    <td><span class="badge-condition ${conditionClass}"><i class="fas ${conditionIcon}"></i>${escapeHtml(c.condition)}</span></td>
                     <td>${formatDateTime(c.admissionDate)}</td>
                     <td>${formatDateTime(c.reviewDate)}</td>
                     <td>${formatDateTime(c.finalReviewDate)}</td>

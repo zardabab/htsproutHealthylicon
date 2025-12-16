@@ -248,22 +248,22 @@
                 <div class="summary-cards">
                     <div class="summary-card">
                         <h5>總補助款 (A)</h5>
-                        <div class="amount">55,000,000</div>
+                        <div class="amount" id="cardTotalSubsidy">-</div>
                         <div class="percentage">申請金額</div>
                     </div>
                     <div class="summary-card">
                         <h5>總配合款 (F)</h5>
-                        <div class="amount">5,825,000</div>
-                        <div class="percentage">10.60%</div>
+                        <div class="amount" id="cardTotalMatching">-</div>
+                        <div class="percentage">配合款</div>
                     </div>
                     <div class="summary-card">
                         <h5>總經費 (G)</h5>
-                        <div class="amount">60,825,000</div>
+                        <div class="amount" id="cardTotal">-</div>
                         <div class="percentage">A + F</div>
                     </div>
                     <div class="summary-card">
                         <h5>資本門比例</h5>
-                        <div class="amount">30%</div>
+                        <div class="amount" id="cardCapitalRatio">-</div>
                         <div class="percentage">占補助款</div>
                     </div>
                 </div>
@@ -304,14 +304,14 @@
                             <tbody>
                                 <tr>
                                     <td rowspan="4" class="subcategory-header">申請數<br>第一階段</td>
-                                    <td class="amount-cell">15,000,000</td>
-                                    <td class="amount-cell">700,000</td>
-                                    <td class="amount-cell">10,000,000</td>
-                                    <td class="amount-cell">250,000</td>
-                                    <td class="amount-cell">20,000,000</td>
-                                    <td class="amount-cell">3,200,000</td>
-                                    <td class="amount-cell">10,000,000</td>
-                                    <td class="amount-cell">1,675,000</td>
+                                    <td class="amount-cell scope1-subsidy">-</td>
+                                    <td class="amount-cell scope1-matching">-</td>
+                                    <td class="amount-cell scope2-subsidy">-</td>
+                                    <td class="amount-cell scope2-matching">-</td>
+                                    <td class="amount-cell scope3-subsidy">-</td>
+                                    <td class="amount-cell scope3-matching">-</td>
+                                    <td class="amount-cell scope4-subsidy">-</td>
+                                    <td class="amount-cell scope4-matching">-</td>
                                     <td class="subcategory-header">經常門</td>
                                     <td class="subcategory-header">人事費</td>
                                     <td class="amount-cell">29,162,600</td>
@@ -336,15 +336,15 @@
                                 </tr>
                                 <tr class="total-row">
                                     <td colspan="8"></td>
-                                    <td class="amount-cell">55,000,000</td>
+                                    <td class="amount-cell" id="totalSubsidyCell">-</td>
                                     <td></td>
-                                    <td class="amount-cell">5,825,000</td>
+                                    <td class="amount-cell" id="totalMatchingCell">-</td>
                                     <td></td>
                                     <td></td>
                                 </tr>
                                 <tr class="total-row">
                                     <td colspan="9"></td>
-                                    <td class="amount-cell">60,825,000</td>
+                                    <td class="amount-cell" id="totalCell">-</td>
                                     <td colspan="4"></td>
                                 </tr>
                             </tbody>
@@ -390,14 +390,14 @@
                             <tbody>
                                 <tr>
                                     <td rowspan="4" class="subcategory-header">執行數<br>第一階段</td>
-                                    <td class="amount-cell">1,290,012</td>
-                                    <td class="amount-cell">0</td>
-                                    <td class="amount-cell">26,400</td>
-                                    <td class="amount-cell">0</td>
-                                    <td class="amount-cell">0</td>
-                                    <td class="amount-cell">0</td>
-                                    <td class="amount-cell">1,943,520</td>
-                                    <td class="amount-cell">0</td>
+                                    <td class="amount-cell exec-scope1-subsidy">-</td>
+                                    <td class="amount-cell exec-scope1-matching">-</td>
+                                    <td class="amount-cell exec-scope2-subsidy">-</td>
+                                    <td class="amount-cell exec-scope2-matching">-</td>
+                                    <td class="amount-cell exec-scope3-subsidy">-</td>
+                                    <td class="amount-cell exec-scope3-matching">-</td>
+                                    <td class="amount-cell exec-scope4-subsidy">-</td>
+                                    <td class="amount-cell exec-scope4-matching">-</td>
                                     <td class="subcategory-header">經常門</td>
                                     <td class="subcategory-header">人事費</td>
                                     <td class="amount-cell">541,503</td>
@@ -422,15 +422,15 @@
                                 </tr>
                                 <tr class="total-row">
                                     <td colspan="8"></td>
-                                    <td class="amount-cell">1,041,063</td>
+                                    <td class="amount-cell" id="execTotalSubsidyCell">-</td>
                                     <td></td>
-                                    <td class="amount-cell">0</td>
+                                    <td class="amount-cell" id="execTotalMatchingCell">-</td>
                                     <td></td>
                                     <td></td>
                                 </tr>
                                 <tr class="total-row">
                                     <td colspan="9"></td>
-                                    <td class="amount-cell">1,041,063</td>
+                                    <td class="amount-cell" id="execTotalCell">-</td>
                                     <td colspan="4"></td>
                                 </tr>
                             </tbody>
@@ -586,25 +586,445 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // 動畫效果
-        document.addEventListener('DOMContentLoaded', function() {
-            // 進度條動畫
+        // Google Sheets API 設定
+        const SHEET_ID = '1x32_JhOr0BTeoiS3gaw48Le8mJtiwd597DOjKyInoeU';
+        const SHEET_GID = '687531515'; // 深耕計劃經費追蹤表
+        
+        // 資料結構
+        let budgetData = {
+            // 申請數資料（Row 2）
+            request: {
+                scope1Subsidy: 15000000,
+                scope1Matching: 700000,
+                scope2Subsidy: 10000000,
+                scope2Matching: 250000,
+                scope3Subsidy: 20000000,
+                scope3Matching: 3200000,
+                scope4Subsidy: 10000000,
+                scope4Matching: 1675000,
+                permanentStaff: 29162600,
+                permanentBusiness: 9337400,
+                capital: 16500000,
+                permanentMatchingStaff: 335000,
+                permanentMatchingBusiness: 1490000,
+                capitalMatching: 4000000,
+                totalSubsidy: 55000000,
+                totalMatching: 5825000,
+                total: 60825000,
+                capitalRatio: 30
+            },
+            // 執行數資料（Row 15）
+            execution: {
+                scope1Subsidy: 1290012,
+                scope1Matching: 0,
+                scope2Subsidy: 26400,
+                scope2Matching: 0,
+                scope3Subsidy: 0,
+                scope3Matching: 0,
+                scope4Subsidy: 1943520,
+                scope4Matching: 0,
+                permanentStaff: 541503,
+                permanentBusiness: 493800,
+                capital: 5760,
+                permanentMatchingStaff: 0,
+                permanentMatchingBusiness: 0,
+                capitalMatching: 0,
+                totalSubsidy: 1041063,
+                totalMatching: 0,
+                total: 1041063
+            },
+            // 執行率（Row 25 和其他）
+            rate: {
+                scope1: 8.6,
+                scope2: 0.264,
+                scope3: 0,
+                scope4: 19.44,
+                permanentStaff: 1.86,
+                permanentBusiness: 5.29,
+                capital: 0.03,
+                total: 1.89,
+                matchingTotal: 0
+            }
+        };
+
+        // 從 CSV 載入資料
+        async function loadBudgetDataFromSheet() {
+            try {
+                const contentSection = document.querySelector('.content-section');
+                const loadingMessage = document.createElement('div');
+                loadingMessage.className = 'alert alert-info';
+                loadingMessage.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>正在載入經費資料...';
+                contentSection.prepend(loadingMessage);
+
+                const API_KEY = 'AIzaSyA0JKp0Y8ZmGDHcPEmf4ncaWvnTMtoa8KM';
+                const range = encodeURIComponent('深耕計劃經費追蹤表!A1:O30');
+                
+                // 添加時間戳避免快取
+                const timestamp = new Date().getTime();
+                const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${range}?key=${API_KEY}&t=${timestamp}`;
+                
+                console.log('正在從 Google Sheets API 載入資料...', url);
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Cache-Control': 'no-cache'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API 錯誤 ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const rows = data.values || [];
+                
+                console.log(`✓ 成功載入 ${rows.length} 列資料`);
+                console.log('第一列:', rows[0]);
+                console.log('第二列:', rows[1]);
+                console.log('第三列:', rows[2]);
+                
+                // 解析資料
+                parseSheetData(rows);
+                
+                // 更新頁面
+                updatePageWithData();
+                
+                loadingMessage.remove();
+                
+                console.log('✓ 經費資料已成功載入並更新');
+            } catch (error) {
+                console.error('❌ 載入經費資料失敗:', error);
+                
+                // 如果 API 載入失敗，嘗試使用備用資料或通知使用者
+                showErrorMessage(error.message);
+            }
+        }
+
+        // 顯示錯誤訊息並提供使用者指引
+        function showErrorMessage(errorMsg) {
+            const contentSection = document.querySelector('.content-section');
+            const loadingMsg = contentSection.querySelector('.alert-info');
+            if (loadingMsg) loadingMsg.remove();
+            
+            const errorMessage = document.createElement('div');
+            errorMessage.className = 'alert alert-warning alert-dismissible fade show';
+            errorMessage.innerHTML = `
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>資料載入提示</strong><br>
+                <small>目前無法即時載入 Google Sheets 資料，頁面顯示預設資料。<br>
+                如需更新，請按 F5 刷新頁面或點擊下方「重新載入資料」按鈕。</small>
+                <button class="btn btn-sm btn-primary mt-2" onclick="location.reload()">重新載入資料</button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            contentSection.prepend(errorMessage);
+            
+            // 保留預設資料顯示
+            updatePageWithData();
+        }
+
+        // 解析 CSV 資料
+        function parseSheetData(rows) {
+            try {
+                console.log('開始解析資料...');
+                
+                if (rows.length < 3) {
+                    console.warn('⚠️ 資料不足，使用預設值');
+                    return;
+                }
+                
+                const parseNum = (str) => {
+                    if (!str) return 0;
+                    // 處理各種數字格式：15000000, "15,000,000", "15 000 000" 等
+                    const cleaned = String(str).replace(/[,\s"]/g, '');
+                    return parseInt(cleaned) || 0;
+                };
+                
+                // 資料結構：
+                // R0: 標題 [範疇, , 範疇一, , 範疇二, , 範疇三, , 範疇四, , 總計(G), , , , ]
+                // R1: 子標題 [申請數, 第一階段, 補助款, 配合款, ...]
+                // R2: 申請數資料
+                
+                console.log('R2 欄位:', rows[2]);
+                
+                // 解析申請數（R2）
+                // 欄位位置：C0=空, C1=空, C2=範疇一補助, C3=範疇一配合, C4=範疇二補助...
+                if (rows[2] && rows[2].length >= 11) {
+                    const req = rows[2];
+                    
+                    budgetData.request.scope1Subsidy = parseNum(req[2]);
+                    budgetData.request.scope1Matching = parseNum(req[3]);
+                    budgetData.request.scope2Subsidy = parseNum(req[4]);
+                    budgetData.request.scope2Matching = parseNum(req[5]);
+                    budgetData.request.scope3Subsidy = parseNum(req[6]);
+                    budgetData.request.scope3Matching = parseNum(req[7]);
+                    budgetData.request.scope4Subsidy = parseNum(req[8]);
+                    budgetData.request.scope4Matching = parseNum(req[9]);
+                    
+                    console.log('✓ 申請數解析:', {
+                        scope1Subsidy: budgetData.request.scope1Subsidy,
+                        scope2Subsidy: budgetData.request.scope2Subsidy
+                    });
+                }
+                
+                // 解析總補助款（R5, C10）
+                if (rows[5] && rows[5][10] !== undefined) {
+                    budgetData.request.totalSubsidy = parseNum(rows[5][10]);
+                    console.log('✓ 總補助款:', budgetData.request.totalSubsidy);
+                }
+                
+                // 解析總經費（R6, C10）
+                if (rows[6] && rows[6][10] !== undefined) {
+                    budgetData.request.total = parseNum(rows[6][10]);
+                    console.log('✓ 總經費:', budgetData.request.total);
+                }
+                
+                // 計算配合款
+                if (budgetData.request.totalSubsidy > 0 && budgetData.request.total > 0) {
+                    budgetData.request.totalMatching = budgetData.request.total - budgetData.request.totalSubsidy;
+                    console.log('✓ 配合款:', budgetData.request.totalMatching);
+                }
+                
+                // 資本門比例 (R9, C10)
+                if (rows[9] && rows[9][10]) {
+                    budgetData.request.capitalRatio = parseFloat(String(rows[9][10]).replace('%', '')) || 30;
+                    console.log('✓ 資本門比例:', budgetData.request.capitalRatio + '%');
+                }
+                
+                // 查找執行數資料的起始列（通常標記為「執行數」）
+                let executionRowIdx = -1;
+                for (let i = 10; i < rows.length; i++) {
+                    if (rows[i][0] && String(rows[i][0]).includes('執行')) {
+                        executionRowIdx = i;
+                        break;
+                    }
+                }
+                
+                console.log('執行數資料列索引:', executionRowIdx);
+                
+                // 解析執行數（通常在找到「執行數」標籤後的下一列）
+                if (executionRowIdx > 0 && rows[executionRowIdx + 1]) {
+                    const exec = rows[executionRowIdx + 1];
+                    if (exec.length >= 11) {
+                        budgetData.execution.scope1Subsidy = parseNum(exec[2]);
+                        budgetData.execution.scope1Matching = parseNum(exec[3]);
+                        budgetData.execution.scope2Subsidy = parseNum(exec[4]);
+                        budgetData.execution.scope2Matching = parseNum(exec[5]);
+                        budgetData.execution.scope3Subsidy = parseNum(exec[6]);
+                        budgetData.execution.scope3Matching = parseNum(exec[7]);
+                        budgetData.execution.scope4Subsidy = parseNum(exec[8]);
+                        budgetData.execution.scope4Matching = parseNum(exec[9]);
+                        budgetData.execution.totalSubsidy = parseNum(exec[10]);
+                        
+                        console.log('✓ 執行數解析:', {
+                            scope1Subsidy: budgetData.execution.scope1Subsidy,
+                            totalSubsidy: budgetData.execution.totalSubsidy
+                        });
+                    }
+                }
+                
+                // 計算執行率
+                budgetData.rate.scope1 = budgetData.request.scope1Subsidy > 0 
+                    ? (budgetData.execution.scope1Subsidy / budgetData.request.scope1Subsidy * 100).toFixed(2)
+                    : 0;
+                budgetData.rate.scope2 = budgetData.request.scope2Subsidy > 0 
+                    ? (budgetData.execution.scope2Subsidy / budgetData.request.scope2Subsidy * 100).toFixed(2)
+                    : 0;
+                budgetData.rate.scope3 = budgetData.request.scope3Subsidy > 0 
+                    ? (budgetData.execution.scope3Subsidy / budgetData.request.scope3Subsidy * 100).toFixed(2)
+                    : 0;
+                budgetData.rate.scope4 = budgetData.request.scope4Subsidy > 0 
+                    ? (budgetData.execution.scope4Subsidy / budgetData.request.scope4Subsidy * 100).toFixed(2)
+                    : 0;
+                budgetData.rate.total = budgetData.request.totalSubsidy > 0 
+                    ? (budgetData.execution.totalSubsidy / budgetData.request.totalSubsidy * 100).toFixed(2)
+                    : 0;
+                
+                console.log('✓ 資料解析完成:', budgetData);
+                
+            } catch (e) {
+                console.error('資料解析錯誤:', e);
+                console.error('堆棧:', e.stack);
+            }
+        }
+
+        // 更新頁面顯示
+        function updatePageWithData() {
+            // 格式化數字
+            const fmt = (num) => Math.round(num).toLocaleString('en-US');
+            
+            console.log('開始更新頁面，budgetData:', budgetData);
+            
+            // 更新卡片（用 ID 選擇器）
+            const el = {
+                cardTotalSubsidy: document.getElementById('cardTotalSubsidy'),
+                cardTotalMatching: document.getElementById('cardTotalMatching'),
+                cardTotal: document.getElementById('cardTotal'),
+                cardCapitalRatio: document.getElementById('cardCapitalRatio'),
+                totalSubsidyCell: document.getElementById('totalSubsidyCell'),
+                totalMatchingCell: document.getElementById('totalMatchingCell'),
+                totalCell: document.getElementById('totalCell'),
+                execTotalSubsidyCell: document.getElementById('execTotalSubsidyCell'),
+                execTotalMatchingCell: document.getElementById('execTotalMatchingCell'),
+                execTotalCell: document.getElementById('execTotalCell')
+            };
+            
+            if (el.cardTotalSubsidy) el.cardTotalSubsidy.textContent = budgetData.request.totalSubsidy > 0 ? fmt(budgetData.request.totalSubsidy) : '-';
+            if (el.cardTotalMatching) el.cardTotalMatching.textContent = budgetData.request.totalMatching > 0 ? fmt(budgetData.request.totalMatching) : '-';
+            if (el.cardTotal) el.cardTotal.textContent = budgetData.request.total > 0 ? fmt(budgetData.request.total) : '-';
+            if (el.cardCapitalRatio) el.cardCapitalRatio.textContent = budgetData.request.capitalRatio > 0 ? budgetData.request.capitalRatio + '%' : '-';
+            
+            // 更新小計欄位
+            if (el.totalSubsidyCell) el.totalSubsidyCell.textContent = budgetData.request.totalSubsidy > 0 ? fmt(budgetData.request.totalSubsidy) : '-';
+            if (el.totalMatchingCell) el.totalMatchingCell.textContent = budgetData.request.totalMatching > 0 ? fmt(budgetData.request.totalMatching) : '-';
+            if (el.totalCell) el.totalCell.textContent = budgetData.request.total > 0 ? fmt(budgetData.request.total) : '-';
+            if (el.execTotalSubsidyCell) el.execTotalSubsidyCell.textContent = budgetData.execution.totalSubsidy > 0 ? fmt(budgetData.execution.totalSubsidy) : '-';
+            if (el.execTotalMatchingCell) el.execTotalMatchingCell.textContent = budgetData.execution.totalMatching > 0 ? fmt(budgetData.execution.totalMatching) : '-';
+            if (el.execTotalCell) el.execTotalCell.textContent = budgetData.execution.total > 0 ? fmt(budgetData.execution.total) : '-';
+            
+            console.log('卡片已更新');
+            
+            // 更新申請數表格
+            updateRequestTable();
+            
+            // 更新執行數表格
+            updateExecutionTable();
+            
+            // 更新進度百分比表
+            updateRateTable();
+            
+            // 更新進度條
+            updateProgressBars();
+            
+            console.log('✓ 頁面已完全更新');
+        }
+
+        // 更新申請數表格
+        function updateRequestTable() {
+            const fmt = (num) => Math.round(num).toLocaleString('en-US');
+            
+            // 用 class 選擇器直接更新
+            const cells = {
+                scope1Subsidy: document.querySelector('.scope1-subsidy'),
+                scope1Matching: document.querySelector('.scope1-matching'),
+                scope2Subsidy: document.querySelector('.scope2-subsidy'),
+                scope2Matching: document.querySelector('.scope2-matching'),
+                scope3Subsidy: document.querySelector('.scope3-subsidy'),
+                scope3Matching: document.querySelector('.scope3-matching'),
+                scope4Subsidy: document.querySelector('.scope4-subsidy'),
+                scope4Matching: document.querySelector('.scope4-matching')
+            };
+            
+            if (cells.scope1Subsidy) cells.scope1Subsidy.textContent = budgetData.request.scope1Subsidy > 0 ? fmt(budgetData.request.scope1Subsidy) : '-';
+            if (cells.scope1Matching) cells.scope1Matching.textContent = budgetData.request.scope1Matching > 0 ? fmt(budgetData.request.scope1Matching) : '-';
+            if (cells.scope2Subsidy) cells.scope2Subsidy.textContent = budgetData.request.scope2Subsidy > 0 ? fmt(budgetData.request.scope2Subsidy) : '-';
+            if (cells.scope2Matching) cells.scope2Matching.textContent = budgetData.request.scope2Matching > 0 ? fmt(budgetData.request.scope2Matching) : '-';
+            if (cells.scope3Subsidy) cells.scope3Subsidy.textContent = budgetData.request.scope3Subsidy > 0 ? fmt(budgetData.request.scope3Subsidy) : '-';
+            if (cells.scope3Matching) cells.scope3Matching.textContent = budgetData.request.scope3Matching > 0 ? fmt(budgetData.request.scope3Matching) : '-';
+            if (cells.scope4Subsidy) cells.scope4Subsidy.textContent = budgetData.request.scope4Subsidy > 0 ? fmt(budgetData.request.scope4Subsidy) : '-';
+            if (cells.scope4Matching) cells.scope4Matching.textContent = budgetData.request.scope4Matching > 0 ? fmt(budgetData.request.scope4Matching) : '-';
+            
+            console.log('✓ 申請數表格已更新');
+        }
+
+        // 更新執行數表格
+        function updateExecutionTable() {
+            const fmt = (num) => Math.round(num).toLocaleString('en-US');
+            
+            const cells = {
+                scope1Subsidy: document.querySelector('.exec-scope1-subsidy'),
+                scope1Matching: document.querySelector('.exec-scope1-matching'),
+                scope2Subsidy: document.querySelector('.exec-scope2-subsidy'),
+                scope2Matching: document.querySelector('.exec-scope2-matching'),
+                scope3Subsidy: document.querySelector('.exec-scope3-subsidy'),
+                scope3Matching: document.querySelector('.exec-scope3-matching'),
+                scope4Subsidy: document.querySelector('.exec-scope4-subsidy'),
+                scope4Matching: document.querySelector('.exec-scope4-matching')
+            };
+            
+            if (cells.scope1Subsidy) cells.scope1Subsidy.textContent = budgetData.execution.scope1Subsidy > 0 ? fmt(budgetData.execution.scope1Subsidy) : '-';
+            if (cells.scope1Matching) cells.scope1Matching.textContent = budgetData.execution.scope1Matching > 0 ? fmt(budgetData.execution.scope1Matching) : '-';
+            if (cells.scope2Subsidy) cells.scope2Subsidy.textContent = budgetData.execution.scope2Subsidy > 0 ? fmt(budgetData.execution.scope2Subsidy) : '-';
+            if (cells.scope2Matching) cells.scope2Matching.textContent = budgetData.execution.scope2Matching > 0 ? fmt(budgetData.execution.scope2Matching) : '-';
+            if (cells.scope3Subsidy) cells.scope3Subsidy.textContent = budgetData.execution.scope3Subsidy > 0 ? fmt(budgetData.execution.scope3Subsidy) : '-';
+            if (cells.scope3Matching) cells.scope3Matching.textContent = budgetData.execution.scope3Matching > 0 ? fmt(budgetData.execution.scope3Matching) : '-';
+            if (cells.scope4Subsidy) cells.scope4Subsidy.textContent = budgetData.execution.scope4Subsidy > 0 ? fmt(budgetData.execution.scope4Subsidy) : '-';
+            if (cells.scope4Matching) cells.scope4Matching.textContent = budgetData.execution.scope4Matching > 0 ? fmt(budgetData.execution.scope4Matching) : '-';
+            
+            console.log('✓ 執行數表格已更新');
+        }
+
+        // 更新進度百分比表
+        function updateRateTable() {
+            const tables = document.querySelectorAll('.budget-table');
+            if (tables.length > 2) {
+                const thirdTable = tables[2];
+                const rows = thirdTable.querySelectorAll('tbody tr');
+                
+                if (rows.length > 0) {
+                    const firstDataRow = rows[0];
+                    const cells = firstDataRow.querySelectorAll('td.percentage-cell');
+                    
+                    if (cells.length >= 8) {
+                        cells[0].textContent = budgetData.rate.scope1 + '%';
+                        cells[1].textContent = '0%'; // 配合款
+                        cells[2].textContent = budgetData.rate.scope2 + '%';
+                        cells[3].textContent = '0%'; // 配合款
+                        cells[4].textContent = budgetData.rate.scope3 + '%';
+                        cells[5].textContent = '0%'; // 配合款
+                        cells[6].textContent = budgetData.rate.scope4 + '%';
+                        cells[7].textContent = '0%'; // 配合款
+                        
+                        console.log('✓ 執行率表格已更新');
+                    }
+                }
+            }
+        }
+
+        // 更新進度條
+        function updateProgressBars() {
+            const items = [
+                { selector: '[style*="width: 8.6%"]', rate: budgetData.rate.scope1, label: `${budgetData.rate.scope1}% (${budgetData.execution.scope1Subsidy.toLocaleString('en-US')} / ${budgetData.request.scope1Subsidy.toLocaleString('en-US')})` },
+                { selector: '[style*="width: 0.26%"]', rate: budgetData.rate.scope2, label: `${budgetData.rate.scope2}% (${budgetData.execution.scope2Subsidy.toLocaleString('en-US')} / ${budgetData.request.scope2Subsidy.toLocaleString('en-US')})` },
+                { selector: '[style*="width: 0%"]', rate: budgetData.rate.scope3, label: `${budgetData.rate.scope3}% (${budgetData.execution.scope3Subsidy.toLocaleString('en-US')} / ${budgetData.request.scope3Subsidy.toLocaleString('en-US')})` },
+                { selector: '[style*="width: 19.44%"]', rate: budgetData.rate.scope4, label: `${budgetData.rate.scope4}% (${budgetData.execution.scope4Subsidy.toLocaleString('en-US')} / ${budgetData.request.scope4Subsidy.toLocaleString('en-US')})` },
+                { selector: '[style*="width: 1.89%"]', rate: budgetData.rate.total, label: `${budgetData.rate.total}% (${budgetData.execution.totalSubsidy.toLocaleString('en-US')} / ${budgetData.request.totalSubsidy.toLocaleString('en-US')})` }
+            ];
+            
             const progressBars = document.querySelectorAll('.progress-bar-fill');
-            progressBars.forEach((bar, index) => {
-                const width = bar.style.width;
-                bar.style.width = '0%';
-                setTimeout(() => {
-                    bar.style.width = width;
-                }, 500 + index * 200);
+            progressBars.forEach((bar, idx) => {
+                if (idx < items.length) {
+                    const rate = Math.min(items[idx].rate, 100);
+                    bar.style.width = rate + '%';
+                }
             });
+            
+            const smallTexts = document.querySelectorAll('.progress-item small');
+            smallTexts.forEach((text, idx) => {
+                if (idx < items.length) {
+                    text.textContent = items[idx].label;
+                }
+            });
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOMContentLoaded: 開始載入經費資料...');
+            
+            // 先顯示預設資料（立即可見）
+            updatePageWithData();
+            
+            // 異步載入 Google Sheets 資料（如果成功則覆蓋預設值）
+            setTimeout(() => {
+                loadBudgetDataFromSheet();
+            }, 500);
         });
 
-        // 列印功能
         function printReport() {
             window.print();
         }
 
-        // 數據更新提醒
         function showUpdateReminder() {
             const lastUpdate = localStorage.getItem('budgetLastUpdate');
             const now = new Date().getTime();
@@ -622,7 +1042,6 @@
             }
         }
 
-        // 頁面載入完成後執行
         window.onload = function() {
             showUpdateReminder();
             console.log('深耕計劃經費追蹤表載入完成');
