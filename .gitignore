@@ -1,0 +1,26 @@
+# 系統檔案
+.DS_Store
+.venv/
+.env
+*.pyc
+__pycache__/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Excel 檔案
+*.xlsx
+*.xls
+
+# 本地設定
+local_config.json
+config.local.js
+
+# 其他
+.Trash/
+node_modules/
+dist/
+build/

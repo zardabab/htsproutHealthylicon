@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>量表評估系統</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8f4f8 100%);
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+            margin-bottom: 3rem;
+        }
+        
+        .page-header h1 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 2.5rem;
+        }
+        
+        .page-header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.95;
+        }
+        
+        .assessment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .assessment-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .assessment-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
+        }
+        
+        .assessment-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1.5rem;
+            color: white;
+        }
+        
+        .assessment-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .assessment-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .assessment-code {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        
+        .assessment-body {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .assessment-description {
+            color: #555;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+        
+        .version-badge {
+            display: inline-block;
+            background: #e0e7ff;
+            color: #4f46e5;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .assessment-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .assessment-btn:hover {
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .back-btn {
+            border-radius: 10px;
+            padding: 0.6rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid px-4 py-5">
+        <div class="d-flex justify-content-between align-items-start mb-5">
+            <div class="page-header flex-grow-1 me-3">
+                <h1><i class="fas fa-clipboard-list me-3"></i>量表評估系統</h1>
+                <p>專業的健康評估量表系統，為個案提供全面的功能性評估</p>
+            </div>
+            <a href="AI個案管理名單.html" class="btn btn-outline-primary back-btn"><i class="fas fa-arrow-left me-2"></i>回個案名單</a>
+        </div>
+        
+        <div class="assessment-grid" id="assessmentGrid">
+            <!-- 卡片將通過 JavaScript 生成 -->
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const assessments = [
+            {
+                id: 'barthel',
+                name: '巴氏量表',
+                code: 'BI (Barthel Index)',
+                icon: 'fas fa-wheelchair',
+                description: '評估日常生活活動能力，包括進食、梳洗、如廁等十項基本活動功能。',
+                version: 'v1.0',
+                maxScore: 100
+            },
+            {
+                id: 'iadl',
+                name: '工具性日常生活活動量表',
+                code: 'IADL (Instrumental ADL)',
+                icon: 'fas fa-tasks',
+                description: '評估個案進行家務、購物、用藥等較複雜的日常生活活動能力。',
+                version: 'v1.0',
+                maxScore: 8
+            },
+            {
+                id: 'berg',
+                name: '伯格平衡量表',
+                code: 'BBS (Berg Balance Scale)',
+                icon: 'fas fa-running',
+                description: '評估個案的動態和靜態平衡能力，預測跌倒風險。',
+                version: 'v1.0',
+                maxScore: 56
+            },
+            {
+                id: 'mrs',
+                name: '蘭金功能結果量表',
+                code: 'mRS (Modified Rankin Scale)',
+                icon: 'fas fa-chart-line',
+                description: '評估中風或神經疾病患者的功能障礙程度和預後。',
+                version: 'v2.0',
+                maxScore: 6
+            },
+            {
+                id: 'cfs',
+                name: '衰弱程度量表',
+                code: 'CFS (Clinical Frailty Scale)',
+                icon: 'fas fa-person-hiking',
+                description: '評估老年患者的衰弱程度，預測不良健康結果的風險。',
+                version: 'v1.2',
+                maxScore: 9
+            },
+            {
+                id: 'nrs',
+                name: '數字評分量表',
+                code: 'NRS (Numeric Rating Scale)',
+                icon: 'fas fa-pain-relief',
+                description: '簡單快速地評估患者的疼痛程度，0-10級。',
+                version: 'v1.0',
+                maxScore: 10
+            },
+            {
+                id: 'gds',
+                name: '老年憂鬱量表',
+                code: 'GDS-5 (Geriatric Depression Scale)',
+                icon: 'fas fa-heart-broken',
+                description: '篩檢老年人的憂鬱症狀，共5題。',
+                version: 'v1.0',
+                maxScore: 5
+            },
+            {
+                id: 'spmsq',
+                name: '簡易認知功能量表',
+                code: 'SPMSQ (Short Portable Mental Status Questionnaire)',
+                icon: 'fas fa-brain',
+                description: '快速評估老年患者的認知功能和失智風險。',
+                version: 'v1.0',
+                maxScore: 10
+            },
+            {
+                id: 'cam',
+                name: '瞻妄評估量表',
+                code: 'CAM (Confusion Assessment Method)',
+                icon: 'fas fa-exclamation-triangle',
+                description: '診斷和評估瞻妄（譫妄）的存在，包含4項主要特徵。',
+                version: 'v1.0',
+                maxScore: 4
+            },
+            {
+                id: 'mna',
+                name: '微型營養評估量表',
+                code: 'MNA-SF (Mini Nutritional Assessment)',
+                icon: 'fas fa-apple-alt',
+                description: '評估老年人的營養狀況，識別營養不良風險。',
+                version: 'v2.0',
+                maxScore: 14
+            },
+            {
+                id: 'fma',
+                name: '傅格-邁耶運動功能評估',
+                code: 'FMA (Fugl-Meyer Assessment)',
+                icon: 'fas fa-dumbbell',
+                description: '評估中風患者的運動功能恢復情況，共226項。',
+                version: 'v1.0',
+                maxScore: 226
+            },
+            {
+                id: 'goat',
+                name: '腦傷認知評估量表',
+                code: 'GOAT (Galveston Orientation Amnesia Test)',
+                icon: 'fas fa-head-side-virus',
+                description: '評估頭部外傷患者的認知功能，特別是意識水平和記憶力。',
+                version: 'v1.0',
+                maxScore: 100
+            },
+            {
+                id: 'gait',
+                name: '步行速度測試',
+                code: '6m-Gait Speed',
+                icon: 'fas fa-walking',
+                description: '測量患者在6公尺內的行走速度，評估行動能力。',
+                version: 'v1.0',
+                maxScore: null
+            },
+            {
+                id: '6mwt',
+                name: '六分鐘行走測試',
+                code: '6MWT (Six-Minute Walk Test)',
+                icon: 'fas fa-route',
+                description: '評估患者的心肺耐力和活動耐受性。',
+                version: 'v1.0',
+                maxScore: null
+            }
+        ];
+        
+        function renderAssessments() {
+            const grid = document.getElementById('assessmentGrid');
+            grid.innerHTML = '';
+            
+            assessments.forEach(assessment => {
+                const card = document.createElement('div');
+                card.className = 'assessment-card';
+                
+                const scoreInfo = assessment.maxScore 
+                    ? `<p class="text-muted small mb-0">滿分：${assessment.maxScore} 分</p>`
+                    : '<p class="text-muted small mb-0">單位測量結果</p>';
+                
+                card.innerHTML = `
+                    <div class="assessment-header">
+                        <div class="assessment-icon"><i class="${assessment.icon}"></i></div>
+                        <div class="assessment-name">${assessment.name}</div>
+                        <div class="assessment-code">${assessment.code}</div>
+                    </div>
+                    <div class="assessment-body">
+                        <span class="version-badge"><i class="fas fa-tag me-1"></i>${assessment.version}</span>
+                        <p class="assessment-description">${assessment.description}</p>
+                        ${scoreInfo}
+                        <a href="量表-${assessment.id}.html?stage=初評" class="assessment-btn mt-auto">
+                            <i class="fas fa-arrow-right"></i> 進入評估
+                        </a>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', renderAssessments);
+    </script>
+</body>
+</html>

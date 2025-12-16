@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 個案管理名單</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8f4f8 100%);
+            font-family: 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+            margin-bottom: 1.5rem;
+        }
+        
+        .page-header h1 {
+            margin: 0;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-left: 5px solid #2196f3;
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.15);
+            margin-bottom: 1.5rem;
+        }
+        
+        .info-box i {
+            color: #1976d2;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+        
+        .card-body {
+            padding: 2rem;
+        }
+        
+        .table {
+            margin-bottom: 0;
+        }
+        
+        .table thead th {
+            background: linear-gradient(135deg, #ec4899 0%, #f472b6 100%);
+            color: white;
+            font-weight: 600;
+            border: none;
+            padding: 1.2rem 1rem;
+            font-size: 0.9rem;
+            letter-spacing: 0.8px;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3);
+            position: relative;
+            border-bottom: 3px solid #be185d;
+        }
+        
+        .table thead th:first-child {
+            border-top-left-radius: 10px;
+        }
+        
+        .table thead th:last-child {
+            border-top-right-radius: 10px;
+        }
+        
+        .table thead th i {
+            color: #fce7f3;
+        }
+        
+        .table tbody tr {
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .table tbody td {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+        
+        .status-btn {
+            margin-right: 5px;
+            margin-bottom: 5px;
+            position: relative;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .status-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .status-btn i.fa-check {
+            display: none;
+            margin-left: 5px;
+        }
+        
+        .status-btn.completed i.fa-check {
+            display: inline-block;
+            animation: checkPop 0.3s ease;
+        }
+        
+        @keyframes checkPop {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .status-btn.completed {
+            background-color: #10b981;
+            border-color: #10b981;
+            color: white;
+        }
+        
+        /* 狀況標籤顏色 */
+        .badge-condition {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+        
+        .condition-脆骨 {
+            background: linear-gradient(135deg, #fef3c7 0%, #fcd34d 100%);
+            color: #92400e;
+            border: 2px solid #fbbf24;
+        }
+        
+        .condition-神經損傷 {
+            background: linear-gradient(135deg, #ddd6fe 0%, #a78bfa 100%);
+            color: #5b21b6;
+            border: 2px solid #8b5cf6;
+        }
+        
+        .condition-腦中風 {
+            background: linear-gradient(135deg, #fecaca 0%, #f87171 100%);
+            color: #991b1b;
+            border: 2px solid #ef4444;
+        }
+        
+        .condition-衰弱高齡 {
+            background: linear-gradient(135deg, #d1fae5 0%, #6ee7b7 100%);
+            color: #065f46;
+            border: 2px solid #10b981;
+        }
+        
+        .badge.bg-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        /* 結案狀態樣式 */
+        .case-status {
+            padding: 0.6rem 1.2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+        
+        .case-status.active {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: 2px solid #10b981;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        .case-status.active:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        .case-status.closed {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            color: white;
+            border: 2px solid #6b7280;
+            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+        }
+        
+        .case-status.closed:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(107, 114, 128, 0.4);
+        }
+        
+        /* 個管師樣式 */
+        .case-manager {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(135deg, #e0e7ff 0%, #dbeafe 100%);
+            border-radius: 8px;
+            border: 2px solid #6366f1;
+            color: #4f46e5;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        
+        .case-manager i {
+            color: #818cf8;
+        }
+        
+        .btn-secondary {
+            border-radius: 10px;
+            padding: 0.6rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+        }
+        
+        /* Loading 樣式 */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+        }
+        
+        .loading-content {
+            background: white;
+            padding: 2rem 3rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f4f6;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: #4b5563;
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p class="loading-text" id="loadingText">載入中...</p>
+        </div>
+    </div>
+
+    <div class="container-fluid mt-4 px-4">
+        <div class="page-header d-flex justify-content-between align-items-center">
+            <div>
+                <h1><i class="fas fa-heartbeat me-2"></i>AI 個案管理系統</h1>
+                <p class="mb-0 mt-2" style="opacity: 0.9; font-size: 1rem;"><i class="fas fa-users me-2"></i>用心照護每一位個案</p>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn btn-success btn-lg" onclick="showAddCaseModal()"><i class="fas fa-plus me-2"></i>新增個案</button>
+                <a href="index-gpt.html" class="btn btn-light btn-lg"><i class="fas fa-home me-2"></i>回首頁</a>
+            </div>
+        </div>
+
+        <div class="info-box d-flex align-items-center">
+            <i class="fas fa-info-circle me-3 fs-4"></i>
+            <div>
+                <strong style="font-size: 1.05rem;">評估進度說明</strong>
+                <p class="mb-0 mt-1"><i class="fas fa-check-circle text-success me-2"></i>綠色按鈕代表已完成評估，點擊按鈕可查看或編輯評估資料</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                            <tr>
+                                <th scope="col" style="width: 120px;"><i class="fas fa-hashtag me-2"></i>個案編號</th>
+                                <th scope="col" style="width: 120px;"><i class="fas fa-user me-2"></i>姓名</th>
+                                <th scope="col" style="width: 100px;"><i class="fas fa-tag me-2"></i>類型</th>
+                                <th scope="col" style="width: 150px;"><i class="fas fa-notes-medical me-2"></i>狀況</th>
+                                <th scope="col" style="width: 140px;"><i class="fas fa-hotel me-2"></i>入住時間</th>
+                                <th scope="col" style="width: 140px;"><i class="fas fa-sync-alt me-2"></i>複評時間</th>
+                                <th scope="col" style="width: 140px;"><i class="fas fa-clipboard-check me-2"></i>結評時間</th>
+                                <th scope="col" style="width: 140px;"><i class="fas fa-sign-out-alt me-2"></i>出院時間</th>
+                                <th scope="col"><i class="fas fa-tasks me-2"></i>評估進度</th>
+                                <th scope="col" style="width: 150px;"><i class="fas fa-cog me-2"></i>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="caseListBody">
+                            <!-- Data will be populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 新增/編輯個案 Modal -->
+    <div class="modal fade" id="caseModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="caseModalTitle"><i class="fas fa-user-plus me-2"></i>新增個案</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="caseForm">
+                        <input type="hidden" id="caseIndex" value="">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="caseId" class="form-label">個案編號 *</label>
+                                <input type="text" class="form-control" id="caseId" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="caseName" class="form-label">姓名 *</label>
+                                <input type="text" class="form-control" id="caseName" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="caseType" class="form-label">類型 *</label>
+                                <select class="form-select" id="caseType" required>
+                                    <option value="PAC">PAC</option>
+                                    <option value="居家">居家</option>
+                                    <option value="社區">社區</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="caseCondition" class="form-label">狀況 *</label>
+                                <select class="form-select" id="caseCondition" required>
+                                    <option value="腦中風">腦中風</option>
+                                    <option value="神經損傷">神經損傷</option>
+                                    <option value="脆骨">脆骨</option>
+                                    <option value="衰弱高齡">衰弱高齡</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="admissionDate" class="form-label">入住時間</label>
+                                <input type="datetime-local" class="form-control" id="admissionDate">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="reviewDate" class="form-label">複評時間</label>
+                                <input type="datetime-local" class="form-control" id="reviewDate">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="finalReviewDate" class="form-label">結評時間</label>
+                                <input type="datetime-local" class="form-control" id="finalReviewDate">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="dischargeDate" class="form-label">出院時間</label>
+                                <input type="datetime-local" class="form-control" id="dischargeDate">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">評估進度</label>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="status-初評" value="初評">
+                                        <label class="form-check-label" for="status-初評">初評</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="status-22天複評" value="22天複評">
+                                        <label class="form-check-label" for="status-22天複評">22天複評</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="status-42天複評" value="42天複評">
+                                        <label class="form-check-label" for="status-42天複評">42天複評</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="status-64天複評" value="64天複評">
+                                        <label class="form-check-label" for="status-64天複評">64天複評</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="status-82天複評" value="82天複評">
+                                        <label class="form-check-label" for="status-82天複評">82天複評</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="status-結評" value="結評">
+                                        <label class="form-check-label" for="status-結評">結評</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="saveCase()"><i class="fas fa-save me-2"></i>儲存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        // Google Apps Script API 設定
+        // 請在 Google Sheets 中建立 Apps Script 部署後，將 URL 貼在下方
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyd0T-f7CwRtWSfY6SPZ9_R3l7fPmuXtcsY91Gy8l5115vPZ2SxSuK91DkG-7wLSYNx/exec'; // 例如: https://script.google.com/macros/s/AKfycby.../exec
+        
+        // 保留舊設定供參考（目前不使用）
+        // const SHEETS_API_KEY = 'AIzaSyA0JKp0Y8ZmGDHcPEmf4ncaWvnTMtoa8KM';
+        // const SHEET_ID = '1x32_JhOr0BTeoiS3gaw48Le8mJtiwd597DOjKyInoeU';
+        const SHEET_NAME = '個案管理';
+
+        let cases = []; // 從 Google Sheets 載入的資料
+        const milestones = ['初評', '22天複評', '42天複評', '64天複評', '82天複評', '結評'];
+        const conditions = ['脆骨', '神經損傷', '腦中風', '衰弱高齡'];
+
+        // Loading 顯示/隱藏函數
+        function showLoading(text = '載入中...') {
+            document.getElementById('loadingText').textContent = text;
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingOverlay').style.display = 'none';
+        }
+
+        // 從 Google Sheets 載入資料（透過 Apps Script API）
+        async function loadCasesFromGoogleSheets() {
+            showLoading('正在載入個案資料...');
+            try {
+                if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_DEPLOYMENT_URL_HERE') {
+                    throw new Error('請先設定 APPS_SCRIPT_URL！請參考 GOOGLE_APPS_SCRIPT_SETUP.md');
+                }
+                
+                console.log('🔍 透過 Apps Script 載入資料...');
+                
+                const response = await fetch(APPS_SCRIPT_URL);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP 錯誤 ${response.status}: ${response.statusText}`);
+                }
+                
+                const result = await response.json();
+                
+                if (!result.success) {
+                    throw new Error(result.error || '載入失敗');
+                }
+                
+                const rows = result.data || [];
+                
+                cases = rows.map(row => {
+                    try {
+                        // Apps Script 返回的是物件，不是陣列
+                        let status = {};
+                        if (row.status) {
+                            status = typeof row.status === 'string' ? JSON.parse(row.status) : row.status;
+                        } else {
+                            status = milestones.reduce((obj, m) => ({ ...obj, [m]: false }), {});
+                        }
+                        
+                        return {
+                            id: row.id || '',
+                            name: row.name || '',
+                            type: row.type || 'PAC',
+                            condition: row.condition || '',
+                            admissionDate: row.admissionDate || '',
+                            reviewDate: row.reviewDate || '',
+                            finalReviewDate: row.finalReviewDate || '',
+                            dischargeDate: row.dischargeDate || '',
+                            status: status,
+                            closed: false
+                        };
+                    } catch (e) {
+                        console.error('行資料解析錯誤:', row, e);
+                        return null;
+                    }
+                }).filter(c => c !== null && c.id); // 過濾空白列
+                
+                console.log(`✓ 成功從 Google Sheets 載入 ${cases.length} 筆個案資料`);
+                renderTable();
+            } catch (error) {
+                console.error('❌ 載入 Google Sheets 資料失敗:', error);
+                showErrorMessage(error.message);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function showErrorMessage(message) {
+            const infoBox = document.querySelector('.info-box');
+            if (infoBox) {
+                infoBox.innerHTML = `
+                    <i class="fas fa-exclamation-triangle me-3 fs-4 text-danger"></i>
+                    <div>
+                        <strong style="font-size: 1.05rem; color: #d32f2f;">載入資料失敗</strong>
+                        <p class="mb-0 mt-1" style="color: #c62828;"><i class="fas fa-times-circle me-2"></i>${message}</p>
+                        <p class="mb-0 mt-1 small">請檢查：</p>
+                        <ul class="small mb-0 mt-1">
+                            <li>是否已設定 APPS_SCRIPT_URL？請參考 GOOGLE_APPS_SCRIPT_SETUP.md</li>
+                            <li>Apps Script 是否已部署為「網頁應用程式」？</li>
+                            <li>部署設定中是否選擇「所有人」都可存取？</li>
+                            <li>工作表名稱是否為「個案管理」？</li>
+                            <li>開啟瀏覽器控制台（F12）查看詳細錯誤訊息</li>
+                        </ul>
+                    </div>
+                `;
+            }
+        }
+
+        // 格式化日期時間顯示（顯示到分鐘）
+        function formatDateTime(dateTimeString) {
+            if (!dateTimeString) return '';
+            try {
+                const dt = new Date(dateTimeString);
+                if (isNaN(dt.getTime())) return dateTimeString;
+                
+                const year = dt.getFullYear();
+                const month = String(dt.getMonth() + 1).padStart(2, '0');
+                const day = String(dt.getDate()).padStart(2, '0');
+                const hours = String(dt.getHours()).padStart(2, '0');
+                const minutes = String(dt.getMinutes()).padStart(2, '0');
+                
+                return `${year}-${month}-${day} ${hours}:${minutes}`;
+            } catch (e) {
+                return dateTimeString;
+            }
+        }
+
+        // 轉換為 datetime-local 輸入欄位格式（YYYY-MM-DDTHH:MM）
+        function toDateTimeLocalFormat(dateTimeString) {
+            if (!dateTimeString) return '';
+            try {
+                const dt = new Date(dateTimeString);
+                if (isNaN(dt.getTime())) return '';
+                
+                const year = dt.getFullYear();
+                const month = String(dt.getMonth() + 1).padStart(2, '0');
+                const day = String(dt.getDate()).padStart(2, '0');
+                const hours = String(dt.getHours()).padStart(2, '0');
+                const minutes = String(dt.getMinutes()).padStart(2, '0');
+                
+                return `${year}-${month}-${day}T${hours}:${minutes}`;
+            } catch (e) {
+                return '';
+            }
+        }
+
+        // 狀況圖示對應
+        const conditionIcons = {
+            '脆骨': 'fa-bone',
+            '神經損傷': 'fa-project-diagram',
+            '腦中風': 'fa-head-side-virus',
+            '衰弱高齡': 'fa-user-clock'
+        };
+        
+        function renderTable() {
+            const tbody = document.getElementById('caseListBody');
+            tbody.innerHTML = '';
+
+            cases.forEach(c => {
+                const tr = document.createElement('tr');
+                
+                let buttonsHtml = '';
+                milestones.forEach(m => {
+                    const isCompleted = c.status[m];
+                    const btnClass = isCompleted ? 'btn-outline-success completed' : 'btn-outline-primary';
+                    // Pass case ID, name, milestone type, and condition to the next page
+                    const url = `AI智慧個管系統.html?id=${c.id}&name=${encodeURIComponent(c.name)}&stage=${encodeURIComponent(m)}&condition=${encodeURIComponent(c.condition)}`;
+                    
+                    buttonsHtml += `
+                        <a href="${url}" class="btn ${btnClass} btn-sm status-btn">
+                            ${m} <i class="fas fa-check"></i>
+                        </a>
+                    `;
+                });
+                
+                // 根據狀況選擇對應的圖示和樣式
+                const conditionIcon = conditionIcons[c.condition] || 'fa-notes-medical';
+                const conditionClass = `condition-${c.condition}`;
+                
+                // 結案狀態顯示
+                const caseStatusHtml = c.closed 
+                    ? `<span class="case-status closed"><i class="fas fa-check-circle"></i>已結案</span>`
+                    : `<span class="case-status active"><i class="fas fa-heartbeat"></i>進行中</span>`;
+
+                tr.innerHTML = `
+                    <td><strong>${c.id}</strong></td>
+                    <td><i class="fas fa-user-circle text-primary me-2"></i>${c.name}</td>
+                    <td><span class="badge bg-primary">${c.type}</span></td>
+                    <td><span class="badge-condition ${conditionClass}"><i class="fas ${conditionIcon}"></i>${c.condition}</span></td>
+                    <td>${formatDateTime(c.admissionDate)}</td>
+                    <td>${formatDateTime(c.reviewDate)}</td>
+                    <td>${formatDateTime(c.finalReviewDate)}</td>
+                    <td>${formatDateTime(c.dischargeDate)}</td>
+                    <td>${buttonsHtml}</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning me-1" onclick="editCase(${cases.indexOf(c)})" title="編輯">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteCase(${cases.indexOf(c)})" title="刪除">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // 顯示新增個案 Modal
+        function showAddCaseModal() {
+            document.getElementById('caseModalTitle').innerHTML = '<i class="fas fa-user-plus me-2"></i>新增個案';
+            document.getElementById('caseForm').reset();
+            document.getElementById('caseIndex').value = '';
+            const modal = new bootstrap.Modal(document.getElementById('caseModal'));
+            modal.show();
+        }
+
+        // 編輯個案
+        function editCase(index) {
+            const c = cases[index];
+            document.getElementById('caseModalTitle').innerHTML = '<i class="fas fa-user-edit me-2"></i>編輯個案';
+            document.getElementById('caseIndex').value = index;
+            document.getElementById('caseId').value = c.id;
+            document.getElementById('caseName').value = c.name;
+            document.getElementById('caseType').value = c.type;
+            document.getElementById('caseCondition').value = c.condition;
+            
+            // 使用轉換函數設定 datetime-local 格式
+            document.getElementById('admissionDate').value = toDateTimeLocalFormat(c.admissionDate);
+            document.getElementById('reviewDate').value = toDateTimeLocalFormat(c.reviewDate);
+            document.getElementById('finalReviewDate').value = toDateTimeLocalFormat(c.finalReviewDate);
+            document.getElementById('dischargeDate').value = toDateTimeLocalFormat(c.dischargeDate);
+            
+            // 設定評估進度 checkbox
+            milestones.forEach(m => {
+                const checkbox = document.getElementById(`status-${m}`);
+                if (checkbox) {
+                    checkbox.checked = c.status[m] || false;
+                }
+            });
+            
+            const modal = new bootstrap.Modal(document.getElementById('caseModal'));
+            modal.show();
+        }
+
+        // 儲存個案
+        async function saveCase() {
+            const form = document.getElementById('caseForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const status = {};
+            milestones.forEach(m => {
+                const checkbox = document.getElementById(`status-${m}`);
+                status[m] = checkbox ? checkbox.checked : false;
+            });
+
+            const caseData = {
+                id: document.getElementById('caseId').value,
+                name: document.getElementById('caseName').value,
+                type: document.getElementById('caseType').value,
+                condition: document.getElementById('caseCondition').value,
+                admissionDate: document.getElementById('admissionDate').value,
+                reviewDate: document.getElementById('reviewDate').value,
+                finalReviewDate: document.getElementById('finalReviewDate').value,
+                dischargeDate: document.getElementById('dischargeDate').value,
+                status: status,
+                closed: false
+            };
+
+            const index = document.getElementById('caseIndex').value;
+            if (index === '') {
+                // 新增
+                cases.push(caseData);
+            } else {
+                // 編輯
+                cases[parseInt(index)] = caseData;
+            }
+
+            // 同步到 Google Sheets
+            showLoading('正在同步資料到 Google Sheets...');
+            try {
+                await syncToGoogleSheets();
+                renderTable();
+                bootstrap.Modal.getInstance(document.getElementById('caseModal')).hide();
+                hideLoading();
+                alert('✓ 個案已成功儲存並同步到 Google Sheets！');
+            } catch (error) {
+                console.error('同步失敗:', error);
+                renderTable();
+                bootstrap.Modal.getInstance(document.getElementById('caseModal')).hide();
+                hideLoading();
+                alert(`⚠️ 個案已在本地儲存，但同步到 Google Sheets 失敗：\n${error.message}\n\n請檢查 API 權限設定。`);
+            }
+        }
+
+        // 刪除個案
+        async function deleteCase(index) {
+            if (confirm('確定要刪除此個案嗎？')) {
+                cases.splice(index, 1);
+                
+                // 同步到 Google Sheets
+                showLoading('正在同步刪除到 Google Sheets...');
+                try {
+                    await syncToGoogleSheets();
+                    renderTable();
+                    hideLoading();
+                    alert('✓ 個案已成功刪除並同步到 Google Sheets！');
+                } catch (error) {
+                    console.error('同步失敗:', error);
+                    renderTable();
+                    hideLoading();
+                    alert(`⚠️ 個案已在本地刪除，但同步到 Google Sheets 失敗：\n${error.message}\n\n請檢查 API 權限設定。`);
+                }
+            }
+        }
+
+        // 同步資料到 Google Sheets
+        async function syncToGoogleSheets() {
+            // 準備資料：Apps Script 需要完整物件
+            if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_DEPLOYMENT_URL_HERE') {
+                throw new Error('請先設定 APPS_SCRIPT_URL');
+            }
+
+            const payload = {
+                action: 'sync',
+                cases: cases.map(c => ({
+                    id: c.id,
+                    name: c.name,
+                    type: c.type,
+                    condition: c.condition,
+                    admissionDate: c.admissionDate,
+                    reviewDate: c.reviewDate,
+                    finalReviewDate: c.finalReviewDate,
+                    dischargeDate: c.dischargeDate,
+                    status: c.status
+                }))
+            };
+
+            const response = await fetch(APPS_SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP 錯誤 ${response.status}`);
+            }
+
+            const result = await response.json();
+            
+            if (!result.success) {
+                throw new Error(result.error || '同步失敗');
+            }
+
+            console.log('✓ 資料已成功同步到 Google Sheets:', result.message);
+            return result;
+        }
+
+        document.addEventListener('DOMContentLoaded', loadCasesFromGoogleSheets);
+    </script>
+</body>
+</html>

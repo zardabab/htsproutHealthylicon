@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>伯格平衡量表評估</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body { background: linear-gradient(135deg, #f5f7fa 0%, #e8f4f8 100%); }
+        .assessment-header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 15px; box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3); margin-bottom: 2rem; }
+        .version-info { background: rgba(255, 255, 255, 0.2); padding: 1rem; border-radius: 10px; margin-top: 1rem; font-size: 0.9rem; }
+        .assessment-card { background: white; border-radius: 15px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08); padding: 2rem; margin-bottom: 2rem; }
+        .scoring-item { background: #f8f9fa; padding: 1.5rem; border-radius: 10px; margin-bottom: 1.5rem; border-left: 5px solid #667eea; }
+        .score-radio { margin: 1rem 0; }
+        .score-radio input[type="radio"] { margin-right: 0.5rem; }
+        .total-score-box { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; border-radius: 15px; text-align: center; margin-top: 2rem; }
+        .score-value { font-size: 3rem; font-weight: bold; }
+        .interpretation { margin-top: 1rem; padding: 1rem; background: rgba(255, 255, 255, 0.2); border-radius: 10px; }
+        .btn-group-custom { display: flex; gap: 1rem; margin-top: 2rem; }
+        .back-nav { display: flex; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap; }
+        .back-nav a { border-radius: 8px; padding: 0.5rem 1rem; transition: all 0.3s ease; }
+        .back-nav a:hover { transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+    <div class="container-fluid px-4 py-4">
+        <div class="back-nav">
+            <a href="量表系統.html" class="btn btn-outline-secondary"><i class="fas fa-list me-2"></i>量表列表</a>
+            <a href="AI個案管理名單.html" class="btn btn-outline-primary"><i class="fas fa-users me-2"></i>個案名單</a>
+        </div>
+        
+        <div class="assessment-header">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h1><i class="fas fa-running me-3"></i>伯格平衡量表</h1>
+                    <h5 class="mt-2 opacity-75">BBS (Berg Balance Scale)</h5>
+                    <div class="version-info">
+                        <strong>版本：v1.0</strong> | 滿分：56 分 | 評估類型：<span id="assessmentType">初評</span>
+                    </div>
+                </div>
+                <div>
+                    <button class="btn btn-light" onclick="window.history.back()"><i class="fas fa-times fs-5"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="assessment-card">
+            <h3 class="mb-4"><i class="fas fa-info-circle me-2"></i>量表說明</h3>
+            <p>伯格平衡量表（BBS）用於評估老年人或神經科患者的靜態和動態平衡能力，預測跌倒風險。共14項評估項目。</p>
+        </div>
+        
+        <form id="berg-form">
+            <div class="assessment-card">
+                <h4 class="mb-4">評估項目 (簡化版 - 5項核心項目)</h4>
+                
+                <div class="scoring-item">
+                    <h5>1. 坐位平衡 <span class="badge bg-primary">0-4分</span></h5>
+                    <div class="score-radio">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sitting" value="0" id="sitting0" checked>
+                            <label class="form-check-label" for="sitting0">不能保持 (0分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sitting" value="1" id="sitting1">
+                            <label class="form-check-label" for="sitting1">需要大量支持 (1分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sitting" value="2" id="sitting2">
+                            <label class="form-check-label" for="sitting2">需要最小支持 (2分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sitting" value="3" id="sitting3">
+                            <label class="form-check-label" for="sitting3">安全獨立 (3分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sitting" value="4" id="sitting4">
+                            <label class="form-check-label" for="sitting4">安全獨立，姿勢完美 (4分)</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scoring-item">
+                    <h5>2. 坐位到站立 <span class="badge bg-primary">0-4分</span></h5>
+                    <div class="score-radio">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sittostand" value="0" id="sittostand0" checked>
+                            <label class="form-check-label" for="sittostand0">無法不使用雙手站起 (0分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sittostand" value="1" id="sittostand1">
+                            <label class="form-check-label" for="sittostand1">需要多次嘗試 (1分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sittostand" value="2" id="sittostand2">
+                            <label class="form-check-label" for="sittostand2">能用雙手站起 (2分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sittostand" value="3" id="sittostand3">
+                            <label class="form-check-label" for="sittostand3">能用單手站起 (3分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="sittostand" value="4" id="sittostand4">
+                            <label class="form-check-label" for="sittostand4">能不用手獨立站起 (4分)</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scoring-item">
+                    <h5>3. 站立平衡 <span class="badge bg-primary">0-4分</span></h5>
+                    <div class="score-radio">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="standing" value="0" id="standing0" checked>
+                            <label class="form-check-label" for="standing0">不能保持不支持 (0分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="standing" value="1" id="standing1">
+                            <label class="form-check-label" for="standing1">需要支持但勉強可以 (1分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="standing" value="2" id="standing2">
+                            <label class="form-check-label" for="standing2">可以獨立站立 (2分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="standing" value="3" id="standing3">
+                            <label class="form-check-label" for="standing3">可以獨立站立且穩定 (3分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="standing" value="4" id="standing4">
+                            <label class="form-check-label" for="standing4">可以獨立站立，姿勢完美 (4分)</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scoring-item">
+                    <h5>4. 站位推動測試 <span class="badge bg-primary">0-3分</span></h5>
+                    <div class="score-radio">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="pushtest" value="0" id="pushtest0" checked>
+                            <label class="form-check-label" for="pushtest0">一輕推即失去平衡 (0分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="pushtest" value="1" id="pushtest1">
+                            <label class="form-check-label" for="pushtest1">搖晃但可恢復 (1分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="pushtest" value="2" id="pushtest2">
+                            <label class="form-check-label" for="pushtest2">能抵抗適度推力 (2分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="pushtest" value="3" id="pushtest3">
+                            <label class="form-check-label" for="pushtest3">能抵抗強推力 (3分)</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scoring-item">
+                    <h5>5. 行走能力 <span class="badge bg-primary">0-3分</span></h5>
+                    <div class="score-radio">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="walking" value="0" id="walking0" checked>
+                            <label class="form-check-label" for="walking0">無法行走或需全力協助 (0分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="walking" value="1" id="walking1">
+                            <label class="form-check-label" for="walking1">需要人員協助 (1分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="walking" value="2" id="walking2">
+                            <label class="form-check-label" for="walking2">可以獨立行走但不安全 (2分)</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="walking" value="3" id="walking3">
+                            <label class="form-check-label" for="walking3">可以安全獨立行走 (3分)</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="total-score-box">
+                <h4>總分</h4>
+                <div class="score-value" id="totalScore">0</div>
+                <div class="interpretation">
+                    <strong>判讀結果：</strong> <span id="interpretation">-</span>
+                </div>
+            </div>
+            
+            <div class="btn-group-custom">
+                <button type="button" class="btn btn-primary" onclick="calculateScore()">
+                    <i class="fas fa-calculator me-2"></i>計算分數
+                </button>
+                <button type="button" class="btn btn-success" onclick="saveAssessment()">
+                    <i class="fas fa-save me-2"></i>儲存評估
+                </button>
+                <button type="button" class="btn btn-warning" onclick="resetForm()">
+                    <i class="fas fa-redo me-2"></i>重新開始
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const stage = urlParams.get('stage') || '初評';
+            document.getElementById('assessmentType').textContent = stage;
+            
+            document.querySelectorAll('input[type="radio"]').forEach(input => {
+                input.addEventListener('change', calculateScore);
+            });
+            
+            calculateScore();
+        });
+        
+        function calculateScore() {
+            let total = 0;
+            const items = {};
+            
+            document.querySelectorAll('input[type="radio"]').forEach(input => {
+                const name = input.name;
+                if (input.checked) {
+                    items[name] = parseInt(input.value);
+                }
+            });
+            
+            for (let key in items) {
+                total += items[key];
+            }
+            
+            document.getElementById('totalScore').textContent = total;
+            
+            let interpretation = '';
+            if (total >= 45) {
+                interpretation = '低跌倒風險 - 平衡能力良好';
+            } else if (total >= 40) {
+                interpretation = '中等跌倒風險 - 平衡能力一般';
+            } else if (total >= 20) {
+                interpretation = '高跌倒風險 - 平衡能力較差';
+            } else {
+                interpretation = '極高跌倒風險 - 需要特別照護';
+            }
+            
+            document.getElementById('interpretation').textContent = interpretation;
+            console.log('計算結果:', {total, items});
+        }
+        
+        function saveAssessment() {
+            const total = document.getElementById('totalScore').textContent;
+            alert(`評估已儲存！\nBBS 評分：${total}分\n\n此功能將連接到後端資料庫保存。`);
+        }
+        
+        function resetForm() {
+            document.getElementById('berg-form').reset();
+            document.querySelectorAll('input[type="radio"][value="0"]').forEach(input => {
+                input.checked = true;
+            });
+            calculateScore();
+        }
+    </script>
+</body>
+</html>
