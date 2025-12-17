@@ -653,6 +653,180 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        /**
+         * 深耕計劃經費追蹤表 - 寫入後端
+         * - 接收前端 POST 的變更清單，批次寫入 Google 試算表
+         * - 白名單驗證：僅允許指定 Email
+         * - 完整錯誤回傳、輸入校驗與日誌
+         */
+
+        const CONFIG = {
+        sheetNameDefault: '深耕計劃經費追蹤表',
+        allowedEmails: [
+            // TODO: 修改為你的 Google 帳號（支援多個）
+            'ks.healthy77@gmail.com',
+        ],
+        // 啟用詳細日誌（部署正式環境可改為 false）
+        verboseLog: true,
+        };
+
+        /**
+         * Web App 入口：接收前端 JSON POST
+         * 期待 payload 格式：
+         * {
+         *   sheetName: '深耕計劃經費追蹤表',
+         *   changes: [{ row: 15, col: 12, value: 666666 }, ...] // 零基 index
+         * }
+         */
+        function doPost(e) {
+        const started = new Date();
+        try {
+            // 1) 基本檢查
+            if (!e || !e.postData || !e.postData.contents) {
+            return jsonResponse({ ok: false, error: 'missing post data' }, 400);
+            }
+
+            // 2) 身分驗證（白名單）
+            const userEmail = getActiveUserEmailSafe();
+            if (!userEmail) {
+            return jsonResponse({ ok: false, error: 'unauthenticated: no active user' }, 401);
+            }
+            if (!CONFIG.allowedEmails.includes(userEmail)) {
+            return jsonResponse({ ok: false, error: `unauthorized: ${userEmail}` }, 403);
+            }
+
+            // 3) 解析 payload
+            let data;
+            try {
+            data = JSON.parse(e.postData.contents);
+            } catch (parseErr) {
+            return jsonResponse({ ok: false, error: 'invalid json payload' }, 400);
+            }
+
+            const sheetName = (data && data.sheetName) || CONFIG.sheetNameDefault;
+            const changes = (data && data.changes) || [];
+
+            // 4) 輸入校驗
+            const validateResult = validateChanges(changes);
+            if (!validateResult.ok) {
+            return jsonResponse({ ok: false, error: validateResult.error, details: validateResult.details }, 400);
+            }
+
+            // 5) 取得工作表
+            const ss = SpreadsheetApp.getActive();
+            const sheet = ss.getSheetByName(sheetName);
+            if (!sheet) {
+            return jsonResponse({ ok: false, error: `sheet not found: ${sheetName}` }, 404);
+            }
+
+            // 6) 批次寫入
+            const writeSummary = writeChanges(sheet, changes);
+
+            // 7) 成功回傳
+            const finished = new Date();
+            const ms = finished.getTime() - started.getTime();
+            return jsonResponse({
+            ok: true,
+            user: userEmail,
+            sheet: sheetName,
+            summary: writeSummary,
+            elapsedMs: ms,
+            }, 200);
+        } catch (err) {
+            // 8) 例外攔截
+            return jsonResponse({ ok: false, error: String(err) }, 500);
+        }
+        }
+
+        /**
+         * 取得目前執行者 Email（可能會是空字串）
+         */
+        function getActiveUserEmailSafe() {
+        try {
+            const email = Session.getActiveUser().getEmail();
+            if (CONFIG.verboseLog) Logger.log('ActiveUser: ' + email);
+            return email || '';
+        } catch (e) {
+            return '';
+        }
+        }
+
+        /**
+         * 檢查 changes 資料格式與範圍
+         */
+        function validateChanges(changes) {
+        const details = [];
+        if (!Array.isArray(changes) || changes.length === 0) {
+            return { ok: false, error: 'no changes provided', details };
+        }
+        for (let i = 0; i < changes.length; i++) {
+            const c = changes[i];
+            if (typeof c.row !== 'number' || typeof c.col !== 'number') {
+            details.push(`index ${i}: row/col must be numbers`);
+            continue;
+            }
+            if (!Number.isInteger(c.row) || !Number.isInteger(c.col) || c.row < 0 || c.col < 0) {
+            details.push(`index ${i}: row/col invalid (non-integer or negative)`);
+            continue;
+            }
+            if (c.value === undefined || c.value === null || c.value === '') {
+            details.push(`index ${i}: value is empty`);
+            continue;
+            }
+            const num = Number(c.value);
+            if (Number.isNaN(num)) {
+            details.push(`index ${i}: value not a number (${c.value})`);
+            continue;
+            }
+        }
+        if (details.length > 0) {
+            return { ok: false, error: 'validation failed', details };
+        }
+        return { ok: true };
+        }
+
+        /**
+         * 批次寫入（逐筆 setValue）
+         */
+        function writeChanges(sheet, changes) {
+        const summary = {
+            total: changes.length,
+            success: 0,
+            failed: 0,
+            errors: [],
+        };
+
+        for (let i = 0; i < changes.length; i++) {
+            const c = changes[i];
+            // Apps Script 是一基座標，前端傳來零基需 +1
+            const r = c.row + 1;
+            const col = c.col + 1;
+            try {
+            sheet.getRange(r, col).setValue(c.value);
+            summary.success++;
+            if (CONFIG.verboseLog) Logger.log(`Wrote r${r} c${col} = ${c.value}`);
+            } catch (err) {
+            summary.failed++;
+            summary.errors.push({ index: i, row: c.row, col: c.col, error: String(err) });
+            }
+        }
+        return summary;
+        }
+
+        /**
+         * 套件化 JSON 回應
+         */
+        function jsonResponse(obj, status) {
+        const output = ContentService.createTextOutput(JSON.stringify(obj))
+            .setMimeType(ContentService.MimeType.JSON);
+        // CORS：允許跨網域（包含 file:// 與 localhost）
+        output.setHeader('Access-Control-Allow-Origin', '*');
+        output.setHeader('Access-Control-Allow-Methods', 'POST');
+        output.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+        obj.status = status;
+        return output;
+        }
+        
         // Google Sheets API 設定
         const SHEET_ID = '1x32_JhOr0BTeoiS3gaw48Le8mJtiwd597DOjKyInoeU';
         const SHEET_GID = '687531515'; // 深耕計劃經費追蹤表
@@ -1582,7 +1756,8 @@
             // 若使用者只改了部分儲存格，也保留全部語義欄位寫入，確保一致性
             const payload = {
                 sheetName: '深耕計劃經費追蹤表',
-                changes
+                changes,
+                token: localStorage.getItem('budgetSyncToken') || ''
             };
 
             // 若未設定 Web App URL，先提示設定再僅本地保存
@@ -1632,7 +1807,6 @@
 
                     const res = await fetch(WEB_APP_URL, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
                     const json = await res.json();
