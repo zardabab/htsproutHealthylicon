@@ -162,6 +162,60 @@
             font-weight: bold;
         }
 
+        .editable-cell {
+            cursor: pointer;
+            transition: background-color 0.2s;
+            position: relative;
+        }
+
+        .editable-cell:hover {
+            background-color: #fff3cd !important;
+        }
+
+        .editable-cell:hover::after {
+            content: '✏️';
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+        }
+
+        .cell-input {
+            width: 100%;
+            border: 2px solid #007bff;
+            padding: 4px;
+            text-align: right;
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            background: #fff;
+        }
+
+        .edit-mode-banner {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 999;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .save-changes-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
         .section-divider {
             height: 3px;
             background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
@@ -233,6 +287,16 @@
     <!-- 返回按鈕 -->
     <button class="btn btn-primary return-button" onclick="window.close()">
         <i class="fas fa-arrow-left me-1"></i>返回
+    </button>
+
+    <!-- 編輯模式提示 -->
+    <div class="edit-mode-banner" id="editModeBanner">
+        <i class="fas fa-edit me-2"></i>編輯模式已啟用 - 點擊數字進行修改
+    </div>
+
+    <!-- 保存變更按鈕 -->
+    <button class="btn btn-success btn-lg save-changes-btn" id="saveChangesBtn" onclick="saveChanges()">
+        <i class="fas fa-save me-2"></i>保存變更
     </button>
 
     <div class="container-fluid">
@@ -573,6 +637,9 @@
 
                 <!-- 操作按鈕 -->
                 <div class="text-center mt-4">
+                    <button class="btn btn-warning btn-lg me-3" onclick="toggleEditMode()">
+                        <i class="fas fa-edit me-2"></i><span id="editBtnText">啟用編輯模式</span>
+                    </button>
                     <button class="btn btn-info btn-lg me-3" onclick="printReport()">
                         <i class="fas fa-print me-2"></i>列印報表
                     </button>
@@ -589,6 +656,69 @@
         // Google Sheets API 設定
         const SHEET_ID = '1x32_JhOr0BTeoiS3gaw48Le8mJtiwd597DOjKyInoeU';
         const SHEET_GID = '687531515'; // 深耕計劃經費追蹤表
+        const WEB_APP_URL = localStorage.getItem('budgetSyncUrl') || ''; // Apps Script Web App URL（部署後貼上）
+        
+        // 編輯模式狀態
+        let isEditMode = false;
+        let originalData = null;
+        let modifiedCells = new Map(); // 儲存被修改的儲存格 {cellId: {oldValue, newValue, row, col}}
+        
+        // 將語義欄位對應到試算表座標（零基 index）
+        const coordMap = {
+            // 申請數明細 R2-R4
+            'request.personnelAmount': { row: 2, col: 12 },
+            'request.matchPersonnelAmount': { row: 2, col: 15 },
+            'request.affairsAmount': { row: 3, col: 12 },
+            'request.matchAffairsAmount': { row: 3, col: 15 },
+            'request.capitalAmount': { row: 4, col: 12 },
+            'request.matchCapitalAmount': { row: 4, col: 15 },
+            // 申請數小計/總計/比例（來源數值，前端禁止寫入以保護公式）
+            'request.totalSubsidy': { row: 5, col: 10, writable: false, reason: '衍生公式欄位' },
+            'request.totalMatching': { row: 5, col: 13, writable: false, reason: '衍生公式欄位' },
+            'request.total': { row: 6, col: 10, writable: false, reason: '衍生公式欄位' },
+            'request.capitalRatio': { row: 9, col: 10, writable: false, reason: '衍生公式欄位' },
+            // 申請數範疇 R2 C2-C9
+            'request.scope1Subsidy': { row: 2, col: 2 },
+            'request.scope1Matching': { row: 2, col: 3 },
+            'request.scope2Subsidy': { row: 2, col: 4 },
+            'request.scope2Matching': { row: 2, col: 5 },
+            'request.scope3Subsidy': { row: 2, col: 6 },
+            'request.scope3Matching': { row: 2, col: 7 },
+            'request.scope4Subsidy': { row: 2, col: 8 },
+            'request.scope4Matching': { row: 2, col: 9 },
+            // 執行進度明細 R15-R17
+            'execution.personnelAmount': { row: 15, col: 12 },
+            'execution.matchPersonnelAmount': { row: 15, col: 15 },
+            'execution.affairsAmount': { row: 16, col: 12 },
+            'execution.matchAffairsAmount': { row: 16, col: 15 },
+            'execution.capitalAmount': { row: 17, col: 12 },
+            'execution.matchCapitalAmount': { row: 17, col: 15 },
+            // 執行進度小計/總計（來源數值，前端禁止寫入以保護公式）
+            'execution.totalSubsidy': { row: 18, col: 10, writable: false, reason: '衍生公式欄位' },
+            'execution.totalMatching': { row: 18, col: 13, writable: false, reason: '衍生公式欄位' },
+            'execution.total': { row: 19, col: 10, writable: false, reason: '衍生公式欄位' },
+            // 執行進度範疇 R15 C2-C9
+            'execution.scope1Subsidy': { row: 15, col: 2 },
+            'execution.scope1Matching': { row: 15, col: 3 },
+            'execution.scope2Subsidy': { row: 15, col: 4 },
+            'execution.scope2Matching': { row: 15, col: 5 },
+            'execution.scope3Subsidy': { row: 15, col: 6 },
+            'execution.scope3Matching': { row: 15, col: 7 },
+            'execution.scope4Subsidy': { row: 15, col: 8 },
+            'execution.scope4Matching': { row: 15, col: 9 }
+        };
+
+        // 可寫入的欄位白名單（簡化版：預設允許，除非明確標記為 writable: false）
+        function isWritableField(semanticKey) {
+            const mapping = coordMap[semanticKey];
+            if (!mapping) return false;
+            // 若未指定 writable，預設為 true（允許）
+            if (mapping.writable === false) {
+                console.warn(`欄位已受保護，不允許寫入: ${semanticKey} (${mapping.reason})`);
+                return false;
+            }
+            return true;
+        }
         
         // 資料結構
         let budgetData = {
@@ -1145,6 +1275,9 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOMContentLoaded: 開始載入經費資料...');
             
+            // 先檢查本地儲存
+            loadSavedData();
+            
             // 先顯示預設資料（立即可見）
             updatePageWithData();
             
@@ -1179,6 +1312,368 @@
             showUpdateReminder();
             console.log('深耕計劃經費追蹤表載入完成');
         };
+
+        // 切換編輯模式
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            const banner = document.getElementById('editModeBanner');
+            const saveBtn = document.getElementById('saveChangesBtn');
+            const editBtnText = document.getElementById('editBtnText');
+            
+            if (isEditMode) {
+                // 啟用編輯模式
+                banner.style.display = 'block';
+                editBtnText.textContent = '關閉編輯模式';
+                originalData = JSON.parse(JSON.stringify(budgetData));
+                modifiedCells.clear();
+                
+                // 為所有可編輯的儲存格添加點擊事件
+                enableEditableCells();
+                
+                console.log('✓ 編輯模式已啟用');
+            } else {
+                // 關閉編輯模式
+                banner.style.display = 'none';
+                saveBtn.style.display = 'none';
+                editBtnText.textContent = '啟用編輯模式';
+                
+                // 移除所有編輯相關的class和事件
+                disableEditableCells();
+                
+                console.log('✓ 編輯模式已關閉');
+            }
+        }
+
+        // 啟用可編輯儲存格
+        function enableEditableCells() {
+            // 為所有數字儲存格添加editable-cell class
+            const cells = document.querySelectorAll('.amount-cell');
+            cells.forEach(cell => {
+                if (!cell.classList.contains('editable-cell')) {
+                    cell.classList.add('editable-cell');
+                    cell.addEventListener('click', handleCellClick);
+                }
+            });
+        }
+
+        // 停用可編輯儲存格
+        function disableEditableCells() {
+            const cells = document.querySelectorAll('.editable-cell');
+            cells.forEach(cell => {
+                cell.classList.remove('editable-cell');
+                cell.removeEventListener('click', handleCellClick);
+            });
+        }
+
+        // 處理儲存格點擊
+        function handleCellClick(event) {
+            if (!isEditMode) return;
+            
+            const cell = event.currentTarget;
+            const cellId = cell.id;
+            
+            // 檢查是否為可寫入欄位（若有 ID 則驗證）
+            if (cellId) {
+                let semanticKey = null;
+                if (cellId === 'totalSubsidyCell') semanticKey = 'request.totalSubsidy';
+                else if (cellId === 'totalMatchingCell') semanticKey = 'request.totalMatching';
+                else if (cellId === 'totalCell') semanticKey = 'request.total';
+                else if (cellId === 'execTotalSubsidyCell') semanticKey = 'execution.totalSubsidy';
+                else if (cellId === 'execTotalMatchingCell') semanticKey = 'execution.totalMatching';
+                else if (cellId === 'execTotalCell') semanticKey = 'execution.total';
+                
+                if (semanticKey && !isWritableField(semanticKey)) {
+                    alert(`此欄位為衍生公式欄位，不允許直接編輯。\n請修改來源數值（人事費、業務費、資本門等）。`);
+                    return;
+                }
+            }
+            
+            const currentValue = cell.textContent.replace(/[,\s]/g, '');
+            
+            // 如果已經是輸入框,不再創建
+            if (cell.querySelector('input')) return;
+            
+            // 創建輸入框
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'cell-input';
+            input.value = currentValue === '-' || currentValue === '無法取得' ? '' : currentValue;
+            
+            // 保存原始內容
+            const originalContent = cell.innerHTML;
+            
+            // 替換為輸入框
+            cell.innerHTML = '';
+            cell.appendChild(input);
+            input.focus();
+            input.select();
+            
+            // 處理輸入完成
+            const finishEdit = () => {
+                const newValue = input.value.trim();
+                
+                if (newValue === '') {
+                    // 空值恢復原內容
+                    cell.innerHTML = originalContent;
+                } else {
+                    const numValue = parseInt(newValue);
+                    if (isNaN(numValue)) {
+                        alert('請輸入有效的數字');
+                        cell.innerHTML = originalContent;
+                    } else {
+                        // 更新顯示
+                        cell.textContent = numValue.toLocaleString('en-US');
+                        
+                        // 記錄修改
+                        const cellId = cell.id || cell.className;
+                        modifiedCells.set(cellId, {
+                            element: cell,
+                            oldValue: currentValue,
+                            newValue: numValue,
+                            originalContent: originalContent
+                        });
+                        
+                        // 更新 budgetData
+                        updateBudgetData(cell, numValue);
+                        
+                        // 顯示保存按鈕
+                        document.getElementById('saveChangesBtn').style.display = 'block';
+                        
+                        console.log(`✓ 儲存格已修改: ${cellId} = ${numValue}`);
+                    }
+                }
+            };
+            
+            // 按Enter或失去焦點時完成編輯
+            input.addEventListener('blur', finishEdit);
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    finishEdit();
+                }
+            });
+        }
+
+        // 更新 budgetData 物件
+        function updateBudgetData(cell, newValue) {
+            const cellId = cell.id;
+            const cellClass = cell.className;
+            
+            // 根據 ID 或 class 更新對應的資料
+            if (cellId.includes('request')) {
+                if (cellId.includes('Personnel')) budgetData.request.personnelAmount = newValue;
+                else if (cellId.includes('Affairs')) budgetData.request.affairsAmount = newValue;
+                else if (cellId.includes('Capital')) budgetData.request.capitalAmount = newValue;
+            } else if (cellId.includes('match')) {
+                if (cellId.includes('Personnel')) budgetData.request.matchPersonnelAmount = newValue;
+                else if (cellId.includes('Affairs')) budgetData.request.matchAffairsAmount = newValue;
+                else if (cellId.includes('Capital')) budgetData.request.matchCapitalAmount = newValue;
+            } else if (cellId.includes('exec')) {
+                if (cellId.includes('Personnel')) budgetData.execution.personnelAmount = newValue;
+                else if (cellId.includes('Affairs')) budgetData.execution.affairsAmount = newValue;
+                else if (cellId.includes('Capital')) budgetData.execution.capitalAmount = newValue;
+                else if (cellId.includes('TotalSubsidy')) budgetData.execution.totalSubsidy = newValue;
+                else if (cellId.includes('TotalMatching')) budgetData.execution.totalMatching = newValue;
+                else if (cellId.includes('Total')) budgetData.execution.total = newValue;
+            } else if (cellClass.includes('scope')) {
+                // 處理範疇資料
+                if (cellClass.includes('scope1-subsidy')) budgetData.request.scope1Subsidy = newValue;
+                else if (cellClass.includes('scope1-matching')) budgetData.request.scope1Matching = newValue;
+                else if (cellClass.includes('scope2-subsidy')) budgetData.request.scope2Subsidy = newValue;
+                else if (cellClass.includes('scope2-matching')) budgetData.request.scope2Matching = newValue;
+                else if (cellClass.includes('scope3-subsidy')) budgetData.request.scope3Subsidy = newValue;
+                else if (cellClass.includes('scope3-matching')) budgetData.request.scope3Matching = newValue;
+                else if (cellClass.includes('scope4-subsidy')) budgetData.request.scope4Subsidy = newValue;
+                else if (cellClass.includes('scope4-matching')) budgetData.request.scope4Matching = newValue;
+                else if (cellClass.includes('exec-scope1-subsidy')) budgetData.execution.scope1Subsidy = newValue;
+                else if (cellClass.includes('exec-scope1-matching')) budgetData.execution.scope1Matching = newValue;
+                else if (cellClass.includes('exec-scope2-subsidy')) budgetData.execution.scope2Subsidy = newValue;
+                else if (cellClass.includes('exec-scope2-matching')) budgetData.execution.scope2Matching = newValue;
+                else if (cellClass.includes('exec-scope3-subsidy')) budgetData.execution.scope3Subsidy = newValue;
+                else if (cellClass.includes('exec-scope3-matching')) budgetData.execution.scope3Matching = newValue;
+                else if (cellClass.includes('exec-scope4-subsidy')) budgetData.execution.scope4Subsidy = newValue;
+                else if (cellClass.includes('exec-scope4-matching')) budgetData.execution.scope4Matching = newValue;
+            }
+        }
+
+        // 保存變更
+        function saveChanges() {
+            if (modifiedCells.size === 0) {
+                alert('沒有需要保存的變更');
+                return;
+            }
+            
+            // 顯示確認對話框
+            const changesList = Array.from(modifiedCells.entries())
+                .map(([cellId, data]) => `${cellId}: ${data.oldValue} → ${data.newValue}`)
+                .join('\n');
+            
+            const confirmed = confirm(`確定要保存以下變更嗎?\n\n${changesList}\n\n注意：這些變更只會在瀏覽器中保存，不會同步到Google Sheets。`);
+            
+            if (!confirmed) return;
+
+            // 僅提交實際修改過的欄位：由 modifiedCells 生成 payload
+            const changes = [];
+            for (const [cellId, data] of modifiedCells.entries()) {
+                // 解析語義鍵或依 ID/class 推斷對應欄位
+                let semanticKey = null;
+                const cls = data.element.className || '';
+                const id = data.element.id || '';
+
+                // 由 id 推斷（優先）
+                if (id === 'requestPersonnelCell') semanticKey = 'request.personnelAmount';
+                else if (id === 'matchPersonnelCell') semanticKey = 'request.matchPersonnelAmount';
+                else if (id === 'requestAffairsCell') semanticKey = 'request.affairsAmount';
+                else if (id === 'matchAffairsCell') semanticKey = 'request.matchAffairsAmount';
+                else if (id === 'requestCapitalCell') semanticKey = 'request.capitalAmount';
+                else if (id === 'matchCapitalCell') semanticKey = 'request.matchCapitalAmount';
+                else if (id === 'totalSubsidyCell') semanticKey = 'request.totalSubsidy';
+                else if (id === 'totalMatchingCell') semanticKey = 'request.totalMatching';
+                else if (id === 'totalCell') semanticKey = 'request.total';
+                else if (id === 'execTotalSubsidyCell') semanticKey = 'execution.totalSubsidy';
+                else if (id === 'execTotalMatchingCell') semanticKey = 'execution.totalMatching';
+                else if (id === 'execTotalCell') semanticKey = 'execution.total';
+                else if (id === 'execPersonnelCell') semanticKey = 'execution.personnelAmount';
+                else if (id === 'execMatchPersonnelCell') semanticKey = 'execution.matchPersonnelAmount';
+                else if (id === 'execAffairsCell') semanticKey = 'execution.affairsAmount';
+                else if (id === 'execMatchAffairsCell') semanticKey = 'execution.matchAffairsAmount';
+                else if (id === 'execCapitalCell') semanticKey = 'execution.capitalAmount';
+                else if (id === 'execMatchCapitalCell') semanticKey = 'execution.matchCapitalAmount';
+                
+                // 由 class 推斷（範疇）
+                if (!semanticKey) {
+                    if (cls.includes('scope1-subsidy')) semanticKey = 'request.scope1Subsidy';
+                    else if (cls.includes('scope1-matching')) semanticKey = 'request.scope1Matching';
+                    else if (cls.includes('scope2-subsidy')) semanticKey = 'request.scope2Subsidy';
+                    else if (cls.includes('scope2-matching')) semanticKey = 'request.scope2Matching';
+                    else if (cls.includes('scope3-subsidy')) semanticKey = 'request.scope3Subsidy';
+                    else if (cls.includes('scope3-matching')) semanticKey = 'request.scope3Matching';
+                    else if (cls.includes('scope4-subsidy')) semanticKey = 'request.scope4Subsidy';
+                    else if (cls.includes('scope4-matching')) semanticKey = 'request.scope4Matching';
+                    else if (cls.includes('exec-scope1-subsidy')) semanticKey = 'execution.scope1Subsidy';
+                    else if (cls.includes('exec-scope1-matching')) semanticKey = 'execution.scope1Matching';
+                    else if (cls.includes('exec-scope2-subsidy')) semanticKey = 'execution.scope2Subsidy';
+                    else if (cls.includes('exec-scope2-matching')) semanticKey = 'execution.scope2Matching';
+                    else if (cls.includes('exec-scope3-subsidy')) semanticKey = 'execution.scope3Subsidy';
+                    else if (cls.includes('exec-scope3-matching')) semanticKey = 'execution.scope3Matching';
+                    else if (cls.includes('exec-scope4-subsidy')) semanticKey = 'execution.scope4Subsidy';
+                    else if (cls.includes('exec-scope4-matching')) semanticKey = 'execution.scope4Matching';
+                }
+
+                if (!semanticKey) {
+                    console.warn('無法辨識修改的欄位對應:', cellId);
+                    continue;
+                }
+
+                // 白名單檢查：禁止寫入衍生公式欄位
+                if (!isWritableField(semanticKey)) {
+                    console.warn(`跳過受保護欄位: ${semanticKey}`);
+                    continue;
+                }
+
+                const mapping = coordMap[semanticKey];
+                if (!mapping) {
+                    console.warn('缺少座標對映:', semanticKey);
+                    continue;
+                }
+
+                changes.push({ row: mapping.row, col: mapping.col, value: data.newValue });
+            }
+
+            // 若使用者只改了部分儲存格，也保留全部語義欄位寫入，確保一致性
+            const payload = {
+                sheetName: '深耕計劃經費追蹤表',
+                changes
+            };
+
+            // 若未設定 Web App URL，先提示設定再僅本地保存
+            if (!WEB_APP_URL) {
+                alert('尚未設定同步目的地（Apps Script Web App URL）。僅保存到本地瀏覽器。\n請在部署後按下列步驟設定同步 URL。');
+            }
+
+            // 先保存到本地
+            localStorage.setItem('budgetData', JSON.stringify(budgetData));
+            localStorage.setItem('budgetLastModified', new Date().toISOString());
+
+            // 重新計算執行率
+            budgetData.rate.scope1 = budgetData.request.scope1Subsidy > 0 
+                ? (budgetData.execution.scope1Subsidy / budgetData.request.scope1Subsidy * 100).toFixed(2)
+                : 0;
+            budgetData.rate.scope2 = budgetData.request.scope2Subsidy > 0 
+                ? (budgetData.execution.scope2Subsidy / budgetData.request.scope2Subsidy * 100).toFixed(2)
+                : 0;
+            budgetData.rate.scope3 = budgetData.request.scope3Subsidy > 0 
+                ? (budgetData.execution.scope3Subsidy / budgetData.request.scope3Subsidy * 100).toFixed(2)
+                : 0;
+            budgetData.rate.scope4 = budgetData.request.scope4Subsidy > 0 
+                ? (budgetData.execution.scope4Subsidy / budgetData.request.scope4Subsidy * 100).toFixed(2)
+                : 0;
+            budgetData.rate.total = budgetData.request.totalSubsidy > 0 
+                ? (budgetData.execution.totalSubsidy / budgetData.request.totalSubsidy * 100).toFixed(2)
+                : 0;
+
+            // 更新頁面顯示
+            updatePageWithData();
+
+            // 嘗試同步到 Apps Script（若已設定 URL）
+            (async () => {
+                if (!WEB_APP_URL) {
+                    console.log('未設定 Web App URL，略過遠端同步');
+                    alert('本地保存完成。設定同步 URL 後即可寫入 Google Sheets。');
+                    modifiedCells.clear();
+                    document.getElementById('saveChangesBtn').style.display = 'none';
+                    return;
+                }
+                try {
+                    // 同步狀態提示
+                    const saveBtn = document.getElementById('saveChangesBtn');
+                    const originalBtnHTML = saveBtn.innerHTML;
+                    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>同步中...';
+                    saveBtn.disabled = true;
+
+                    const res = await fetch(WEB_APP_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const json = await res.json();
+                    if (json.ok) {
+                        alert('同步成功（Google Sheets 已更新）');
+                        console.log('✓ 遠端同步成功');
+                        modifiedCells.clear();
+                        document.getElementById('saveChangesBtn').style.display = 'none';
+                        saveBtn.disabled = false;
+                        saveBtn.innerHTML = originalBtnHTML;
+                    } else {
+                        throw new Error(json.error || 'unknown error');
+                    }
+                } catch (err) {
+                    console.error('同步失敗:', err);
+                    alert('同步失敗，已保留本地保存。可稍後重試。');
+                    const saveBtn = document.getElementById('saveChangesBtn');
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = '<i class="fas fa-save me-2"></i>保存變更';
+                }
+            })();
+        }
+
+        // 在載入時檢查是否有儲存的資料
+        function loadSavedData() {
+            const savedData = localStorage.getItem('budgetData');
+            if (savedData) {
+                try {
+                    const parsed = JSON.parse(savedData);
+                    const lastModified = localStorage.getItem('budgetLastModified');
+                    
+                    if (confirm(`發現本地儲存的修改資料（最後修改：${new Date(lastModified).toLocaleString()}）\n要載入這些資料嗎？`)) {
+                        budgetData = parsed;
+                        updatePageWithData();
+                        console.log('✓ 已載入本地儲存的資料');
+                    }
+                } catch (e) {
+                    console.error('載入本地資料失敗:', e);
+                }
+            }
+        }
     </script>
 </body>
 </html>
