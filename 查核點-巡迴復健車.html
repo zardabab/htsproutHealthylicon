@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>查核點文件管理 - 巡迴復健車部署與服務</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .upload-area {
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            background: #f8f9fd;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .upload-area:hover {
+            background: #e8ebf9;
+            border-color: #764ba2;
+        }
+        .file-item {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>📋 查核點文件管理</h1>
+            <p class="mb-0">巡迴復健車部署與服務</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="content-card">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 style="color: #667eea;">巡迴復健車部署與服務</h3>
+                    <p class="text-muted mb-0">查核期限：115 年 3 月 31 日</p>
+                </div>
+                <button class="btn btn-outline-secondary" onclick="window.close()">返回</button>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>📌 查核點說明：</strong>部署 1 輛巡迴復健車，服務 2 個偏鄉站點（每月 30 人次檢查與遠距診療）
+            </div>
+
+            <div class="card" style="border-left: 4px solid #667eea; margin: 20px 0;">
+                <div class="card-body">
+                    <h5 class="mb-3">📊 執行進度</h5>
+                    <div class="row align-items-center">
+                        <div class="col-md-3">
+                            <label class="form-label">完成度</label>
+                            <input type="number" class="form-control" id="progressValue" min="0" max="100" value="0" onchange="updateProgress()">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">狀態</label>
+                            <select class="form-select" id="statusSelect" onchange="updateProgress()">
+                                <option value="未開始">未開始</option>
+                                <option value="進行中" selected>進行中</option>
+                                <option value="已完成">已完成</option>
+                                <option value="延遲">延遲</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">進度條</label>
+                            <div class="progress" style="height: 30px;">
+                                <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%; background-color: #667eea;">0%</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <small class="text-muted">最後更新：<span id="lastUpdate">尚未更新</span></small>
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="mt-4 mb-3">📁 文件上傳</h5>
+            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                <input type="file" id="fileInput" style="display: none;" multiple onchange="handleFileUpload(event)">
+                <h4 style="color: #667eea;">📤 點擊或拖曳文件到此處上傳</h4>
+                <p class="text-muted">支援 PDF, DOC, DOCX, XLS, XLSX, JPG, PNG 等格式</p>
+            </div>
+
+            <h5 class="mt-5 mb-3">📄 已上傳文件</h5>
+            <div id="fileList">
+                <p class="text-muted">目前尚無上傳文件</p>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h5 class="mb-3">💬 備註與進度記錄</h5>
+            <textarea class="form-control mb-3" rows="5" placeholder="輸入備註或進度更新..." id="noteArea"></textarea>
+            <button class="btn btn-primary" onclick="saveNote()">儲存備註</button>
+            
+            <div id="notesList" class="mt-4">
+                <!-- 備註列表 -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const storageKey = 'checkpoint-mobile-rehab';
+        
+        function updateProgress() {
+            const progressValue = document.getElementById('progressValue').value;
+            const statusSelect = document.getElementById('statusSelect').value;
+            const progressBar = document.getElementById('progressBar');
+            const lastUpdate = document.getElementById('lastUpdate');
+            
+            progressBar.style.width = progressValue + '%';
+            progressBar.textContent = progressValue + '%';
+            
+            // 根據狀態改變顏色
+            if (statusSelect === '已完成') {
+                progressBar.style.backgroundColor = '#28a745';
+            } else if (statusSelect === '延遲') {
+                progressBar.style.backgroundColor = '#dc3545';
+            } else if (statusSelect === '進行中') {
+                progressBar.style.backgroundColor = '#667eea';
+            } else {
+                progressBar.style.backgroundColor = '#6c757d';
+            }
+            
+            // 儲存進度
+            const progressData = {
+                value: progressValue,
+                status: statusSelect,
+                lastUpdate: new Date().toISOString()
+            };
+            localStorage.setItem(storageKey + '-progress', JSON.stringify(progressData));
+            
+            // 更新顯示時間
+            lastUpdate.textContent = new Date().toLocaleString('zh-TW');
+        }
+        
+        function loadProgress() {
+            const progressData = JSON.parse(localStorage.getItem(storageKey + '-progress') || '{}');
+            if (progressData.value) {
+                document.getElementById('progressValue').value = progressData.value;
+                document.getElementById('statusSelect').value = progressData.status || '進行中';
+                updateProgress();
+                if (progressData.lastUpdate) {
+                    document.getElementById('lastUpdate').textContent = new Date(progressData.lastUpdate).toLocaleString('zh-TW');
+                }
+            }
+        }
+        
+        function handleFileUpload(event) {
+            const files = event.target.files;
+            const fileList = document.getElementById('fileList');
+            fileList.innerHTML = '';
+            
+            const existingFiles = JSON.parse(localStorage.getItem(storageKey + '-files') || '[]');
+            
+            for (let file of files) {
+                existingFiles.push({
+                    name: file.name,
+                    size: file.size,
+                    date: new Date().toISOString()
+                });
+            }
+            
+            localStorage.setItem(storageKey + '-files', JSON.stringify(existingFiles));
+            displayFiles();
+        }
+        
+        function displayFiles() {
+            const fileList = document.getElementById('fileList');
+            const files = JSON.parse(localStorage.getItem(storageKey + '-files') || '[]');
+            
+            if (files.length === 0) {
+                fileList.innerHTML = '<p class="text-muted">目前尚無上傳文件</p>';
+                return;
+            }
+            
+            fileList.innerHTML = '';
+            files.forEach((file, index) => {
+                const date = new Date(file.date).toLocaleString('zh-TW');
+                const size = (file.size / 1024).toFixed(2);
+                fileList.innerHTML += `
+                    <div class="file-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>${file.name}</strong>
+                            <br>
+                            <small class="text-muted">上傳時間：${date} | 大小：${size} KB</small>
+                        </div>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteFile(${index})">刪除</button>
+                    </div>
+                `;
+            });
+        }
+        
+        function deleteFile(index) {
+            const files = JSON.parse(localStorage.getItem(storageKey + '-files') || '[]');
+            files.splice(index, 1);
+            localStorage.setItem(storageKey + '-files', JSON.stringify(files));
+            displayFiles();
+        }
+        
+        function saveNote() {
+            const noteArea = document.getElementById('noteArea');
+            const note = noteArea.value.trim();
+            if (!note) return;
+            
+            const notes = JSON.parse(localStorage.getItem(storageKey + '-notes') || '[]');
+            notes.unshift({
+                content: note,
+                date: new Date().toISOString()
+            });
+            
+            localStorage.setItem(storageKey + '-notes', JSON.stringify(notes));
+            noteArea.value = '';
+            displayNotes();
+        }
+        
+        function displayNotes() {
+            const notesList = document.getElementById('notesList');
+            const notes = JSON.parse(localStorage.getItem(storageKey + '-notes') || '[]');
+            
+            if (notes.length === 0) return;
+            
+            notesList.innerHTML = '<h6 class="mt-3">歷史記錄</h6>';
+            notes.forEach(note => {
+                const date = new Date(note.date).toLocaleString('zh-TW');
+                notesList.innerHTML += `
+                    <div class="file-item">
+                        <small class="text-muted">${date}</small>
+                        <p class="mb-0 mt-1">${note.content}</p>
+                    </div>
+                `;
+            });
+        }
+        
+        // 初始化
+        loadProgress();
+        displayFiles();
+        displayNotes();
+    </script>
+</body>
+</html>

@@ -186,61 +186,363 @@
         <div class="tab-content pt-3" id="myTabContent">
             
             <div class="tab-pane fade show active" id="kpi" role="tabpanel" aria-labelledby="kpi-tab">
-                <div class="section-title"><h2>關鍵績效指標 (KPI) - 年度目標達成概況</h2></div>
-                <div id="kpi-container">
-                    <div id="kpi-dynamic"></div>
-
-                    <!-- 115 年 3 月 31 日查核點折頁（固定區塊，位於 kpi-container 內） -->
-                    <div class="card" style="margin-bottom: 16px; border: none;">
-                        <div class="card-body" style="background: #f9fbfd; border: 1px solid #e6edf3; border-radius: 8px;">
-                            <h4 style="font-size: 18px; color: #0b5ed7; margin-bottom: 12px;">115 年 3 月 31 日查核點</h4>
-                            <div class="accordion" id="kpiAccordion">
-                                <!-- 範疇一 -->
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="heading-scope1">
-                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-scope1" aria-expanded="true" aria-controls="collapse-scope1">
-                                            範疇一、優化醫療工作條件
-                                        </button>
-                                    </h2>
-                                    <div id="collapse-scope1" class="accordion-collapse collapse show" aria-labelledby="heading-scope1" data-bs-parent="#kpiAccordion">
-                                        <div class="accordion-body">
-                                            <ul style="margin: 0;">
-                                                <li><strong>查核點：</strong>制定初步轉診協議</li>
-                                                <li><strong>說明：</strong>訂定初期的轉診協議</li>
-                                            </ul>
+                <!-- 將查核點折頁放在 KPI 標籤後面（KPI 分頁頂部） -->
+                <div class="accordion" id="checkpointAccordion" style="margin: 12px 0 16px 0;">
+                    <div class="accordion-item" style="border: 1px solid #e6edf3; border-radius: 8px; overflow: hidden;">
+                        <h2 class="accordion-header" id="heading-115-0331">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-115-0331" aria-expanded="false" aria-controls="collapse-115-0331">
+                                115 年 3 月 31 日查核點
+                            </button>
+                        </h2>
+                        <div id="collapse-115-0331" class="accordion-collapse collapse" aria-labelledby="heading-115-0331" data-bs-parent="#checkpointAccordion">
+                            <div class="accordion-body" style="background: #f9fbfd;">
+                                <div class="card-container">
+                                    <div class="kpi-card">
+                                        <h3 style="
+                                            color: #fff;
+                                            font-size: 16px; 
+                                            font-weight: 700; 
+                                            font-family: 'Segoe UI', 'Arial', sans-serif;
+                                            margin-bottom: 12px; 
+                                            margin-top: 0; 
+                                            line-height: 1.3;
+                                            letter-spacing: 1px;
+                                            position: relative;
+                                            padding: 12px 20px;
+                                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                            border-radius: 15px;
+                                            box-shadow: 
+                                                0 8px 32px rgba(102, 126, 234, 0.3),
+                                                0 0 0 1px rgba(255, 255, 255, 0.1),
+                                                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                                            animation: slideInGlow 0.8s ease-out forwards, pulseGlow 2s ease-in-out infinite alternate;
+                                            transform: translateY(-20px);
+                                            opacity: 0;
+                                            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+                                            overflow: hidden;
+                                        ">
+                                            <span style="
+                                                position: relative;
+                                                z-index: 2;
+                                                display: flex;
+                                                align-items: center;
+                                                gap: 8px;
+                                                justify-content: space-between;
+                                                width: 100%;
+                                            ">
+                                                <span style="display: flex; align-items: center; gap: 8px;">
+                                                    <span style="display: inline-block; animation: bounce 2s ease-in-out infinite;">🚀</span>
+                                                    制定初步轉診協議
+                                                </span>
+                                            </span>
+                                            <div style="
+                                                position: absolute;
+                                                top: 0;
+                                                left: -100%;
+                                                width: 100%;
+                                                height: 100%;
+                                                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+                                                animation: shimmer 3s ease-in-out infinite;
+                                            "></div>
+                                        </h3>
+                                        <style>
+                                            @keyframes slideInGlow {
+                                                0% { transform: translateY(-30px) scale(0.8); opacity: 0; filter: blur(10px); }
+                                                50% { transform: translateY(-5px) scale(1.05); opacity: 0.7; filter: blur(2px); }
+                                                100% { transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
+                                            }
+                                            @keyframes pulseGlow {
+                                                0% { box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3), 0 0 0 1px rgba(255,255,255,0.1), inset 0 1px 0 rgba(255,255,255,0.2); }
+                                                100% { box-shadow: 0 12px 40px rgba(102, 126, 234, 0.5), 0 0 0 1px rgba(255,255,255,0.2), inset 0 1px 0 rgba(255,255,255,0.3); }
+                                            }
+                                            @keyframes shimmer {
+                                                0% { left: -100%; }
+                                                50% { left: 100%; }
+                                                100% { left: 100%; }
+                                            }
+                                            @keyframes bounce {
+                                                0%, 100% { transform: translateY(0) rotate(0deg); }
+                                                25% { transform: translateY(-3px) rotate(-5deg); }
+                                                75% { transform: translateY(-1px) rotate(5deg); }
+                                            }
+                                        </style>
+                                        <p style="color:#666; font-size: 13px; margin: 6px 0 8px;">訂定初期的轉診協議</p>
+                                        <div style="margin: 10px 0;">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <small style="color: #666;">執行進度：</small>
+                                                <span class="badge" id="status-badge-1" style="background-color: #667eea;">進行中</span>
+                                            </div>
+                                            <div class="progress" style="height: 8px;">
+                                                <div id="progress-bar-1" class="progress-bar" role="progressbar" style="width: 0%; background-color: #667eea;"></div>
+                                            </div>
+                                            <small class="text-muted" id="progress-text-1">0%</small>
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-outline-primary btn-sm" onclick="showCheckpointDetail('制定初步轉診協議', '訂定初期的轉診協議', '查核點-轉診協議.html')">文件管理</button>
                                         </div>
                                     </div>
-                                </div>
-
-                                <!-- 範疇二 -->
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="heading-scope2">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-scope2" aria-expanded="false" aria-controls="collapse-scope2">
-                                            範疇二、規劃多元人才培訓
-                                        </button>
-                                    </h2>
-                                    <div id="collapse-scope2" class="accordion-collapse collapse" aria-labelledby="heading-scope2" data-bs-parent="#kpiAccordion">
-                                        <div class="accordion-body">
-                                            <ul style="margin: 0;">
-                                                <li><strong>查核點：</strong>培訓課程設計與執行</li>
-                                                <li><strong>說明：</strong>培訓 5 名種子人員</li>
-                                            </ul>
-                                            <hr style="margin: 10px 0;">
-                                            <ul style="margin: 0;">
-                                                <li><strong>查核點：</strong>建置健康雲平台雛型，支援 FHIR 與 TW Core IG 標準，試點 10 例 AI 個人化健康促進建議</li>
-                                                <li><strong>說明：</strong>建置健康雲平台及其資料格式標準</li>
-                                            </ul>
-                                            <hr style="margin: 10px 0;">
-                                            <ul style="margin: 0;">
-                                                <li><strong>查核點：</strong>部署 1 輛巡迴復健車，服務 2 個偏鄉站點（每月 30 人次健康檢查與遠距診療）</li>
-                                                <li><strong>說明：</strong>提升偏鄉地區數位醫療服務的可近性、整合性與效率</li>
-                                            </ul>
+                                    <div class="kpi-card">
+                                        <h3 style="
+                                            color: #fff;
+                                            font-size: 16px; 
+                                            font-weight: 700; 
+                                            font-family: 'Segoe UI', 'Arial', sans-serif;
+                                            margin-bottom: 12px; 
+                                            margin-top: 0; 
+                                            line-height: 1.3;
+                                            letter-spacing: 1px;
+                                            position: relative;
+                                            padding: 12px 20px;
+                                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                            border-radius: 15px;
+                                            box-shadow: 
+                                                0 8px 32px rgba(102, 126, 234, 0.3),
+                                                0 0 0 1px rgba(255, 255, 255, 0.1),
+                                                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                                            animation: slideInGlow 0.8s ease-out forwards, pulseGlow 2s ease-in-out infinite alternate;
+                                            transform: translateY(-20px);
+                                            opacity: 0;
+                                            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+                                            overflow: hidden;
+                                        ">
+                                            <span style="
+                                                position: relative;
+                                                z-index: 2;
+                                                display: flex;
+                                                align-items: center;
+                                                gap: 8px;
+                                                justify-content: space-between;
+                                                width: 100%;
+                                            ">
+                                                <span style="display: flex; align-items: center; gap: 8px;">
+                                                    <span style="display: inline-block; animation: bounce 2s ease-in-out infinite;">🚀</span>
+                                                    培訓課程設計與執行
+                                                </span>
+                                            </span>
+                                            <div style="
+                                                position: absolute;
+                                                top: 0;
+                                                left: -100%;
+                                                width: 100%;
+                                                height: 100%;
+                                                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+                                                animation: shimmer 3s ease-in-out infinite;
+                                            "></div>
+                                        </h3>
+                                        <p style="color:#666; font-size: 13px; margin: 6px 0 8px;">培訓 5 名種子人員</p>
+                                        <div style="margin: 10px 0;">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <small style="color: #666;">執行進度：</small>
+                                                <span class="badge" id="status-badge-2" style="background-color: #667eea;">進行中</span>
+                                            </div>
+                                            <div class="progress" style="height: 8px;">
+                                                <div id="progress-bar-2" class="progress-bar" role="progressbar" style="width: 0%; background-color: #667eea;"></div>
+                                            </div>
+                                            <small class="text-muted" id="progress-text-2">0%</small>
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-outline-primary btn-sm" onclick="showCheckpointDetail('培訓課程設計與執行', '培訓 5 名種子人員', '查核點-培訓課程.html')">文件管理</button>
+                                        </div>
+                                    </div>
+                                    <div class="kpi-card">
+                                        <h3 style="
+                                            color: #fff;
+                                            font-size: 16px; 
+                                            font-weight: 700; 
+                                            font-family: 'Segoe UI', 'Arial', sans-serif;
+                                            margin-bottom: 12px; 
+                                            margin-top: 0; 
+                                            line-height: 1.3;
+                                            letter-spacing: 1px;
+                                            position: relative;
+                                            padding: 12px 20px;
+                                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                            border-radius: 15px;
+                                            box-shadow: 
+                                                0 8px 32px rgba(102, 126, 234, 0.3),
+                                                0 0 0 1px rgba(255, 255, 255, 0.1),
+                                                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                                            animation: slideInGlow 0.8s ease-out forwards, pulseGlow 2s ease-in-out infinite alternate;
+                                            transform: translateY(-20px);
+                                            opacity: 0;
+                                            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+                                            overflow: hidden;
+                                        ">
+                                            <span style="
+                                                position: relative;
+                                                z-index: 2;
+                                                display: flex;
+                                                align-items: center;
+                                                gap: 8px;
+                                                justify-content: space-between;
+                                                width: 100%;
+                                            ">
+                                                <span style="display: flex; align-items: center; gap: 8px;">
+                                                    <span style="display: inline-block; animation: bounce 2s ease-in-out infinite;">🚀</span>
+                                                    健康雲平台雛型 (FHIR/TW Core IG)
+                                                </span>
+                                            </span>
+                                            <div style="
+                                                position: absolute;
+                                                top: 0;
+                                                left: -100%;
+                                                width: 100%;
+                                                height: 100%;
+                                                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+                                                animation: shimmer 3s ease-in-out infinite;
+                                            "></div>
+                                        </h3>
+                                        <p style="color:#666; font-size: 13px; margin: 6px 0 8px;">試點 10 例 AI 個人化健康促進建議；建置健康雲平台及其資料格式標準</p>
+                                        <div style="margin: 10px 0;">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <small style="color: #666;">執行進度：</small>
+                                                <span class="badge" id="status-badge-3" style="background-color: #667eea;">進行中</span>
+                                            </div>
+                                            <div class="progress" style="height: 8px;">
+                                                <div id="progress-bar-3" class="progress-bar" role="progressbar" style="width: 0%; background-color: #667eea;"></div>
+                                            </div>
+                                            <small class="text-muted" id="progress-text-3">0%</small>
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-outline-primary btn-sm" onclick="showCheckpointDetail('健康雲平台雛型 (FHIR/TW Core IG)', '試點 10 例 AI 個人化健康促進建議；建置健康雲平台及其資料格式標準', '查核點-健康雲平台.html')">文件管理</button>
+                                        </div>
+                                    </div>
+                                    <div class="kpi-card">
+                                        <h3 style="
+                                            color: #fff;
+                                            font-size: 16px; 
+                                            font-weight: 700; 
+                                            font-family: 'Segoe UI', 'Arial', sans-serif;
+                                            margin-bottom: 12px; 
+                                            margin-top: 0; 
+                                            line-height: 1.3;
+                                            letter-spacing: 1px;
+                                            position: relative;
+                                            padding: 12px 20px;
+                                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                            border-radius: 15px;
+                                            box-shadow: 
+                                                0 8px 32px rgba(102, 126, 234, 0.3),
+                                                0 0 0 1px rgba(255, 255, 255, 0.1),
+                                                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                                            animation: slideInGlow 0.8s ease-out forwards, pulseGlow 2s ease-in-out infinite alternate;
+                                            transform: translateY(-20px);
+                                            opacity: 0;
+                                            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+                                            overflow: hidden;
+                                        ">
+                                            <span style="
+                                                position: relative;
+                                                z-index: 2;
+                                                display: flex;
+                                                align-items: center;
+                                                gap: 8px;
+                                                justify-content: space-between;
+                                                width: 100%;
+                                            ">
+                                                <span style="display: flex; align-items: center; gap: 8px;">
+                                                    <span style="display: inline-block; animation: bounce 2s ease-in-out infinite;">🚀</span>
+                                                    巡迴復健車部署與服務
+                                                </span>
+                                            </span>
+                                            <div style="
+                                                position: absolute;
+                                                top: 0;
+                                                left: -100%;
+                                                width: 100%;
+                                                height: 100%;
+                                                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+                                                animation: shimmer 3s ease-in-out infinite;
+                                            "></div>
+                                        </h3>
+                                        <p style="color:#666; font-size: 13px; margin: 6px 0 8px;">部署 1 輛巡迴復健車，服務 2 個偏鄉站點（每月 30 人次檢查與遠距診療）</p>
+                                        <div style="margin: 10px 0;">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <small style="color: #666;">執行進度：</small>
+                                                <span class="badge" id="status-badge-4" style="background-color: #667eea;">進行中</span>
+                                            </div>
+                                            <div class="progress" style="height: 8px;">
+                                                <div id="progress-bar-4" class="progress-bar" role="progressbar" style="width: 0%; background-color: #667eea;"></div>
+                                            </div>
+                                            <small class="text-muted" id="progress-text-4">0%</small>
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-outline-primary btn-sm" onclick="showCheckpointDetail('巡迴復健車部署與服務', '部署 1 輛巡迴復健車，服務 2 個偏鄉站點（每月 30 人次檢查與遠距診療）', '查核點-巡迴復健車.html')">文件管理</button>
+                                        </div>
+                                    </div>
+                                    <div class="kpi-card">
+                                        <h3 style="
+                                            color: #fff;
+                                            font-size: 16px; 
+                                            font-weight: 700; 
+                                            font-family: 'Segoe UI', 'Arial', sans-serif;
+                                            margin-bottom: 12px; 
+                                            margin-top: 0; 
+                                            line-height: 1.3;
+                                            letter-spacing: 1px;
+                                            position: relative;
+                                            padding: 12px 20px;
+                                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                            border-radius: 15px;
+                                            box-shadow: 
+                                                0 8px 32px rgba(102, 126, 234, 0.3),
+                                                0 0 0 1px rgba(255, 255, 255, 0.1),
+                                                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                                            animation: slideInGlow 0.8s ease-out forwards, pulseGlow 2s ease-in-out infinite alternate;
+                                            transform: translateY(-20px);
+                                            opacity: 0;
+                                            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+                                            overflow: hidden;
+                                        ">
+                                            <span style="
+                                                position: relative;
+                                                z-index: 2;
+                                                display: flex;
+                                                align-items: center;
+                                                gap: 8px;
+                                                justify-content: space-between;
+                                                width: 100%;
+                                            ">
+                                                <span style="display: flex; align-items: center; gap: 8px;">
+                                                    <span style="display: inline-block; animation: bounce 2s ease-in-out infinite;">🚀</span>
+                                                    部署 5G 網路基礎設施
+                                                </span>
+                                            </span>
+                                            <div style="
+                                                position: absolute;
+                                                top: 0;
+                                                left: -100%;
+                                                width: 100%;
+                                                height: 100%;
+                                                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+                                                animation: shimmer 3s ease-in-out infinite;
+                                            "></div>
+                                        </h3>
+                                        <p style="color:#666; font-size: 13px; margin: 6px 0 6px;">部署 5G 網路基礎設施於 3 家診所、2 處 C 級巷弄長照站及岡山秀傳智慧醫療示範中心，確保覆蓋率 90%</p>
+                                        <p style="color:#666; font-size: 13px; margin: 0 0 8px;">說明：社會責任醫療永續</p>
+                                        <div style="margin: 10px 0;">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <small style="color: #666;">執行進度：</small>
+                                                <span class="badge" id="status-badge-5" style="background-color: #667eea;">進行中</span>
+                                            </div>
+                                            <div class="progress" style="height: 8px;">
+                                                <div id="progress-bar-5" class="progress-bar" role="progressbar" style="width: 0%; background-color: #667eea;"></div>
+                                            </div>
+                                            <small class="text-muted" id="progress-text-5">0%</small>
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-outline-primary btn-sm" onclick="showCheckpointDetail('部署 5G 網路基礎設施', '部署 5G 網路基礎設施於 3 家診所、2 處 C 級巷弄長照站及岡山秀傳智慧醫療示範中心，確保覆蓋率 90%<br>說明：社會責任醫療永續', '查核點-5G基礎設施.html')">文件管理</button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div class="section-title"><h2>關鍵績效指標 (KPI) - 年度目標達成概況</h2></div>
+                <div id="kpi-container">
+                    <div id="kpi-dynamic"></div>
 
                     <!-- 共通性指標區域（導覽） -->
                     <div class="card" style="border: none;">
@@ -1024,6 +1326,7 @@
             renderKpiCards();
             renderRecruitment();
             renderFinance();
+            loadCheckpointProgress();
 
             const tabEl = document.getElementById('myTab');
             tabEl.addEventListener('shown.bs.tab', function (event) {
@@ -1074,6 +1377,91 @@
                 });
             }
         });
+
+        // 載入查核點進度到卡片上
+        function loadCheckpointProgress() {
+            const checkpoints = [
+                { id: 1, key: 'checkpoint-referral-agreement' },
+                { id: 2, key: 'checkpoint-training-design' },
+                { id: 3, key: 'checkpoint-health-cloud' },
+                { id: 4, key: 'checkpoint-mobile-rehab' },
+                { id: 5, key: 'checkpoint-5g-infrastructure' }
+            ];
+            
+            checkpoints.forEach(checkpoint => {
+                const progressData = JSON.parse(localStorage.getItem(checkpoint.key + '-progress') || '{}');
+                const progressBar = document.getElementById('progress-bar-' + checkpoint.id);
+                const progressText = document.getElementById('progress-text-' + checkpoint.id);
+                const statusBadge = document.getElementById('status-badge-' + checkpoint.id);
+                
+                if (progressBar && progressData.value) {
+                    const value = progressData.value || 0;
+                    const status = progressData.status || '進行中';
+                    
+                    progressBar.style.width = value + '%';
+                    progressText.textContent = value + '%';
+                    statusBadge.textContent = status;
+                    
+                    // 根據狀態改變顏色
+                    let color = '#667eea';
+                    if (status === '已完成') {
+                        color = '#28a745';
+                    } else if (status === '延遲') {
+                        color = '#dc3545';
+                    } else if (status === '未開始') {
+                        color = '#6c757d';
+                    }
+                    
+                    progressBar.style.backgroundColor = color;
+                    statusBadge.style.backgroundColor = color;
+                }
+            });
+        }
+        
+        // 顯示查核點詳細內容的模態框
+        function showCheckpointDetail(title, content, docPageUrl) {
+            const modal = document.getElementById('checkpointModal');
+            const modalTitle = document.getElementById('checkpointModalTitle');
+            const modalContent = document.getElementById('checkpointModalContent');
+            const manageDocBtn = document.getElementById('manageDocBtn');
+            
+            modalTitle.textContent = title;
+            modalContent.innerHTML = '<p style="color:#555; font-size: 14px; line-height: 1.6;">' + content + '</p>';
+            
+            // 設置管理文件按鈕的連結
+            if (docPageUrl) {
+                manageDocBtn.onclick = function() {
+                    window.open(docPageUrl, '_blank');
+                };
+            }
+            
+            const bsModal = new bootstrap.Modal(modal);
+            bsModal.show();
+        }
     </script>
+
+    <!-- 查核點詳細內容模態框 -->
+    <div class="modal fade" id="checkpointModal" tabindex="-1" aria-labelledby="checkpointModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                    <h5 class="modal-title" id="checkpointModalLabel">查核點詳情</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="padding: 25px;">
+                    <h4 id="checkpointModalTitle" style="color: #0078d4; margin-bottom: 15px;"></h4>
+                    <div id="checkpointModalContent" style="background: #f9fbfd; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea;"></div>
+                    <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #ddd;">
+                        <p style="font-size: 13px; color: #666; margin-bottom: 8px;"><strong>📅 查核期限：</strong>115 年 3 月 31 日</p>
+                        <p style="font-size: 13px; color: #666; margin: 0;"><strong>📊 狀態：</strong><span style="color: #ffb900; font-weight: bold;">進行中</span></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
+                    <button type="button" class="btn btn-primary" id="manageDocBtn">管理文件</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
