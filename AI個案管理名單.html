@@ -102,6 +102,9 @@
             position: relative;
             border-radius: 8px;
             font-weight: 500;
+            font-size: 0.78rem;
+            padding: 0.3rem 0.55rem;
+            white-space: nowrap;
             transition: all 0.3s ease;
         }
         
@@ -332,7 +335,7 @@
                                 <th scope="col" style="width: 140px;"><i class="fas fa-sync-alt me-2"></i>複評時間</th>
                                 <th scope="col" style="width: 140px;"><i class="fas fa-clipboard-check me-2"></i>結評時間</th>
                                 <th scope="col" style="width: 140px;"><i class="fas fa-sign-out-alt me-2"></i>出院時間</th>
-                                <th scope="col"><i class="fas fa-tasks me-2"></i>評估進度</th>
+                                <th scope="col" style="width: 320px; max-width: 320px; min-width: 280px;"><i class="fas fa-tasks me-2"></i>評估進度</th>
                                 <th scope="col" style="width: 150px;"><i class="fas fa-cog me-2"></i>操作</th>
                             </tr>
                         </thead>
@@ -691,7 +694,11 @@
                     <td>${formatDateTime(c.reviewDate)}</td>
                     <td>${formatDateTime(c.finalReviewDate)}</td>
                     <td>${formatDateTime(c.dischargeDate)}</td>
-                    <td>${buttonsHtml}</td>
+                    <td style="max-width: 320px;">
+                        <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+                            ${buttonsHtml}
+                        </div>
+                    </td>
                     <td>
                         <button class="btn btn-sm btn-warning me-1" onclick="editCase(${cases.indexOf(c)})" title="編輯">
                             <i class="fas fa-edit"></i>
