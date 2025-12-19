@@ -6,7 +6,6 @@
     <title>AI 個案管理名單</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
     <style>
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #e8f4f8 100%);
@@ -103,9 +102,6 @@
             position: relative;
             border-radius: 8px;
             font-weight: 500;
-            font-size: 0.75rem;
-            padding: 0.35rem 0.6rem;
-            white-space: nowrap;
             transition: all 0.3s ease;
         }
         
@@ -310,7 +306,6 @@
             </div>
             <div class="d-flex gap-2">
                 <button class="btn btn-success btn-lg" onclick="showAddCaseModal()"><i class="fas fa-plus me-2"></i>新增個案</button>
-                <button class="btn btn-primary btn-lg" onclick="exportToCSV()" title="匯出CSV檔案以手動更新至Google Sheets"><i class="fas fa-download me-2"></i>匯出CSV</button>
                 <a href="index-gpt.html" class="btn btn-light btn-lg"><i class="fas fa-home me-2"></i>回首頁</a>
             </div>
         </div>
@@ -318,10 +313,8 @@
         <div class="info-box d-flex align-items-center">
             <i class="fas fa-info-circle me-3 fs-4"></i>
             <div>
-                <strong style="font-size: 1.05rem;">使用說明</strong>
+                <strong style="font-size: 1.05rem;">評估進度說明</strong>
                 <p class="mb-0 mt-1"><i class="fas fa-check-circle text-success me-2"></i>綠色按鈕代表已完成評估，點擊按鈕可查看或編輯評估資料</p>
-                <p class="mb-0 mt-1"><i class="fas fa-cloud text-primary me-2"></i>資料從 Google Sheets 讀取，新增/編輯會儲存在本地瀏覽器</p>
-                <p class="mb-0 mt-1"><i class="fas fa-upload text-warning me-2"></i>如需永久保存，請點擊「匯出CSV」後手動匯入 <a href="https://docs.google.com/spreadsheets/d/${SHEET_ID}" target="_blank" class="text-primary">Google Sheets</a></p>
             </div>
         </div>
 
@@ -339,7 +332,7 @@
                                 <th scope="col" style="width: 140px;"><i class="fas fa-sync-alt me-2"></i>複評時間</th>
                                 <th scope="col" style="width: 140px;"><i class="fas fa-clipboard-check me-2"></i>結評時間</th>
                                 <th scope="col" style="width: 140px;"><i class="fas fa-sign-out-alt me-2"></i>出院時間</th>
-                                <th scope="col" style="width: 300px; min-width: 300px; max-width: 300px;"><i class="fas fa-tasks me-2"></i>評估進度</th>
+                                <th scope="col"><i class="fas fa-tasks me-2"></i>評估進度</th>
                                 <th scope="col" style="width: 150px;"><i class="fas fa-cog me-2"></i>操作</th>
                             </tr>
                         </thead>
@@ -497,13 +490,14 @@
             return div.innerHTML;
         }
 
-        // Google Sheets API 設定 - 使用直接 API 讀取
-        const SHEET_ID = '1x32_JhOr0BTeoiS3gaw48Le8mJtiwd597DOjKyInoeU';
-        const SHEET_NAME = '個案管理';
-        const API_KEY = 'AIzaSyA0JKp0Y8ZmGDHcPEmf4ncaWvnTMtoa8KM';
+        // Google Apps Script API 設定
+        // 請在 Google Sheets 中建立 Apps Script 部署後，將 URL 貼在下方
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyd0T-f7CwRtWSfY6SPZ9_R3l7fPmuXtcsY91Gy8l5115vPZ2SxSuK91DkG-7wLSYNx/exec'; // 例如: https://script.google.com/macros/s/AKfycby.../exec
         
-        // Apps Script URL（備用，目前改用 Sheets API）
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyd0T-f7CwRtWSfY6SPZ9_R3l7fPmuXtcsY91Gy8l5115vPZ2SxSuK91DkG-7wLSYNx/exec';
+        // 保留舊設定供參考（目前不使用）
+        // const SHEETS_API_KEY = 'AIzaSyA0JKp0Y8ZmGDHcPEmf4ncaWvnTMtoa8KM';
+        // const SHEET_ID = '1x32_JhOr0BTeoiS3gaw48Le8mJtiwd597DOjKyInoeU';
+        const SHEET_NAME = '個案管理';
 
         let cases = []; // 從 Google Sheets 載入的資料
         const milestones = ['初評', '22天複評', '42天複評', '64天複評', '82天複評', '結評'];
@@ -519,7 +513,7 @@
             document.getElementById('loadingOverlay').style.display = 'none';
         }
 
-        // 從 Google Sheets 載入資料（改用 Google Sheets API）
+        // 從 Google Sheets 載入資料（透過 Apps Script API）
         async function loadCasesFromGoogleSheets() {
             showLoading('正在載入個案資料...');
             try {
@@ -539,7 +533,7 @@
                 });
                 
                 if (!response.ok) {
-                    throw new Error(`API 錯誤 ${response.status}: ${response.statusText}`);
+                    throw new Error(`HTTP 錯誤 ${response.status}: ${response.statusText}`);
                 }
                 
                 const result = await response.json();
@@ -555,11 +549,9 @@
                         
                         let status = {};
                         if (row[8]) {
-                            // 嘗試解析 JSON 格式的狀態
                             try {
                                 status = JSON.parse(row[8]);
                             } catch {
-                                // 如果不是 JSON，初始化為預設狀態
                                 status = milestones.reduce((obj, m) => ({ ...obj, [m]: false }), {});
                             }
                         } else {
@@ -584,7 +576,7 @@
                     }
                 }).filter(c => c !== null);
                 
-                console.log(`✓ 成功載入 ${cases.length} 筆個案資料`);
+                console.log(`✓ 成功從 Google Sheets 載入 ${cases.length} 筆個案資料`);
                 renderTable();
             } catch (error) {
                 console.error('❌ 載入 Google Sheets 資料失敗:', error);
@@ -703,7 +695,7 @@
                     <td>${formatDateTime(c.reviewDate)}</td>
                     <td>${formatDateTime(c.finalReviewDate)}</td>
                     <td>${formatDateTime(c.dischargeDate)}</td>
-                    <td style="max-width: 300px;"><div style="display: flex; flex-wrap: wrap; gap: 2px;">${buttonsHtml}</div></td>
+                    <td>${buttonsHtml}</td>
                     <td>
                         <button class="btn btn-sm btn-warning me-1" onclick="editCase(${cases.indexOf(c)})" title="編輯">
                             <i class="fas fa-edit"></i>
@@ -754,7 +746,7 @@
             modal.show();
         }
 
-        // 儲存個案（僅本地儲存）
+        // 儲存個案
         async function saveCase() {
             const form = document.getElementById('caseForm');
             if (!form.checkValidity()) {
@@ -790,101 +782,87 @@
                 cases[parseInt(index)] = caseData;
             }
 
-            // 儲存到 localStorage
-            saveCasesToLocalStorage();
-            renderTable();
-            bootstrap.Modal.getInstance(document.getElementById('caseModal')).hide();
-            
-            // 提示使用者手動同步
-            showSyncReminder();
+            // 同步到 Google Sheets
+            showLoading('正在同步資料到 Google Sheets...');
+            try {
+                await syncToGoogleSheets();
+                renderTable();
+                bootstrap.Modal.getInstance(document.getElementById('caseModal')).hide();
+                hideLoading();
+                alert('✓ 個案已成功儲存並同步到 Google Sheets！');
+            } catch (error) {
+                console.error('同步失敗:', error);
+                renderTable();
+                bootstrap.Modal.getInstance(document.getElementById('caseModal')).hide();
+                hideLoading();
+                alert(`⚠️ 個案已在本地儲存，但同步到 Google Sheets 失敗：\n${error.message}\n\n請檢查 API 權限設定。`);
+            }
         }
 
-        // 刪除個案（僅本地刪除）
+        // 刪除個案
         async function deleteCase(index) {
             if (confirm('確定要刪除此個案嗎？')) {
                 cases.splice(index, 1);
-                saveCasesToLocalStorage();
-                renderTable();
-                showSyncReminder();
-            }
-        }
-
-        // 儲存到 localStorage
-        function saveCasesToLocalStorage() {
-            localStorage.setItem('aiCaseManagement', JSON.stringify(cases));
-            localStorage.setItem('aiCaseManagement_lastUpdate', new Date().toISOString());
-            console.log('✓ 資料已儲存到本地');
-        }
-
-        // 從 localStorage 載入
-        function loadCasesFromLocalStorage() {
-            const saved = localStorage.getItem('aiCaseManagement');
-            if (saved) {
+                
+                // 同步到 Google Sheets
+                showLoading('正在同步刪除到 Google Sheets...');
                 try {
-                    const loaded = JSON.parse(saved);
-                    const lastUpdate = localStorage.getItem('aiCaseManagement_lastUpdate');
-                    if (confirm(`發現本地儲存的資料（最後更新：${new Date(lastUpdate).toLocaleString()}）\n\n是否載入這些資料？`)) {
-                        cases = loaded;
-                        renderTable();
-                        console.log('✓ 已載入本地儲存的資料');
-                    }
-                } catch (e) {
-                    console.error('載入本地資料失敗:', e);
+                    await syncToGoogleSheets();
+                    renderTable();
+                    hideLoading();
+                    alert('✓ 個案已成功刪除並同步到 Google Sheets！');
+                } catch (error) {
+                    console.error('同步失敗:', error);
+                    renderTable();
+                    hideLoading();
+                    alert(`⚠️ 個案已在本地刪除，但同步到 Google Sheets 失敗：\n${error.message}\n\n請檢查 API 權限設定。`);
                 }
             }
         }
 
-        // 顯示同步提醒
-        function showSyncReminder() {
-            const alert = document.createElement('div');
-            alert.className = 'alert alert-info alert-dismissible fade show position-fixed';
-            alert.style.cssText = 'top: 80px; right: 20px; z-index: 9999; max-width: 400px;';
-            alert.innerHTML = `
-                <i class="fas fa-info-circle me-2"></i>
-                <strong>資料已儲存至本地</strong>
-                <p class="mb-2 mt-2 small">請直接在 <a href="https://docs.google.com/spreadsheets/d/${SHEET_ID}" target="_blank" class="alert-link">Google Sheets</a> 中更新資料。</p>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
-            document.body.appendChild(alert);
-            setTimeout(() => alert.remove(), 8000);
+        // 同步資料到 Google Sheets
+        async function syncToGoogleSheets() {
+            // 準備資料：Apps Script 需要完整物件
+            if (APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_DEPLOYMENT_URL_HERE') {
+                throw new Error('請先設定 APPS_SCRIPT_URL');
+            }
+
+            const payload = {
+                action: 'sync',
+                token: SECURITY_TOKEN,  // 新增
+                cases: cases.map(c => ({
+                    id: c.id,
+                    name: c.name,
+                    type: c.type,
+                    condition: c.condition,
+                    admissionDate: c.admissionDate,
+                    reviewDate: c.reviewDate,
+                    finalReviewDate: c.finalReviewDate,
+                    dischargeDate: c.dischargeDate,
+                    status: c.status
+                }))
+            };
+
+            const response = await fetch(APPS_SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP 錯誤 ${response.status}`);
+            }
+
+            const result = await response.json();
+            
+            if (!result.success) {
+                throw new Error(result.error || '同步失敗');
+            }
+
+            console.log('✓ 資料已成功同步到 Google Sheets:', result.message);
+            return result;
         }
 
-        // 匯出 CSV 檔案（供手動匯入 Google Sheets）
-        function exportToCSV() {
-            const headers = ['ID', '姓名', '類型', '狀況', '入住時間', '複評時間', '結評時間', '出院時間', '評估進度'];
-            const rows = cases.map(c => [
-                c.id,
-                c.name,
-                c.type,
-                c.condition,
-                c.admissionDate,
-                c.reviewDate,
-                c.finalReviewDate,
-                c.dischargeDate,
-                JSON.stringify(c.status)
-            ]);
-            
-            const csvContent = [
-                headers.join(','),
-                ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
-            ].join('\n');
-            
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `AI個案管理_${new Date().toISOString().split('T')[0]}.csv`;
-            link.click();
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            loadCasesFromGoogleSheets();
-            // 檢查是否有本地儲存的資料
-            setTimeout(() => {
-                if (cases.length === 0) {
-                    loadCasesFromLocalStorage();
-                }
-            }, 2000);
-        });
+        document.addEventListener('DOMContentLoaded', loadCasesFromGoogleSheets);
     </script>
 </body>
 </html>
