@@ -491,8 +491,8 @@
         }
 
         // Google Sheets API 設定（讀取用）
-        const API_KEY = 'AIzaSyA0JKp0Y8ZmGDHcPEmf4ncaWvnTMtoa8KM';
-        const SHEET_ID = '1x32_JhOr0BTeoiS3gaw48Le8mJtiwd597DOjKyInoeU';
+        const API_KEY = typeof API_KEY !== 'undefined' ? API_KEY : 'AIzaSyA0JKp0Y8ZmGDHcPEmf4ncaWvnTMtoa8KM';
+        const SHEET_ID = typeof SHEET_ID !== 'undefined' ? SHEET_ID : '1x32_JhOr0BTeoiS3gaw48Le8mJtiwd597DOjKyInoeU';
         const SHEET_NAME = '個案管理';
 
         let cases = []; // 從 Google Sheets 載入的資料
