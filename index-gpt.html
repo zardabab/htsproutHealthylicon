@@ -681,11 +681,479 @@
         html {
             scroll-behavior: smooth;
         }
+
+        /* 聖誕主題切換按鈕 */
+        .theme-toggle-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            padding: 12px 20px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #c41e3a 0%, #165b33 100%);
+            border: 2px solid rgba(255, 215, 0, 0.6);
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 8px 32px rgba(196, 30, 58, 0.4), 0 0 20px rgba(255, 215, 0, 0.3);
+            display: none;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .theme-toggle-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 12px 40px rgba(196, 30, 58, 0.6), 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .theme-toggle-btn.show {
+            display: inline-flex;
+            animation: slideInRight 0.5s ease;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* 聖誕主題樣式 */
+        body.christmas-theme {
+            background: radial-gradient(circle at top left, #165b33 0, #0a2e19 50%, #020617 100%);
+        }
+
+        body.christmas-theme .bg-orbit {
+            background:
+                radial-gradient(circle at 10% 20%, rgba(196, 30, 58, 0.35) 0, transparent 40%),
+                radial-gradient(circle at 80% 10%, rgba(22, 91, 51, 0.35) 0, transparent 45%),
+                radial-gradient(circle at 90% 80%, rgba(255, 215, 0, 0.25) 0, transparent 55%);
+        }
+
+        body.christmas-theme :root,
+        body.christmas-theme {
+            --primary: #c41e3a;
+            --primary-soft: rgba(196, 30, 58, 0.25);
+            --accent: #165b33;
+            --glow-primary: 0 0 25px rgba(196, 30, 58, 0.7);
+            --glow-accent: 0 0 35px rgba(22, 91, 51, 0.7);
+        }
+
+        body.christmas-theme .brand-logo {
+            background: radial-gradient(circle at 30% 0, #ffe5e5 0, #c41e3a 40%, #165b33 100%);
+        }
+
+        body.christmas-theme .hero-title span {
+            background: linear-gradient(120deg, #c41e3a, #ffd700, #165b33);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        body.christmas-theme .btn-primary-glow {
+            background: radial-gradient(circle at 0 0, #ffe5e5 0, #c41e3a 30%, #a01828 60%, #165b33 100%);
+            box-shadow: 0 12px 40px rgba(196, 30, 58, 0.65);
+        }
+
+        body.christmas-theme .btn-primary-glow:hover {
+            box-shadow: 0 16px 50px rgba(196, 30, 58, 0.8);
+        }
+
+        body.christmas-theme .portal-icon {
+            background: radial-gradient(circle at 30% 0, #ffe5e5 0, #c41e3a 40%, #a01828 65%, #165b33 100%);
+        }
+
+        body.christmas-theme .hero-main {
+            background: radial-gradient(circle at top left, rgba(196, 30, 58, 0.16), transparent 55%),
+                        radial-gradient(circle at bottom right, rgba(22, 91, 51, 0.22), transparent 55%),
+                        rgba(15, 23, 42, 0.92);
+            box-shadow:
+                0 32px 80px rgba(15, 23, 42, 0.8),
+                0 0 40px rgba(196, 30, 58, 0.35);
+        }
+
+        body.christmas-theme .hero-main::before {
+            background:
+                radial-gradient(circle at 10% 0, rgba(196, 30, 58, 0.23) 0, transparent 55%),
+                radial-gradient(circle at 80% 80%, rgba(22, 91, 51, 0.25) 0, transparent 55%);
+        }
+
+        body.christmas-theme .portal-card {
+            background: radial-gradient(circle at top, rgba(196, 30, 58, 0.12) 0, rgba(15, 23, 42, 0.96) 50%);
+            box-shadow:
+                0 14px 35px rgba(15, 23, 42, 0.9),
+                0 0 18px rgba(196, 30, 58, 0.3);
+        }
+
+        body.christmas-theme .portal-card:hover {
+            box-shadow:
+                0 18px 50px rgba(15, 23, 42, 0.95),
+                0 0 26px rgba(196, 30, 58, 0.8);
+            border-color: rgba(196, 30, 58, 0.9);
+        }
+
+        body.christmas-theme .portal-card::before {
+            background:
+                radial-gradient(circle at 0 0, rgba(196, 30, 58, 0.26) 0, transparent 55%),
+                radial-gradient(circle at 100% 100%, rgba(22, 91, 51, 0.26) 0, transparent 55%);
+        }
+
+        body.christmas-theme .metric-bar-fill {
+            background: linear-gradient(90deg, #c41e3a, #ffd700, #165b33);
+        }
+
+        body.christmas-theme .hero-side::before {
+            background:
+                radial-gradient(circle at 10% 0, rgba(196, 30, 58, 0.32) 0, transparent 56%),
+                radial-gradient(circle at 85% 80%, rgba(22, 91, 51, 0.26) 0, transparent 55%);
+        }
+
+        body.christmas-theme .ai-orbit {
+            background: radial-gradient(circle at 0 0, rgba(196, 30, 58, 0.35) 0, transparent 60%),
+                        radial-gradient(circle at 100% 100%, rgba(22, 91, 51, 0.3) 0, transparent 60%),
+                        rgba(15, 23, 42, 0.9);
+        }
+
+        body.christmas-theme .brand-text-sub {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* 雪花飄落動畫 */
+        .snowflakes {
+            position: fixed;
+            top: -10px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        body.christmas-theme .snowflakes {
+            opacity: 1;
+        }
+
+        .snowflake {
+            position: absolute;
+            top: -10%;
+            color: white;
+            font-size: 1.5rem;
+            user-select: none;
+            cursor: default;
+            animation-name: snowfall;
+            animation-duration: 10s;
+            animation-timing-function: linear;
+            animation-iteration-count: infinite;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+        }
+
+        .snowflake:nth-child(1) {
+            left: 5%;
+            animation-delay: 0s;
+            animation-duration: 8s;
+        }
+
+        .snowflake:nth-child(2) {
+            left: 15%;
+            animation-delay: 1s;
+            animation-duration: 12s;
+            font-size: 2rem;
+        }
+
+        .snowflake:nth-child(3) {
+            left: 25%;
+            animation-delay: 2s;
+            animation-duration: 10s;
+        }
+
+        .snowflake:nth-child(4) {
+            left: 35%;
+            animation-delay: 0.5s;
+            animation-duration: 11s;
+            font-size: 1.8rem;
+        }
+
+        .snowflake:nth-child(5) {
+            left: 45%;
+            animation-delay: 1.5s;
+            animation-duration: 9s;
+        }
+
+        .snowflake:nth-child(6) {
+            left: 55%;
+            animation-delay: 2.5s;
+            animation-duration: 13s;
+            font-size: 2.2rem;
+        }
+
+        .snowflake:nth-child(7) {
+            left: 65%;
+            animation-delay: 0.8s;
+            animation-duration: 10s;
+        }
+
+        .snowflake:nth-child(8) {
+            left: 75%;
+            animation-delay: 1.8s;
+            animation-duration: 11s;
+            font-size: 1.6rem;
+        }
+
+        .snowflake:nth-child(9) {
+            left: 85%;
+            animation-delay: 0.3s;
+            animation-duration: 12s;
+        }
+
+        .snowflake:nth-child(10) {
+            left: 95%;
+            animation-delay: 2.2s;
+            animation-duration: 9s;
+            font-size: 1.9rem;
+        }
+
+        @keyframes snowfall {
+            0% {
+                top: -10%;
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                top: 110%;
+                opacity: 0;
+            }
+        }
+
+        /* 聖誕老人裝飾動畫 */
+        .santa-decoration {
+            position: fixed;
+            font-size: 4rem;
+            z-index: 9997;
+            animation: santaFly 20s linear infinite;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        body.christmas-theme .santa-decoration {
+            opacity: 1;
+        }
+
+        @keyframes santaFly {
+            0% {
+                left: -10%;
+                top: 10%;
+                transform: rotate(-10deg);
+            }
+            50% {
+                top: 15%;
+                transform: rotate(10deg);
+            }
+            100% {
+                left: 110%;
+                top: 10%;
+                transform: rotate(-10deg);
+            }
+        }
+
+        /* 麋鹿裝飾動畫 */
+        .reindeer-decoration {
+            position: fixed;
+            font-size: 3.5rem;
+            z-index: 9997;
+            animation: reindeerJump 15s ease-in-out infinite;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        body.christmas-theme .reindeer-decoration {
+            opacity: 1;
+        }
+
+        @keyframes reindeerJump {
+            0%, 100% {
+                left: -10%;
+                bottom: 10%;
+                transform: scaleX(-1);
+            }
+            25% {
+                bottom: 30%;
+            }
+            50% {
+                left: 110%;
+                bottom: 10%;
+                transform: scaleX(-1);
+            }
+            75% {
+                bottom: 25%;
+            }
+        }
+
+        /* 聖誕樹裝飾動畫 */
+        .tree-decoration {
+            position: fixed;
+            font-size: 5rem;
+            bottom: 20px;
+            left: 20px;
+            z-index: 9997;
+            animation: treeGlow 2s ease-in-out infinite;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            filter: drop-shadow(0 0 10px rgba(22, 91, 51, 0.8));
+        }
+
+        body.christmas-theme .tree-decoration {
+            opacity: 0.9;
+        }
+
+        @keyframes treeGlow {
+            0%, 100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 10px rgba(22, 91, 51, 0.8));
+            }
+            50% {
+                transform: scale(1.05);
+                filter: drop-shadow(0 0 20px rgba(22, 91, 51, 1)) drop-shadow(0 0 30px rgba(255, 215, 0, 0.6));
+            }
+        }
+
+        /* 禮物裝飾動畫 */
+        .gift-decoration {
+            position: fixed;
+            font-size: 4rem;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9997;
+            animation: giftBounce 3s ease-in-out infinite;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        body.christmas-theme .gift-decoration {
+            opacity: 0.9;
+        }
+
+        @keyframes giftBounce {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-20px) rotate(-5deg);
+            }
+            75% {
+                transform: translateY(-10px) rotate(5deg);
+            }
+        }
+
+        /* 增強聖誕主題的閃爍效果 */
+        body.christmas-theme .brand-logo,
+        body.christmas-theme .portal-icon {
+            animation: christmasGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes christmasGlow {
+            0%, 100% {
+                box-shadow: 0 0 25px rgba(196, 30, 58, 0.7);
+            }
+            50% {
+                box-shadow: 0 0 35px rgba(196, 30, 58, 1), 0 0 45px rgba(255, 215, 0, 0.8);
+            }
+        }
+
+        /* 聖誕主題的卡片更加歡樂 */
+        body.christmas-theme .portal-card {
+            border: 2px solid rgba(255, 215, 0, 0.4);
+        }
+
+        body.christmas-theme .portal-card:hover {
+            transform: translateY(-4px) rotate(1deg);
+            border: 2px solid rgba(255, 215, 0, 0.8);
+        }
+
+        /* 為標籤點添加聖誕色彩 */
+        body.christmas-theme .tag-dot,
+        body.christmas-theme .status-dot-on {
+            background: radial-gradient(circle, #ffd700 0, #ff6b6b 40%, transparent 70%);
+            box-shadow: 0 0 12px rgba(255, 215, 0, 0.9);
+            animation: dotPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes dotPulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        /* 聖誕模式下的文字顏色更亮 */
+        body.christmas-theme .hero-title {
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        }
+
+        body.christmas-theme .brand-text-title {
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+        }
     </style>
 </head>
-<body>
+<body class="christmas-theme">
     <div class="bg-orbit"></div>
     <div class="bg-grid"></div>
+
+    <!-- 雪花動畫 -->
+    <div class="snowflakes" aria-hidden="true">
+        <div class="snowflake">❅</div>
+        <div class="snowflake">❅</div>
+        <div class="snowflake">❆</div>
+        <div class="snowflake">❄</div>
+        <div class="snowflake">❅</div>
+        <div class="snowflake">❆</div>
+        <div class="snowflake">❄</div>
+        <div class="snowflake">❅</div>
+        <div class="snowflake">❆</div>
+        <div class="snowflake">❄</div>
+    </div>
+
+    <!-- 聖誕老人裝飾 -->
+    <div class="santa-decoration">
+        🎅
+    </div>
+
+    <!-- 麋鹿裝飾 -->
+    <div class="reindeer-decoration">
+        🦌
+    </div>
+
+    <!-- 聖誕樹裝飾 -->
+    <div class="tree-decoration">
+        🎄
+    </div>
+
+    <!-- 禮物裝飾 -->
+    <div class="gift-decoration">
+        🎁
+    </div>
+
+    <!-- 隱藏的主題切換按鈕 -->
+    <button class="theme-toggle-btn show" id="theme-toggle">
+        <i class="fas fa-microchip"></i>
+        <span id="theme-text">原始模式</span>
+    </button>
 
     <div class="shell">
         <!-- Header -->
@@ -696,7 +1164,7 @@
                 </div>
                 <div>
                     <div class="brand-text-title">DEEP ROOTS • AI IN HEALTHCARE</div>
-                    <div class="brand-text-sub">深耕計畫入口網｜AI 與醫療整合平台</div>
+                    <div class="brand-text-sub" id="secret-trigger">深耕計畫入口網｜AI 與醫療整合平台</div>
                 </div>
             </div>
             <div>
@@ -1004,6 +1472,128 @@
         // 目前先不做額外 JS，預留鉤子方便未來擴充
         // 例如：根據登入身分顯示不同入口、載入即時指標數據等
         console.log("Deep Roots · AI in Healthcare portal loaded.");
+
+        // 隱藏的聖誕主題切換功能
+        (function() {
+            const secretTrigger = document.getElementById('secret-trigger');
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const themeText = document.getElementById('theme-text');
+            let clickCount = 0;
+            let clickTimer = null;
+            let isChristmasTheme = true; // 預設為聖誕主題
+
+            // 頁面載入時顯示聖誕祝福
+            window.addEventListener('load', function() {
+                setTimeout(() => {
+                    showChristmasMessage();
+                }, 500);
+            });
+
+            // 監聽副標題點擊
+            secretTrigger.addEventListener('click', function() {
+                clickCount++;
+                
+                // 清除之前的計時器
+                if (clickTimer) {
+                    clearTimeout(clickTimer);
+                }
+                
+                // 3秒內沒有點擊則重置計數
+                clickTimer = setTimeout(() => {
+                    clickCount = 0;
+                }, 3000);
+                
+                // 連續點擊5次
+                if (clickCount === 5) {
+                    clickCount = 0;
+                    themeToggleBtn.classList.add('show');
+                    
+                    // 添加一個小動畫效果
+                    secretTrigger.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        secretTrigger.style.transform = 'scale(1)';
+                    }, 200);
+                    
+                    console.log('🎄 Merry Christmas! Theme toggle activated!');
+                }
+            });
+
+            // 主題切換功能
+            themeToggleBtn.addEventListener('click', function() {
+                isChristmasTheme = !isChristmasTheme;
+                
+                if (isChristmasTheme) {
+                    document.body.classList.add('christmas-theme');
+                    themeText.textContent = '原始模式';
+                    themeToggleBtn.innerHTML = '<i class="fas fa-microchip"></i><span id="theme-text">原始模式</span>';
+                    console.log('🎅 Switched to Christmas theme! Merry Christmas and a Happy New Year!');
+                    
+                    // 可選：顯示聖誕祝福訊息
+                    showChristmasMessage();
+                } else {
+                    document.body.classList.remove('christmas-theme');
+                    themeText.textContent = '聖誕模式';
+                    themeToggleBtn.innerHTML = '<i class="fas fa-gifts"></i><span id="theme-text">聖誕模式</span>';
+                    console.log('🔙 Switched back to original theme.');
+                }
+            });
+
+            // 顯示聖誕祝福訊息（可選）
+            function showChristmasMessage() {
+                const message = document.createElement('div');
+                message.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: linear-gradient(135deg, #c41e3a, #165b33);
+                    color: white;
+                    padding: 30px 50px;
+                    border-radius: 20px;
+                    font-size: 1.5rem;
+                    font-weight: 700;
+                    text-align: center;
+                    z-index: 10000;
+                    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(255, 215, 0, 0.4);
+                    border: 3px solid rgba(255, 215, 0, 0.6);
+                    animation: fadeInScale 0.5s ease;
+                `;
+                message.innerHTML = `
+                    🎄 Merry Christmas 🎅<br>
+                    <span style="font-size: 1.2rem; margin-top: 10px; display: block;">and a Happy New Year! 🎆</span>
+                `;
+                document.body.appendChild(message);
+                
+                // 添加淡入縮放動畫
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes fadeInScale {
+                        from {
+                            opacity: 0;
+                            transform: translate(-50%, -50%) scale(0.5);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translate(-50%, -50%) scale(1);
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+                
+                // 3秒後移除訊息
+                setTimeout(() => {
+                    message.style.opacity = '0';
+                    message.style.transform = 'translate(-50%, -50%) scale(0.8)';
+                    message.style.transition = 'all 0.5s ease';
+                    setTimeout(() => {
+                        document.body.removeChild(message);
+                    }, 500);
+                }, 3000);
+            }
+
+            // 添加過渡效果
+            secretTrigger.style.transition = 'transform 0.2s ease';
+        })();
     </script>
 </body>
 </html>
