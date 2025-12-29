@@ -585,6 +585,16 @@
             font-size: 0.7rem;
             color: var(--text-muted);
             background: rgba(15, 23, 42, 0.9);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .portal-chip .fa-bolt {
+            color: #facc15;
+            font-size: 1rem;
+            animation: boltPulse 0.9s ease-in-out infinite;
+            text-shadow: 0 0 10px rgba(250, 204, 21, 0.95), 0 0 18px rgba(56, 189, 248, 0.9), 0 0 26px rgba(168, 85, 247, 0.6);
         }
 
         .portal-title {
@@ -675,6 +685,19 @@
 
         .portal-card:nth-child(3) {
             animation: float-soft 7s ease-in-out infinite;
+        }
+
+        @keyframes boltPulse {
+            0%, 100% {
+                transform: scale(1);
+                text-shadow: 0 0 8px rgba(250, 204, 21, 0.9), 0 0 16px rgba(56, 189, 248, 0.75), 0 0 24px rgba(168, 85, 247, 0.5);
+                opacity: 0.95;
+            }
+            50% {
+                transform: scale(1.22);
+                text-shadow: 0 0 14px rgba(250, 204, 21, 1), 0 0 22px rgba(56, 189, 248, 0.95), 0 0 32px rgba(168, 85, 247, 0.7);
+                opacity: 1;
+            }
         }
 
         /* 滑動平順 */
@@ -1306,6 +1329,32 @@
                         </span>
                         <span class="action">
                             前往系統 <i class="fas fa-arrow-right"></i>
+                        </span>
+                    </div>
+                </a>
+
+                <!-- 出院轉銜服務 -->
+                <a href="https://zardabab.github.io/DischargeReferral/index.html" class="portal-card" target="_blank">
+                    <div class="portal-top">
+                        <div class="portal-icon">
+                            <i class="fas fa-people-arrows"></i>
+                        </div>
+                        <span class="portal-chip">
+                            <i class="fas fa-bolt"></i>
+                            NEW
+                        </span>
+                    </div>
+                    <div class="portal-title">出院轉銜服務</div>
+                    <div class="portal-desc">
+                        銜接出院個案轉介、照護計畫與追蹤回報，確保醫院與社區照護單位的順暢交接。
+                    </div>
+                    <div class="portal-footer">
+                        <span class="status">
+                            <span class="status-dot-on"></span>
+                            新服務 · 已上線
+                        </span>
+                        <span class="action">
+                            前往轉銜平台 <i class="fas fa-arrow-right"></i>
                         </span>
                     </div>
                 </a>
