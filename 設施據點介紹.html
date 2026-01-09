@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>設施據點介紹 - 深耕計畫健康辦公室</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #0078d4;
+            --accent-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #4ade80;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --light-bg: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-dark: #1f2937;
+            --text-muted: #6b7280;
+            --border-color: #e5e7eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8f4f8 100%);
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* Header */
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(20px); }
+        }
+
+        .page-header h1 {
+            position: relative;
+            z-index: 1;
+            margin: 0;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 2rem;
+        }
+
+        .page-header .subtitle {
+            position: relative;
+            z-index: 1;
+            font-size: 0.95rem;
+            opacity: 0.95;
+            margin-top: 8px;
+        }
+
+        /* Navigation Bar */
+        .nav-tabs {
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 2rem;
+            gap: 0;
+        }
+
+        .nav-tabs .nav-link {
+            color: var(--text-muted);
+            border: none;
+            border-bottom: 3px solid transparent;
+            padding: 12px 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .nav-tabs .nav-link:hover {
+            color: var(--primary-color);
+            border-bottom-color: rgba(0, 120, 212, 0.3);
+        }
+
+        .nav-tabs .nav-link.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+            background: transparent;
+        }
+
+        /* Container */
+        .container-main {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Floor Plan Section */
+        .floor-plan-section {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .floor-plan-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .floor-plan-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: #fafafa;
+            padding: 1rem;
+        }
+
+        .floor-plan-image {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+
+        /* Info Section */
+        .info-section {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+        }
+
+        .info-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Facility Grid */
+        .facility-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .facility-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .facility-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .facility-card:hover {
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+            transform: translateY(-4px);
+        }
+
+        .facility-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .facility-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .facility-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .facility-description {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .facility-features {
+            list-style: none;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .facility-features li {
+            padding: 0.3rem 0;
+            padding-left: 1.2rem;
+            position: relative;
+        }
+
+        .facility-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+            font-weight: bold;
+        }
+
+        /* Modal/Detail Section */
+        .detail-section {
+            background: linear-gradient(135deg, rgba(0, 120, 212, 0.05) 0%, rgba(102, 126, 234, 0.05) 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid rgba(0, 120, 212, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .detail-header-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .detail-header-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .detail-content {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        /* Statistics Section */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Floor Tabs */
+        .floor-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .floor-btn {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .floor-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .floor-btn.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Legend */
+        .legend {
+            background: var(--light-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .legend-title {
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .legend-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        /* Floor plan interactive */
+        .floor-plan-stage {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background: #fff;
+        }
+
+        .floor-plan-stage img {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .hotspot-layer {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .hotspot {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 6px rgba(0, 120, 212, 0.12);
+            cursor: pointer;
+            pointer-events: all;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .hotspot:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 0 10px rgba(102, 126, 234, 0.18);
+        }
+
+        .hotspot.active {
+            transform: scale(1.1);
+            box-shadow: 0 0 0 12px rgba(0, 120, 212, 0.25);
+        }
+
+        .plan-detail {
+            margin-top: 1rem;
+            padding: 1.5rem;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(0, 120, 212, 0.05) 0%, rgba(102, 126, 234, 0.05) 100%);
+            border: 1px solid rgba(0, 120, 212, 0.12);
+        }
+
+        .plan-detail h3 {
+            margin: 0 0 0.5rem 0;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .plan-detail .badge {
+            background: var(--primary-color);
+        }
+
+        .plan-detail ul {
+            margin: 0.75rem 0 0 1.1rem;
+            color: var(--text-muted);
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding: 0;
+            list-style: none;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-color);
+        }
+
+        .timeline-item {
+            padding: 1.5rem 0 1.5rem 80px;
+            position: relative;
+        }
+
+        .timeline-marker {
+            position: absolute;
+            left: 0;
+            top: 1.5rem;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .timeline-title {
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-description {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .floor-plan-section,
+            .info-section {
+                padding: 1.5rem 1rem;
+            }
+
+            .facility-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tabs .nav-link {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Animation */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .facility-card {
+            animation: slideInUp 0.5s ease-out forwards;
+        }
+
+        .floor-plan-section {
+            animation: slideInUp 0.5s ease-out 0.1s forwards;
+            opacity: 0;
+        }
+
+        .info-section {
+            animation: slideInUp 0.5s ease-out 0.2s forwards;
+            opacity: 0;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+            }
+
+            .page-header,
+            .nav-tabs,
+            .facility-card {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="container-main">
+        <div class="page-header">
+            <h1>
+                <i class="fas fa-building"></i>
+                設施據點介紹
+            </h1>
+            <p class="subtitle">深耕計畫健康辦公室的完整設施展示與介紹</p>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button" role="tab" aria-controls="overview" aria-selected="true">
+                    <i class="fas fa-th-large me-2"></i>概覽
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="floorplan-tab" data-bs-toggle="tab" data-bs-target="#floorplan" type="button" role="tab" aria-controls="floorplan" aria-selected="false">
+                    <i class="fas fa-map me-2"></i>平面配置圖
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="facilities-tab" data-bs-toggle="tab" data-bs-target="#facilities" type="button" role="tab" aria-controls="facilities" aria-selected="false">
+                    <i class="fas fa-cube me-2"></i>設施詳情
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="usage-tab" data-bs-toggle="tab" data-bs-target="#usage" type="button" role="tab" aria-controls="usage" aria-selected="false">
+                    <i class="fas fa-info-circle me-2"></i>使用指南
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Contents -->
+        <div class="tab-content" id="tabContent">
+            <!-- 概覽 -->
+            <div class="tab-pane fade show active" id="overview" role="tabpanel" aria-labelledby="overview-tab">
+                <!-- 統計資訊 -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">1,817.4m²</div>
+                        <div class="stat-label">總使用面積</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">樓層數</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">8+</div>
+                        <div class="stat-label">功能區域</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">24/7</div>
+                        <div class="stat-label">營運時間</div>
+                    </div>
+                </div>
+
+                <!-- 概述 -->
+                <div class="info-section">
+                    <h2 class="info-title">
+                        <i class="fas fa-briefcase"></i>
+                        設施概述
+                    </h2>
+                    <p class="detail-content">
+                        深耕計畫健康辦公室坐落於現代化的專業辦公空間中，配備完善的醫療、辦公和訓練設施。
+                        本設施致力於為台灣健康辦公室提供最優質的服務環境，整合了AI技術、遠距醫療、及健康管理等先進功能，
+                        為全國各地提供智慧化的健康管理解決方案。
+                    </p>
+                </div>
+
+                <!-- 主要特色 -->
+                <div class="facility-grid">
+                    <div class="facility-card">
+                        <div class="facility-icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div class="facility-name">醫療評估區</div>
+                        <p class="facility-description">配備專業醫療設備的評估空間</p>
+                        <ul class="facility-features">
+                            <li>健康檢查室</li>
+                            <li>復健治療間</li>
+                            <li>檢查儀器</li>
+                        </ul>
+                    </div>
+
+                    <div class="facility-card">
+                        <div class="facility-icon">
+                            <i class="fas fa-laptop-medical"></i>
+                        </div>
+                        <div class="facility-name">AI個案管理中心</div>
+                        <p class="facility-description">智慧化個案管理系統</p>
+                        <ul class="facility-features">
+                            <li>AI診斷支援</li>
+                            <li>數據分析</li>
+                            <li>雲端平台</li>
+                        </ul>
+                    </div>
+
+                    <div class="facility-card">
+                        <div class="facility-icon">
+                            <i class="fas fa-chalkboard"></i>
+                        </div>
+                        <div class="facility-name">培訓課程區</div>
+                        <p class="facility-description">專業人員培訓與教育</p>
+                        <ul class="facility-features">
+                            <li>教室空間</li>
+                            <li>多媒體設備</li>
+                            <li>網路直播</li>
+                        </ul>
+                    </div>
+
+                    <div class="facility-card">
+                        <div class="facility-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="facility-name">會議與討論室</div>
+                        <p class="facility-description">協調與交流的專業空間</p>
+                        <ul class="facility-features">
+                            <li>視訊會議室</li>
+                            <li>協作工具</li>
+                            <li>文件管理</li>
+                        </ul>
+                    </div>
+
+                    <div class="facility-card">
+                        <div class="facility-icon">
+                            <i class="fas fa-ambulance"></i>
+                        </div>
+                        <div class="facility-name">巡迴服務區</div>
+                        <p class="facility-description">遠距與巡迴醫療支援</p>
+                        <ul class="facility-features">
+                            <li>巡迴車停放</li>
+                            <li>服務規劃區</li>
+                            <li>設備維護</li>
+                        </ul>
+                    </div>
+
+                    <div class="facility-card">
+                        <div class="facility-icon">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <div class="facility-name">技術支援中心</div>
+                        <p class="facility-description">IT與系統維護</p>
+                        <ul class="facility-features">
+                            <li>伺服器房間</li>
+                            <li>網路管理</li>
+                            <li>資訊安全</li>
+                        </ul>
+                    </div>
+
+                    <div class="facility-card">
+                        <div class="facility-icon">
+                            <i class="fas fa-wifi"></i>
+                        </div>
+                        <div class="facility-name">5G基礎設施</div>
+                        <p class="facility-description">高速網路與連接</p>
+                        <ul class="facility-features">
+                            <li>5G覆蓋</li>
+                            <li>低延遲連接</li>
+                            <li>遠距醫療支援</li>
+                        </ul>
+                    </div>
+
+                    <div class="facility-card">
+                        <div class="facility-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="facility-name">文件管理區</div>
+                        <p class="facility-description">檔案與資料保管</p>
+                        <ul class="facility-features">
+                            <li>文件庫</li>
+                            <li>檔案管理系統</li>
+                            <li>資訊安全防護</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 平面配置圖 -->
+            <div class="tab-pane fade" id="floorplan" role="tabpanel" aria-labelledby="floorplan-tab">
+                <!-- 樓層選擇 -->
+                <div class="floor-tabs">
+                    <button class="floor-btn active" data-floor="all">全部樓層</button>
+                </div>
+
+                <!-- 平面圖區域 -->
+                <div class="floor-plan-section" id="floor-all">
+                    <h2 class="floor-plan-title">
+                        <i class="fas fa-map"></i>
+                        完整平面配置圖
+                    </h2>
+                    <div class="floor-plan-container">
+                        <div class="floor-plan-stage" id="floorplan-stage">
+                            <img src="images/health-office-plan.png" alt="平面配置圖" class="floor-plan-image" id="floorplan-image" style="width: 100%; height: auto;">
+                            <div class="hotspot-layer" id="hotspot-layer"></div>
+                        </div>
+                    </div>
+                    <div class="plan-detail" id="plan-detail">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                            <div>
+                                <h3 id="plan-detail-title">點選平面圖上的熱區以查看細節</h3>
+                                <div class="text-muted" id="plan-detail-desc">支援接待、醫療、訓練、會議、技術等功能區域。</div>
+                            </div>
+                            <span class="badge text-bg-primary" id="plan-detail-category">全部區域</span>
+                        </div>
+                        <ul id="plan-detail-list"></ul>
+                    </div>
+                    <div class="legend mt-3">
+                        <div class="legend-title">圖例說明</div>
+                        <div class="legend-items">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #e3f2fd;"></div>
+                                <span>辦公區域</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #f3e5f5;"></div>
+                                <span>醫療區域</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #e8f5e9;"></div>
+                                <span>訓練區域</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #fff3e0;"></div>
+                                <span>公共空間</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #fce4ec;"></div>
+                                <span>支援設施</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color" style="background: #eceff1;"></div>
+                                <span>技術中心</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <!-- 設施詳情 -->
+            <div class="tab-pane fade" id="facilities" role="tabpanel" aria-labelledby="facilities-tab">
+                <div class="info-section">
+                    <h2 class="info-title">
+                        <i class="fas fa-cube"></i>
+                        詳細設施清單
+                    </h2>
+                </div>
+
+                <ul class="timeline">
+                    <li class="timeline-item">
+                        <div class="timeline-marker">1</div>
+                        <div class="timeline-title">醫療評估區</div>
+                        <div class="timeline-description">
+                            配備專業醫療設備的評估空間，提供完整的健康檢查與復健治療服務。
+                            包括健康檢查室、復健治療間、各類檢查儀器及評估工具。面積約200-250m²。
+                        </div>
+                    </li>
+
+                    <li class="timeline-item">
+                        <div class="timeline-marker">2</div>
+                        <div class="timeline-title">AI個案管理中心</div>
+                        <div class="timeline-description">
+                            智慧化個案管理系統的中樞，配備高效能電腦、數據伺服器及分析工作站。
+                            支援AI診斷、數據分析與雲端協作平台。面積約150-200m²。
+                        </div>
+                    </li>
+
+                    <li class="timeline-item">
+                        <div class="timeline-marker">3</div>
+                        <div class="timeline-title">培訓課程區</div>
+                        <div class="timeline-description">
+                            專業人員培訓與教育的主要場所，配備教室空間、多媒體設備及網路直播設備。
+                            支援線上線下混合型教學模式。面積約100-150m²。
+                        </div>
+                    </li>
+
+                    <li class="timeline-item">
+                        <div class="timeline-marker">4</div>
+                        <div class="timeline-title">會議與討論室</div>
+                        <div class="timeline-description">
+                            多間大小不同的會議室，配備視訊會議系統、白板、協作工具。
+                            支援內部協調與外部合作會議。共計面積約200m²。
+                        </div>
+                    </li>
+
+                    <li class="timeline-item">
+                        <div class="timeline-marker">5</div>
+                        <div class="timeline-title">巡迴服務區</div>
+                        <div class="timeline-description">
+                            支援遠距與巡迴醫療服務的區域，包括巡迴車停放點、服務規劃區與設備維護空間。
+                            面積約150-200m²。
+                        </div>
+                    </li>
+
+                    <li class="timeline-item">
+                        <div class="timeline-marker">6</div>
+                        <div class="timeline-title">技術支援中心</div>
+                        <div class="timeline-description">
+                            IT與系統維護的專業區域，包括伺服器房間、網路管理設備及資訊安全防護設施。
+                            配備恆溫恆濕系統與備用電源。面積約100m²。
+                        </div>
+                    </li>
+
+                    <li class="timeline-item">
+                        <div class="timeline-marker">7</div>
+                        <div class="timeline-title">5G基礎設施</div>
+                        <div class="timeline-description">
+                            全樓層覆蓋的5G網路與高速連接設施，支援低延遲的遠距醫療應用。
+                            配備備用網路與無縫漫遊技術。
+                        </div>
+                    </li>
+
+                    <li class="timeline-item">
+                        <div class="timeline-marker">8</div>
+                        <div class="timeline-title">文件管理區</div>
+                        <div class="timeline-description">
+                            檔案與資料的專業保管區域，配備文件庫、檔案管理系統及資訊安全防護。
+                            遵守醫療隱私與資訊安全標準。面積約80m²。
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- 使用指南 -->
+            <div class="tab-pane fade" id="usage" role="tabpanel" aria-labelledby="usage-tab">
+                <div class="info-section">
+                    <h2 class="info-title">
+                        <i class="fas fa-book"></i>
+                        設施使用指南
+                    </h2>
+                </div>
+
+                <!-- 簽到與訪客 -->
+                <div class="detail-section">
+                    <div class="detail-header">
+                        <div class="detail-header-icon"><i class="fas fa-sign-in-alt"></i></div>
+                        <div class="detail-header-title">簽到與訪客服務</div>
+                    </div>
+                    <div class="detail-content">
+                        <p><strong>1樓接待區</strong> - 所有訪客必須在此簽到並領取訪客證</p>
+                        <p><strong>簽到時間：</strong>工作日08:00-18:00</p>
+                        <p><strong>所需文件：</strong>身分證件、簽到表、訪客協議書</p>
+                        <p><strong>注意事項：</strong>訪客需由內部員工陪同進出醫療區域</p>
+                    </div>
+                </div>
+
+                <!-- 設備預約 -->
+                <div class="detail-section">
+                    <div class="detail-header">
+                        <div class="detail-header-icon"><i class="fas fa-calendar-check"></i></div>
+                        <div class="detail-header-title">設施與設備預約</div>
+                    </div>
+                    <div class="detail-content">
+                        <p><strong>會議室預約：</strong>透過內部預約系統或聯繫秘書室</p>
+                        <p><strong>醫療設備使用：</strong>需提前申請，由相關科室審核核準</p>
+                        <p><strong>訓練課程預約：</strong>透過培訓部門進行課程預約</p>
+                        <p><strong>預約期限：</strong>至少提前3個工作日申請</p>
+                    </div>
+                </div>
+
+                <!-- 安全規範 -->
+                <div class="detail-section">
+                    <div class="detail-header">
+                        <div class="detail-header-icon"><i class="fas fa-shield-alt"></i></div>
+                        <div class="detail-header-title">安全與防護規範</div>
+                    </div>
+                    <div class="detail-content">
+                        <p><strong>緊急疏散：</strong>熟悉逃生路線，聽從工作人員指揮</p>
+                        <p><strong>醫療隱私：</strong>嚴格遵守個人資料保護法</p>
+                        <p><strong>設備安全：</strong>未經許可不得操作任何醫療設備</p>
+                        <p><strong>垃圾分類：</strong>醫療廢棄物必須按規定分類處理</p>
+                        <p><strong>禁止事項：</strong>禁止攜帶危險物品、拍照攝影（醫療區域內）</p>
+                    </div>
+                </div>
+
+                <!-- 設備使用教程 -->
+                <div class="detail-section">
+                    <div class="detail-header">
+                        <div class="detail-header-icon"><i class="fas fa-tools"></i></div>
+                        <div class="detail-header-title">主要設備操作指南</div>
+                    </div>
+                    <div class="detail-content">
+                        <p><strong>視訊會議系統：</strong>預約後，工作人員將提供登入帳號與技術支援</p>
+                        <p><strong>AI個案管理平台：</strong>需要專業培訓，僅限授權人員使用</p>
+                        <p><strong>健康量表系統：</strong>由醫療人員負責操作與數據輸入</p>
+                        <p><strong>遠距醫療設備：</strong>需由經過認證的醫療專業人員操作</p>
+                    </div>
+                </div>
+
+                <!-- 聯絡資訊 -->
+                <div class="detail-section">
+                    <div class="detail-header">
+                        <div class="detail-header-icon"><i class="fas fa-phone"></i></div>
+                        <div class="detail-header-title">聯絡與支援</div>
+                    </div>
+                    <div class="detail-content">
+                        <p><strong>設施管理部門：</strong>分機 XXX（內線）</p>
+                        <p><strong>技術支援中心：</strong>分機 XXX（內線）</p>
+                        <p><strong>醫療部門：</strong>分機 XXX（內線）</p>
+                        <p><strong>緊急聯絡：</strong>撥打緊急電話或按下樓層內的緊急按鈕</p>
+                        <p><strong>工作時間：</strong>周一至周五 08:00-18:00（假日請聯絡值班人員）</p>
+                    </div>
+                </div>
+
+                <!-- 預訂表單 -->
+                <div class="info-section">
+                    <h2 class="info-title" style="margin-top: 2rem;">
+                        <i class="fas fa-edit"></i>
+                        快速預約表單
+                    </h2>
+                    <form id="booking-form">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="name" class="form-label">姓名</label>
+                                <input type="text" class="form-control" id="name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">電子郵件</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="facility" class="form-label">設施類型</label>
+                                <select class="form-select" id="facility" required>
+                                    <option value="">請選擇</option>
+                                    <option value="meeting">會議室</option>
+                                    <option value="training">培訓課程</option>
+                                    <option value="medical">醫療評估</option>
+                                    <option value="other">其他</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="date" class="form-label">預約日期</label>
+                                <input type="date" class="form-control" id="date" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">說明與備註</label>
+                            <textarea class="form-control" id="description" rows="3" placeholder="請描述您的需求..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i>
+                            提交預約
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            const hotspotData = [
+                {
+                    id: '掛號區',
+                    name: '掛號區',
+                    category: '公共空間',
+                    x: 8,
+                    y: 85,
+                    desc: '入口服務台，提供掛號、簽到與訪客服務。',
+                    items: ['掛號櫃檯', '訪客簽到', '諮詢服務']
+                },
+                {
+                    id: '候診區',
+                    name: '候診區',
+                    category: '公共空間',
+                    x: 18,
+                    y: 82,
+                    desc: '寬敞的候診空間，配備舒適座位與公共設施。',
+                    items: ['候診沙發', '飲水機', '無障礙座位']
+                },
+                {
+                    id: '走廊',
+                    name: '走廊 / 流通區',
+                    category: '公共空間',
+                    x: 30,
+                    y: 78,
+                    desc: '主要通道，連接各功能區域與樓梯。',
+                    items: ['主要動線', '無障礙坡道', '緊急出口標示']
+                },
+                {
+                    id: '廁所',
+                    name: '公用廁所',
+                    category: '公共空間',
+                    x: 42,
+                    y: 88,
+                    desc: '無障礙設計的衛生間，配備輔助設施。',
+                    items: ['無障礙廁所', '扶手與扶梯', '親子如廁間']
+                },
+                {
+                    id: '茶水間',
+                    name: '茶水 / 休憩區',
+                    category: '公共空間',
+                    x: 55,
+                    y: 80,
+                    desc: '輕食與飲品區，供職員與訪客短暫休息。',
+                    items: ['咖啡機', '冰箱', '微波爐', '吧檯座位']
+                },
+                {
+                    id: '評估室1',
+                    name: '醫療評估室（區域1）',
+                    category: '醫療區域',
+                    x: 25,
+                    y: 50,
+                    desc: '診療室群組，提供量表評估與醫療諮詢。',
+                    items: ['獨立診間 3-4 間', '隔音設計', '檢查儀器', '隱私窗簾']
+                },
+                {
+                    id: '評估室2',
+                    name: '醫療評估室（區域2）',
+                    category: '醫療區域',
+                    x: 50,
+                    y: 50,
+                    desc: '診療室群組，提供量表評估與醫療諮詢。',
+                    items: ['獨立診間 3-4 間', '隔音設計', '檢查儀器', '隱私窗簾']
+                },
+                {
+                    id: '治療區',
+                    name: '復健治療區',
+                    category: '醫療區域',
+                    x: 70,
+                    y: 55,
+                    desc: '復健床與治療設備，支援物理治療與健康促進。',
+                    items: ['治療床 6-8 組', '復健器材', '治療設備', '衛教區']
+                },
+                {
+                    id: '會議室',
+                    name: '會議與協作區',
+                    category: '會議空間',
+                    x: 80,
+                    y: 45,
+                    desc: '視訊會議室，支援遠距協作與內部討論。',
+                    items: ['視訊會議系統', '大屏顯示', '音響設備', '白板']
+                },
+                {
+                    id: 'AI中心',
+                    name: 'AI 個案管理中心',
+                    category: '技術中心',
+                    x: 85,
+                    y: 25,
+                    desc: 'AI 研發與數據分析中樞，配置伺服器與工作站。',
+                    items: ['資料伺服器', '分析工作站', '數據庫系統', '監控面板']
+                },
+                {
+                    id: '培訓室',
+                    name: '培訓 / 展示區',
+                    category: '訓練區域',
+                    x: 40,
+                    y: 25,
+                    desc: '互動展示與課程空間，支援線上直播與小型講座。',
+                    items: ['可調座椅佈局', '投影機 / 屏幕', '錄播設備', '網路直播']
+                },
+                {
+                    id: '文件管理',
+                    name: '文件 / 檔案管理',
+                    category: '支援設施',
+                    x: 12,
+                    y: 30,
+                    desc: '安全文件與檔案儲存室，遵守隱私保護規範。',
+                    items: ['文件櫃系統', '電子鎖', 'RFID 追蹤', '獨立空調']
+                },
+                {
+                    id: '技術室',
+                    name: '技術支援中心',
+                    category: '技術中心',
+                    x: 75,
+                    y: 15,
+                    desc: 'IT 與系統維護中心，配備網路與伺服器設備。',
+                    items: ['伺服器機櫃', '網路交換機', '不斷電系統', '監控攝像頭']
+                }
+            ];
+
+            const $hotspotLayer = $('#hotspot-layer');
+            const $detailTitle = $('#plan-detail-title');
+            const $detailDesc = $('#plan-detail-desc');
+            const $detailList = $('#plan-detail-list');
+            const $detailCategory = $('#plan-detail-category');
+
+            function renderHotspots() {
+                hotspotData.forEach((point) => {
+                    const $dot = $('<button/>', {
+                        class: 'hotspot',
+                        'data-id': point.id,
+                        'aria-label': point.name,
+                        css: {
+                            left: point.x + '%',
+                            top: point.y + '%'
+                        }
+                    });
+
+                    $dot.on('click', function() {
+                        setActiveHotspot(point.id);
+                    });
+
+                    $hotspotLayer.append($dot);
+                });
+            }
+
+            function setActiveHotspot(id) {
+                const data = hotspotData.find((item) => item.id === id);
+                if (!data) return;
+
+                $('.hotspot').removeClass('active');
+                $(`.hotspot[data-id="${id}"]`).addClass('active');
+
+                $detailTitle.text(data.name);
+                $detailDesc.text(data.desc);
+                $detailCategory.text(data.category);
+
+                $detailList.empty();
+                data.items.forEach((item) => {
+                    $detailList.append(`<li>${item}</li>`);
+                });
+            }
+
+            renderHotspots();
+            setActiveHotspot('掛號區');
+
+            // Floor button switching
+            $('.floor-btn').on('click', function() {
+                $('.floor-btn').removeClass('active');
+                $(this).addClass('active');
+
+                var floor = $(this).data('floor');
+                $('.floor-plan-section').hide();
+
+                if (floor === 'all') {
+                    $('#floor-all').show();
+                } else if (floor === 'floor1') {
+                    $('#floor-floor1').show();
+                } else if (floor === 'floor2') {
+                    $('#floor-floor2').show();
+                }
+            });
+
+            // Form submission
+            $('#booking-form').on('submit', function(e) {
+                e.preventDefault();
+
+                const formData = {
+                    name: $('#name').val(),
+                    email: $('#email').val(),
+                    facility: $('#facility').val(),
+                    date: $('#date').val(),
+                    description: $('#description').val()
+                };
+
+                // Show confirmation message
+                alert('預約表單已提交！\n\n' +
+                    '姓名：' + formData.name + '\n' +
+                    '設施類型：' + formData.facility + '\n' +
+                    '預約日期：' + formData.date + '\n\n' +
+                    '管理人員將於24小時內與您聯繫確認。');
+
+                // Reset form
+                this.reset();
+            });
+
+            // Facility card click animation
+            $('.facility-card').on('click', function() {
+                $(this).css('transform', 'scale(0.95)');
+                setTimeout(() => {
+                    $(this).css('transform', 'translateY(-4px)');
+                }, 100);
+            });
+
+            // Smooth scroll for anchor links
+            $('a[href^="#"]').on('click', function(e) {
+                e.preventDefault();
+                var target = $(this.getAttribute('href'));
+                if(target.length) {
+                    $('html, body').stop().animate({scrollTop: target.offset().top - 60}, 1000);
+                }
+            });
+
+            // Add hover effect to timeline items
+            $('.timeline-item').hover(
+                function() {
+                    $(this).find('.timeline-marker').css({
+                        'transform': 'scale(1.1)',
+                        'box-shadow': '0 0 20px rgba(102, 126, 234, 0.5)'
+                    });
+                },
+                function() {
+                    $(this).find('.timeline-marker').css({
+                        'transform': 'scale(1)',
+                        'box-shadow': 'none'
+                    });
+                }
+            );
+
+            // Tab transition animation
+            $('.nav-link').on('click', function() {
+                $('.tab-pane').fadeOut(200);
+                setTimeout(() => {
+                    $('.tab-pane.active').fadeIn(400);
+                }, 200);
+            });
+
+            // Print functionality
+            window.printFacilityInfo = function() {
+                window.print();
+            };
+        });
+    </script>
+</body>
+</html>
