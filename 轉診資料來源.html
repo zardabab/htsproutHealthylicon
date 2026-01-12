@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>轉診資料來源 · 科技化總覽</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <style>
+        :root {
+            --bg: #0d1322;
+            --panel: rgba(255,255,255,0.06);
+            --card: rgba(255,255,255,0.08);
+            --border: rgba(255,255,255,0.16);
+            --text: #e7edf8;
+            --muted: #9aa4b5;
+            --accent: #22c55e;
+            --accent-2: #38bdf8;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: 'Space Grotesk', 'Noto Sans TC', system-ui, -apple-system, sans-serif;
+            background: radial-gradient(circle at 20% 20%, rgba(34,197,94,0.12), transparent 35%),
+                        radial-gradient(circle at 80% 0%, rgba(56,189,248,0.12), transparent 30%),
+                        linear-gradient(135deg, #0d1322, #0b162a 50%, #0a1020);
+            color: var(--text);
+            padding: 28px 16px 48px;
+        }
+        .shell { max-width: 1180px; margin: 0 auto; }
+        .hero { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 18px; box-shadow: 0 18px 50px rgba(0,0,0,0.32); backdrop-filter: blur(10px); }
+        h1 { margin: 0 0 6px; font-size: 1.55rem; }
+        p { margin: 6px 0; color: var(--muted); line-height: 1.55; }
+        .chip-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+        .chip { padding: 6px 10px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); display: inline-flex; align-items: center; gap: 6px; color: var(--text); font-size: 0.9rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; box-shadow: 0 14px 42px rgba(0,0,0,0.28); backdrop-filter: blur(8px); }
+        .card h3 { margin: 0 0 8px; font-size: 1.05rem; }
+        .bullet { display: flex; gap: 10px; align-items: flex-start; margin: 6px 0; color: var(--muted); }
+        .bullet i { color: var(--accent); margin-top: 4px; }
+        .pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 10px; border: 1px solid var(--border); background: rgba(255,255,255,0.04); margin: 4px 4px 4px 0; color: var(--text); font-size: 0.9rem; }
+        .stack { margin-top: 8px; border: 1px solid var(--border); border-radius: 12px; padding: 10px; background: rgba(255,255,255,0.04); }
+    </style>
+</head>
+<body>
+<div class="shell">
+    <div class="hero">
+        <h1>資料來源 · 轉診鏈結</h1>
+        <p>梳理轉診（轉出 / 轉入）事實表與基礎維度，串聯 HIS 與 OCIS 資料庫，支持轉診統計與視覺化。</p>
+        <div class="chip-row">
+            <span class="chip"><i class="fa-solid fa-database"></i>HIS 系統</span>
+            <span class="chip"><i class="fa-solid fa-database"></i>OCIS 資料庫</span>
+            <span class="chip"><i class="fa-solid fa-sitemap"></i>維度表串接</span>
+            <span class="chip"><i class="fa-solid fa-plug"></i>REGOPD / TRANC*</span>
+        </div>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h3><i class="fa-solid fa-arrow-right-arrow-left"></i> 轉診（轉出 / 轉入）事實表</h3>
+            <div class="bullet"><i class="fa-regular fa-circle-check"></i><span>HIS 系統 (REGOPD) · 6.轉診作業 / 10.轉診轉入回覆作業 / 3.轉診資料查詢。</span></div>
+            <div class="bullet"><i class="fa-regular fa-circle-check"></i><span>HIS 系統 (REGOPD) · 6.轉診作業 / 8.轉出登錄作業 / 5.轉診資料查詢。</span></div>
+            <div class="bullet"><i class="fa-regular fa-circle-check"></i><span>秀傳醫療體系 (OCIS|VW_TRANCLIN)。</span></div>
+            <div class="bullet"><i class="fa-regular fa-circle-check"></i><span>秀傳醫療體系 (OCIS|VW_TRANCIVOUT)。</span></div>
+        </div>
+        <div class="card">
+            <h3><i class="fa-solid fa-list-check"></i> 基本資料維度表</h3>
+            <div class="bullet"><i class="fa-regular fa-circle-check"></i><span>醫院層級維度表</span></div>
+            <div class="bullet"><i class="fa-regular fa-circle-check"></i><span>部門、科別表</span></div>
+            <div class="bullet"><i class="fa-regular fa-circle-check"></i><span>醫師員工表</span></div>
+            <div class="bullet"><i class="fa-regular fa-circle-check"></i><span>日期年度表</span></div>
+            <div class="bullet"><i class="fa-regular fa-circle-check"></i><span>疾病代碼表</span></div>
+        </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+        <h3><i class="fa-solid fa-diagram-project"></i> 系統介面 · 資料流摘要</h3>
+        <p>OCIS / HIS 介面以標準欄位對齊，轉診作業單與查詢畫面，透過資料表映射後即可被視覺化儀表板使用。</p>
+        <div class="stack">
+            <span class="pill"><i class="fa-solid fa-arrow-trend-up"></i>轉診資料查詢</span>
+            <span class="pill"><i class="fa-solid fa-layer-group"></i>轉診登錄</span>
+            <span class="pill"><i class="fa-solid fa-file-lines"></i>回覆作業</span>
+            <span class="pill"><i class="fa-solid fa-square-poll-horizontal"></i>儀表板輸出</span>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>改善目的｜轉診分析科技版</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg: #0b1220;
+            --panel: rgba(255, 255, 255, 0.06);
+            --card: rgba(255, 255, 255, 0.08);
+            --border: rgba(255, 255, 255, 0.15);
+            --text: #e8edf7;
+            --muted: #9ca3af;
+            --accent: #38bdf8;
+            --accent-2: #22d3ee;
+            --warn: #fbbf24;
+            --safe: #34d399;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: 'Space Grotesk', 'Noto Sans TC', system-ui, -apple-system, sans-serif;
+            background: radial-gradient(circle at 20% 20%, rgba(56,189,248,0.16), transparent 35%),
+                        radial-gradient(circle at 80% 0%, rgba(34,211,238,0.12), transparent 30%),
+                        linear-gradient(135deg, #0b1220, #0f1628 50%, #0b1220);
+            color: var(--text);
+            padding: 28px 16px 48px;
+        }
+        .shell { max-width: 1200px; margin: 0 auto; }
+        .hero {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+        .hero-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 18px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+            backdrop-filter: blur(10px);
+        }
+        .hero-title { font-size: 1.6rem; margin: 0 0 6px; letter-spacing: 0.01em; }
+        .hero-sub { margin: 0; color: var(--muted); line-height: 1.5; }
+        .chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .chip {
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+            font-size: 0.9rem;
+            display: inline-flex;
+            gap: 6px;
+            align-items: center;
+        }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px 16px;
+            box-shadow: 0 14px 40px rgba(0,0,0,0.28);
+            backdrop-filter: blur(8px);
+        }
+        .card h3 { margin: 0 0 8px; font-size: 1rem; letter-spacing: 0.01em; }
+        .card p { margin: 6px 0; color: var(--muted); line-height: 1.55; }
+        .bullet { display: flex; gap: 10px; align-items: flex-start; margin: 6px 0; }
+        .bullet i { color: var(--accent); margin-top: 4px; }
+        .stat-bar {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-top: 10px;
+        }
+        .stat-line { display: flex; justify-content: space-between; color: var(--muted); font-size: 0.9rem; margin-bottom: 6px; }
+        .bar {
+            height: 8px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.08);
+            overflow: hidden;
+        }
+        .bar span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--accent-2)); }
+        .mini-chart {
+            margin-top: 10px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            background: rgba(255,255,255,0.04);
+        }
+        .mini-chart .legend { display: flex; gap: 10px; flex-wrap: wrap; color: var(--muted); font-size: 0.85rem; }
+        .legend span { display: inline-flex; align-items: center; gap: 4px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+        .chart-placeholder {
+            height: 140px;
+            background: linear-gradient(135deg, rgba(56,189,248,0.25), rgba(34,211,238,0.15));
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .chart-placeholder::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(90deg, rgba(255,255,255,0.08) 0, rgba(255,255,255,0.08) 1px, transparent 1px, transparent 18px),
+                        repeating-linear-gradient(0deg, rgba(255,255,255,0.06) 0, rgba(255,255,255,0.06) 1px, transparent 1px, transparent 22px);
+            opacity: 0.8;
+        }
+
+        .badge.warn { background: rgba(251,191,36,0.1); color: #fbbf24; border-color: rgba(251,191,36,0.3); }
+        .badge.safe { background: rgba(52,211,153,0.1); color: #34d399; border-color: rgba(52,211,153,0.3); }
+    </style>
+</head>
+<body>
+<div class="shell">
+    <div class="hero">
+        <div class="hero-card">
+            <div class="hero-title">改善目的 · 轉診監測</div>
+            <p class="hero-sub">以科技化視覺呈現轉入 / 轉出動態，兼顧風險控管、品質促進與效率提升。</p>
+            <div class="chip-row">
+                <span class="chip"><i class="fa-solid fa-shield"></i>風險控管</span>
+                <span class="chip"><i class="fa-solid fa-chart-line"></i>品質促進</span>
+                <span class="chip"><i class="fa-solid fa-rocket"></i>效率提升</span>
+            </div>
+        </div>
+        <div class="hero-card">
+            <h3 style="margin:0 0 6px;">最新觀測</h3>
+            <div class="stat-bar">
+                <div class="stat-line"><span>轉入趨勢 · Q3</span><span>穩定 +3%</span></div>
+                <div class="bar"><span style="width:63%;"></span></div>
+            </div>
+            <div class="stat-bar">
+                <div class="stat-line"><span>異常警示</span><span>2 科別待檢視</span></div>
+                <div class="bar"><span style="width:42%; background: linear-gradient(90deg, #fbbf24, #f97316);"></span></div>
+            </div>
+            <div class="mini-chart">
+                <div class="legend">
+                    <span><span class="dot" style="background:#38bdf8"></span>轉入</span>
+                    <span><span class="dot" style="background:#f97316"></span>轉出</span>
+                    <span><span class="dot" style="background:#34d399"></span>淨流量</span>
+                </div>
+                <div class="chart-placeholder"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h3><i class="fa-solid fa-shield-halved"></i> 控制風險</h3>
+            <div class="bullet"><i class="fa-regular fa-circle-check"></i><span>呈現各醫療機構 / 診所轉入、轉出變化，掌握轉診狀況。</span></div>
+            <div class="bullet"><i class="fa-regular fa-circle-check"></i><span>異常科別或趨勢即時亮燈，避免延遲調度。</span></div>
+            <div class="badge warn"><i class="fa-solid fa-bell"></i>風險通報已開啟</div>
+        </div>
+        <div class="card">
+            <h3><i class="fa-solid fa-sparkles"></i> 品質促進</h3>
+            <div class="bullet"><i class="fa-regular fa-circle-check"></i><span>提供各單位及科別原因分析，增益改善或異常辨識。</span></div>
+            <div class="bullet"><i class="fa-regular fa-circle-check"></i><span>跨季比較與科別分層檢視，快速定位變化來源。</span></div>
+            <div class="badge safe"><i class="fa-solid fa-arrow-trend-up"></i>改善管道已啟動</div>
+        </div>
+        <div class="card">
+            <h3><i class="fa-solid fa-bolt"></i> 提升效率</h3>
+            <div class="bullet"><i class="fa-regular fa-circle-check"></i><span>減少重複的固定作業，投入少量時間即可快速產出定期報表。</span></div>
+            <div class="bullet"><i class="fa-regular fa-circle-check"></i><span>工作流自動化：轉入 / 轉出月報、季報一鍵輸出。</span></div>
+            <div class="badge"><i class="fa-solid fa-clock-rotate-left"></i>人工工時 -40%</div>
+        </div>
+    </div>
+
+    <div class="grid" style="margin-top:16px;">
+        <div class="card">
+            <h3>轉入 · 前三大醫療院所</h3>
+            <p>Q3 指標科別與來源醫院分佈，支援追蹤變化。</p>
+            <div class="mini-chart">
+                <div class="chart-container">
+                    <canvas id="topHospitalsChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h3>轉入門診參與人次累計</h3>
+            <p>月度趨勢＋警戒線，快速感知波動。</p>
+            <div class="mini-chart">
+                <div class="chart-container">
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// 圖表 1：轉入前三大醫療院所（橫條圖）
+const topHospitalsCtx = document.getElementById('topHospitalsChart').getContext('2d');
+new Chart(topHospitalsCtx, {
+    type: 'bar',
+    data: {
+        labels: ['弘 X 醫院', '賢 X 醫院', '實 X 醫院'],
+        datasets: [{
+            label: '轉入人次',
+            data: [90, 54, 32],
+            backgroundColor: ['#38bdf8', '#22d3ee', '#a8e6cf'],
+            borderColor: ['rgba(56,189,248,0.8)', 'rgba(34,211,238,0.8)', 'rgba(168,230,207,0.8)'],
+            borderWidth: 1,
+            borderRadius: 8,
+            barThickness: 'flex'
+        }]
+    },
+    options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false },
+            tooltip: { backgroundColor: 'rgba(0,0,0,0.6)', titleColor: '#fff', bodyColor: '#fff', borderColor: 'rgba(255,255,255,0.3)', borderWidth: 1 }
+        },
+        scales: {
+            x: { beginAtZero: true, max: 100, grid: { color: 'rgba(255,255,255,0.08)' }, ticks: { color: '#9aa4b5', font: { size: 11 } } },
+            y: { grid: { drawBorder: false, display: false }, ticks: { color: '#9aa4b5', font: { size: 12, weight: '600' } } }
+        }
+    }
+});
+
+// 圖表 2：轉入趨勢（折線圖）
+const trendCtx = document.getElementById('trendChart').getContext('2d');
+new Chart(trendCtx, {
+    type: 'line',
+    data: {
+        labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月'],
+        datasets: [
+            {
+                label: '轉入人次',
+                data: [45, 52, 48, 61, 58, 72, 68, 75, 82, 78],
+                borderColor: '#38bdf8',
+                backgroundColor: 'rgba(56,189,248,0.1)',
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: '#38bdf8',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 4,
+                pointHoverRadius: 6
+            },
+            {
+                label: '警戒線',
+                data: [65, 65, 65, 65, 65, 65, 65, 65, 65, 65],
+                borderColor: '#f97316',
+                borderDash: [5, 5],
+                tension: 0,
+                fill: false,
+                pointRadius: 0,
+                borderWidth: 2
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { labels: { color: '#9aa4b5', font: { size: 11 }, usePointStyle: true } },
+            tooltip: { backgroundColor: 'rgba(0,0,0,0.7)', titleColor: '#fff', bodyColor: '#fff', borderColor: 'rgba(255,255,255,0.3)', borderWidth: 1 }
+        },
+        scales: {
+            y: { beginAtZero: true, max: 90, grid: { color: 'rgba(255,255,255,0.08)' }, ticks: { color: '#9aa4b5' } },
+            x: { grid: { display: false }, ticks: { color: '#9aa4b5' } }
+        }
+    }
+});
+</script>
+</body>
+</html>

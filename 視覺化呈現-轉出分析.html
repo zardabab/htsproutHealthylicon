@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>視覺化呈現 · 轉出分析</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg: #0c1322;
+            --panel: rgba(255,255,255,0.06);
+            --card: rgba(255,255,255,0.08);
+            --border: rgba(255,255,255,0.16);
+            --text: #e7edf8;
+            --muted: #9aa4b5;
+            --accent: #22d3ee;
+            --accent-2: #60a5fa;
+            --accent-3: #34d399;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: 'Space Grotesk', 'Noto Sans TC', system-ui, -apple-system, sans-serif;
+            background: radial-gradient(circle at 15% 20%, rgba(96,165,250,0.15), transparent 35%),
+                        radial-gradient(circle at 80% 0%, rgba(34,211,238,0.15), transparent 30%),
+                        linear-gradient(135deg, #0c1322, #0e1a2e 50%, #0a1120);
+            color: var(--text);
+            padding: 28px 16px 48px;
+        }
+        .shell { max-width: 1200px; margin: 0 auto; }
+        .header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        .title-block { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px; box-shadow: 0 18px 50px rgba(0,0,0,0.32); backdrop-filter: blur(10px); flex: 1 1 320px; }
+        h1 { margin: 0 0 8px; font-size: 1.6rem; }
+        p { margin: 6px 0; color: var(--muted); line-height: 1.55; }
+        .chip-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+        .chip { padding: 6px 10px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,0.05); display: inline-flex; align-items: center; gap: 6px; font-size: 0.9rem; color: var(--text); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; box-shadow: 0 14px 42px rgba(0,0,0,0.28); backdrop-filter: blur(8px); }
+        .card h3 { margin: 0 0 8px; font-size: 1.05rem; }
+        .bullet { display: flex; gap: 10px; align-items: flex-start; margin: 6px 0; color: var(--muted); }
+        .bullet i { color: var(--accent); margin-top: 4px; }
+        .chart { margin-top: 10px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,0.04); padding: 12px; }
+        .chart-placeholder { height: 160px; border-radius: 10px; background: linear-gradient(135deg, rgba(34,211,238,0.25), rgba(96,165,250,0.18)); position: relative; overflow: hidden; }
+        .chart-placeholder::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, rgba(255,255,255,0.08) 0, rgba(255,255,255,0.08) 1px, transparent 1px, transparent 18px), repeating-linear-gradient(0deg, rgba(255,255,255,0.06) 0, rgba(255,255,255,0.06) 1px, transparent 1px, transparent 22px); opacity: 0.9; }
+        .legend { display: flex; gap: 10px; flex-wrap: wrap; color: var(--muted); font-size: 0.85rem; margin-top: 8px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+        .pill-title { font-size: 0.92rem; color: var(--muted); margin-bottom: 4px; }
+        .pill-box { border: 1px solid var(--border); border-radius: 10px; padding: 10px; background: rgba(255,255,255,0.03); margin-top: 6px; }
+        .chart-container { position: relative; height: 200px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+<div class="shell">
+    <div class="header">
+        <div class="title-block">
+            <h1>視覺化呈現 · 轉出</h1>
+            <p>將原始轉出數據透過視覺化儀表板呈現，即時掌握趨勢、排名與分佈。</p>
+            <div class="chip-row">
+                <span class="chip"><i class="fa-solid fa-layer-group"></i>交叉篩選</span>
+                <span class="chip"><i class="fa-solid fa-chart-line"></i>折線</span>
+                <span class="chip"><i class="fa-solid fa-chart-bar"></i>堆疊條</span>
+                <span class="chip"><i class="fa-solid fa-chart-pie"></i>圓餅</span>
+                <span class="chip"><i class="fa-solid fa-table-list"></i>交叉表</span>
+                <span class="chip"><i class="fa-solid fa-rectangle-list"></i>多層狀態欄</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h3>交叉分析篩選器</h3>
+            <p>可依段落和多種維度（時間、類別等）靈活篩選，動態更新折線、條形、圓餅及堆疊圖形。</p>
+            <div class="pill-box">
+                <div class="pill-title">篩選維度</div>
+                <div class="chip-row">
+                    <span class="chip"><i class="fa-regular fa-calendar"></i>年 / 季 / 月</span>
+                    <span class="chip"><i class="fa-solid fa-hospital"></i>轉出前五大院所</span>
+                    <span class="chip"><i class="fa-solid fa-stethoscope"></i>科別</span>
+                    <span class="chip"><i class="fa-solid fa-flag"></i>分級</span>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h3>折線與趨勢</h3>
+            <p>呈現轉出資料隨時間（年 / 季）的變化趨勢，觀察長期線段及短期起伏。</p>
+            <div class="chart">
+                <div class="chart-container">
+                    <canvas id="lineChart"></canvas>
+                </div>
+                <div class="legend">
+                    <span><span class="dot" style="background:#22d3ee"></span>轉出人次</span>
+                    <span><span class="dot" style="background:#60a5fa"></span>平均值</span>
+                    <span><span class="dot" style="background:#34d399"></span>警戒線</span>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h3>堆疊條 + 圓餅</h3>
+            <p>堆疊條：呈現分項累計值，顯示「轉出前五大院所」件數。圓餅：呈現整體轉出案件於各分項中的比例分佈。</p>
+            <div class="chart">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div class="chart-container">
+                        <canvas id="stackedBarChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h3>交叉表 · 多層狀態欄</h3>
+            <p>依醫院單位、科別呈現案件量與案件構成；多層狀態欄則顯示各院所轉出類別及其疾病占比分佈。</p>
+            <div class="chart">
+                <div class="chart-container">
+                    <canvas id="mixedChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// 圖表 1：轉出折線圖
+const lineCtx = document.getElementById('lineChart').getContext('2d');
+new Chart(lineCtx, {
+    type: 'line',
+    data: {
+        labels: ['2025/Q1', '2025/Q2', '2025/Q3', '2025/Q4'],
+        datasets: [
+            {
+                label: '轉出人次',
+                data: [120, 145, 168, 142],
+                borderColor: '#22d3ee',
+                backgroundColor: 'rgba(34,211,238,0.1)',
+                tension: 0.4,
+                fill: true,
+                pointRadius: 5,
+                pointBackgroundColor: '#22d3ee',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2
+            },
+            {
+                label: '平均值',
+                data: [135, 135, 135, 135],
+                borderColor: '#60a5fa',
+                borderWidth: 2,
+                tension: 0,
+                fill: false,
+                pointRadius: 0
+            },
+            {
+                label: '警戒線',
+                data: [150, 150, 150, 150],
+                borderColor: '#34d399',
+                borderDash: [5,5],
+                borderWidth: 2,
+                tension: 0,
+                fill: false,
+                pointRadius: 0
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { labels: { color: '#9aa4b5', font: { size: 11 }, usePointStyle: true } },
+            tooltip: { backgroundColor: 'rgba(0,0,0,0.7)', titleColor: '#fff', bodyColor: '#fff', borderColor: 'rgba(255,255,255,0.3)', borderWidth: 1 }
+        },
+        scales: {
+            y: { beginAtZero: true, max: 200, grid: { color: 'rgba(255,255,255,0.08)' }, ticks: { color: '#9aa4b5' } },
+            x: { grid: { display: false }, ticks: { color: '#9aa4b5' } }
+        }
+    }
+});
+
+// 圖表 2：堆疊條圖
+const stackedCtx = document.getElementById('stackedBarChart').getContext('2d');
+new Chart(stackedCtx, {
+    type: 'bar',
+    data: {
+        labels: ['2025/Q1', '2025/Q2', '2025/Q3', '2025/Q4'],
+        datasets: [
+            {
+                label: '弘 X 醫院',
+                data: [45, 52, 58, 48],
+                backgroundColor: '#38bdf8',
+                borderRadius: 4
+            },
+            {
+                label: '賢 X 醫院',
+                data: [38, 45, 52, 42],
+                backgroundColor: '#22d3ee',
+                borderRadius: 4
+            },
+            {
+                label: '實 X 醫院',
+                data: [37, 48, 58, 52],
+                backgroundColor: '#34d399',
+                borderRadius: 4
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: undefined,
+        scales: {
+            x: { stacked: true, grid: { display: false }, ticks: { color: '#9aa4b5' } },
+            y: { stacked: true, grid: { color: 'rgba(255,255,255,0.08)' }, ticks: { color: '#9aa4b5' } }
+        },
+        plugins: {
+            legend: { labels: { color: '#9aa4b5', font: { size: 11 }, usePointStyle: true } },
+            tooltip: { backgroundColor: 'rgba(0,0,0,0.7)', titleColor: '#fff', bodyColor: '#fff' }
+        }
+    }
+});
+
+// 圖表 3：圓餅圖
+const pieCtx = document.getElementById('pieChart').getContext('2d');
+new Chart(pieCtx, {
+    type: 'doughnut',
+    data: {
+        labels: ['弘院', '賢院', '實院', '其他'],
+        datasets: [{
+            data: [35, 28, 22, 15],
+            backgroundColor: ['#38bdf8', '#22d3ee', '#34d399', '#f97316'],
+            borderColor: '#0c1322',
+            borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { position: 'bottom', labels: { color: '#9aa4b5', font: { size: 11 }, usePointStyle: true } },
+            tooltip: { backgroundColor: 'rgba(0,0,0,0.7)', titleColor: '#fff', bodyColor: '#fff' }
+        }
+    }
+});
+
+// 圖表 4：混合圖（柱狀 + 折線）
+const mixedCtx = document.getElementById('mixedChart').getContext('2d');
+new Chart(mixedCtx, {
+    type: 'bar',
+    data: {
+        labels: ['內科', '外科', '骨科', '復健科', '其他'],
+        datasets: [
+            {
+                label: 'Q3 轉出',
+                data: [68, 52, 45, 38, 15],
+                type: 'bar',
+                backgroundColor: '#60a5fa',
+                borderRadius: 4,
+                yAxisID: 'y'
+            },
+            {
+                label: '比例 (%)',
+                data: [28, 22, 19, 16, 15],
+                type: 'line',
+                borderColor: '#f97316',
+                backgroundColor: 'rgba(249,115,22,0.1)',
+                tension: 0.4,
+                pointRadius: 4,
+                pointBackgroundColor: '#f97316',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                yAxisID: 'y1'
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: { beginAtZero: true, position: 'left', grid: { color: 'rgba(255,255,255,0.08)' }, ticks: { color: '#9aa4b5' } },
+            y1: { beginAtZero: true, position: 'right', max: 40, grid: { drawOnChartArea: false }, ticks: { color: '#9aa4b5' } },
+            x: { grid: { display: false }, ticks: { color: '#9aa4b5' } }
+        },
+        plugins: {
+            legend: { labels: { color: '#9aa4b5', font: { size: 11 }, usePointStyle: true } },
+            tooltip: { backgroundColor: 'rgba(0,0,0,0.7)', titleColor: '#fff', bodyColor: '#fff' }
+        }
+    }
+});
+</script>
+</body>
+</html>

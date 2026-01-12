@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>轉診目前現況 · 科技化摘要</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg: #0d1322;
+            --panel: rgba(255,255,255,0.06);
+            --card: rgba(255,255,255,0.08);
+            --border: rgba(255,255,255,0.16);
+            --text: #e7edf8;
+            --muted: #9aa4b5;
+            --accent: #f472b6;
+            --accent-2: #34d399;
+            --accent-3: #60a5fa;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: 'Space Grotesk', 'Noto Sans TC', system-ui, -apple-system, sans-serif;
+            background: radial-gradient(circle at 20% 20%, rgba(244,114,182,0.12), transparent 35%),
+                        radial-gradient(circle at 80% 0%, rgba(96,165,250,0.12), transparent 30%),
+                        linear-gradient(135deg, #0d1322, #0b162a 50%, #0a1020);
+            color: var(--text);
+            padding: 28px 16px 48px;
+        }
+        .shell { max-width: 1180px; margin: 0 auto; }
+        .hero { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 18px; box-shadow: 0 18px 50px rgba(0,0,0,0.32); backdrop-filter: blur(10px); }
+        h1 { margin: 0 0 6px; font-size: 1.6rem; }
+        p { margin: 6px 0; color: var(--muted); line-height: 1.55; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+        .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; box-shadow: 0 14px 42px rgba(0,0,0,0.28); backdrop-filter: blur(8px); }
+        .card h3 { margin: 0 0 8px; font-size: 1.05rem; }
+        .bullet { display: flex; gap: 10px; align-items: flex-start; margin: 6px 0; color: var(--muted); }
+        .bullet i { color: var(--accent); margin-top: 4px; }
+        .chart { margin-top: 10px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,0.04); padding: 12px; }
+        .chart-placeholder { height: 150px; border-radius: 10px; background: linear-gradient(135deg, rgba(96,165,250,0.2), rgba(244,114,182,0.16)); position: relative; overflow: hidden; }
+        .chart-placeholder::after { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, rgba(255,255,255,0.08) 0, rgba(255,255,255,0.08) 1px, transparent 1px, transparent 18px), repeating-linear-gradient(0deg, rgba(255,255,255,0.06) 0, rgba(255,255,255,0.06) 1px, transparent 1px, transparent 22px); opacity: 0.9; }
+        .legend { display: flex; gap: 10px; flex-wrap: wrap; color: var(--muted); font-size: 0.85rem; margin-top: 8px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+        .chart-container { position: relative; height: 200px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+<div class="shell">
+    <div class="hero">
+        <h1>目前現況 · 轉診整理</h1>
+        <p>梳理每月、每季跨醫院轉入 / 轉出變化量，支援討論會與決策。聚焦重要性、影響範疇與待解決問題。</p>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h3><i class="fa-solid fa-clipboard-list"></i> 作業背景</h3>
+            <div class="bullet"><i class="fa-regular fa-circle-check"></i><span>整理數據每月提報營運轉入 / 轉出變化量，以及每季召開跨單位轉診相關討論會。</span></div>
+            <div class="bullet"><i class="fa-regular fa-circle-check"></i><span>強化關聯資源，提升民眾信任。</span></div>
+        </div>
+        <div class="card">
+            <h3><i class="fa-solid fa-star"></i> 重要性</h3>
+            <div class="bullet"><i class="fa-regular fa-circle-check"></i><span>觀察轉診量變化，強化相關資源，完善醫療照護鏈。</span></div>
+            <div class="bullet"><i class="fa-regular fa-circle-check"></i><span>提供有效數據，讓相關單位可即時介入、關懷改善上 / 下級院所關係。</span></div>
+        </div>
+        <div class="card">
+            <h3><i class="fa-solid fa-link"></i> 影響範疇</h3>
+            <div class="bullet"><i class="fa-regular fa-circle-check"></i><span>上下級醫院銜接、跨院轉診效率、民眾信任度。</span></div>
+            <div class="bullet"><i class="fa-regular fa-circle-check"></i><span>跨科別支援與協作，促進資源精準連結。</span></div>
+        </div>
+        <div class="card">
+            <h3><i class="fa-solid fa-triangle-exclamation"></i> 未作 BI 前問題</h3>
+            <div class="bullet"><i class="fa-regular fa-circle-check"></i><span>轉出 Excel 每月耗時作同樣的整理動作。</span></div>
+            <div class="bullet"><i class="fa-regular fa-circle-check"></i><span>缺乏即時監測，需人工對應表格與圖表。</span></div>
+        </div>
+    </div>
+
+    <div class="grid" style="margin-top:16px;">
+        <div class="card">
+            <h3>轉出趨勢示意</h3>
+            <p>以柱狀 + 折線示意多院所轉出量變化與前五大院所排名。</p>
+            <div class="chart">
+                <div class="chart-container">
+                    <canvas id="trendMixedChart"></canvas>
+                </div>
+                <div class="legend">
+                    <span><span class="dot" style="background:#f472b6"></span>轉出量</span>
+                    <span><span class="dot" style="background:#34d399"></span>前五大院所</span>
+                    <span><span class="dot" style="background:#60a5fa"></span>同比</span>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h3>分科 / 分區監測</h3>
+            <p>門診轉出、參診轉出、其他醫療轉出等指標組合，支援跨季、跨科別比較。</p>
+            <div class="chart">
+                <div class="chart-container">
+                    <canvas id="departmentChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// 圖表 1：轉出趨勢混合圖
+const trendMixedCtx = document.getElementById('trendMixedChart').getContext('2d');
+new Chart(trendMixedCtx, {
+    type: 'bar',
+    data: {
+        labels: ['2025/Q1', '2025/Q2', '2025/Q3', '2025/Q4', '2026/Q1'],
+        datasets: [
+            {
+                label: '轉出量',
+                data: [145, 158, 168, 152, 165],
+                type: 'bar',
+                backgroundColor: '#f472b6',
+                borderRadius: 4,
+                yAxisID: 'y'
+            },
+            {
+                label: '同比 (%)',
+                data: [8, 12, 15, 10, 14],
+                type: 'line',
+                borderColor: '#60a5fa',
+                backgroundColor: 'rgba(96,165,250,0.1)',
+                tension: 0.4,
+                pointRadius: 4,
+                pointBackgroundColor: '#60a5fa',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                yAxisID: 'y1'
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: { beginAtZero: true, position: 'left', grid: { color: 'rgba(255,255,255,0.08)' }, ticks: { color: '#9aa4b5' } },
+            y1: { beginAtZero: true, position: 'right', max: 25, grid: { drawOnChartArea: false }, ticks: { color: '#9aa4b5' } },
+            x: { grid: { display: false }, ticks: { color: '#9aa4b5' } }
+        },
+        plugins: {
+            legend: { labels: { color: '#9aa4b5', font: { size: 11 }, usePointStyle: true } },
+            tooltip: { backgroundColor: 'rgba(0,0,0,0.7)', titleColor: '#fff', bodyColor: '#fff', borderColor: 'rgba(255,255,255,0.3)', borderWidth: 1 }
+        }
+    }
+});
+
+// 圖表 2：科別監測（分組柱狀圖）
+const departmentCtx = document.getElementById('departmentChart').getContext('2d');
+new Chart(departmentCtx, {
+    type: 'bar',
+    data: {
+        labels: ['門診轉出', '參診轉出', '其他醫療', '急診轉出'],
+        datasets: [
+            {
+                label: '2025/Q2',
+                data: [62, 45, 38, 18],
+                backgroundColor: '#60a5fa',
+                borderRadius: 4
+            },
+            {
+                label: '2025/Q3',
+                data: [68, 52, 45, 22],
+                backgroundColor: '#34d399',
+                borderRadius: 4
+            },
+            {
+                label: '2025/Q4',
+                data: [58, 48, 38, 19],
+                backgroundColor: '#f472b6',
+                borderRadius: 4
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.08)' }, ticks: { color: '#9aa4b5' } },
+            x: { grid: { display: false }, ticks: { color: '#9aa4b5' } }
+        },
+        plugins: {
+            legend: { labels: { color: '#9aa4b5', font: { size: 11 }, usePointStyle: true } },
+            tooltip: { backgroundColor: 'rgba(0,0,0,0.7)', titleColor: '#fff', bodyColor: '#fff', borderColor: 'rgba(255,255,255,0.3)', borderWidth: 1 }
+        }
+    }
+});
+</script>
+</body>
+</html>
