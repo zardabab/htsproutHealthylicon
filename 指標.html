@@ -173,7 +173,7 @@
             </li>
             <li class="nav-item" role="presentation">
                 <button class="nav-link" id="recruitment-tab" data-bs-toggle="tab" data-bs-target="#recruitment" type="button" role="tab" aria-controls="recruitment" aria-selected="false">
-                    👥 人力招募
+                    👥 人力儀表板
                 </button>
             </li>
             <li class="nav-item" role="presentation" style="display: none;">
@@ -779,8 +779,9 @@
             </div>
 
             <div class="tab-pane fade" id="recruitment" role="tabpanel" aria-labelledby="recruitment-tab">
-                <div class="section-title"><h2>人力招募情形</h2></div>
-                <div class="row g-4">
+                <!-- 本院現況 -->
+                <div class="section-title"><h2>本院現況</h2></div>
+                <div class="row g-4" style="margin-bottom: 40px;">
                     <div class="col-md-4">
                         <div class="chart-card shadow-sm h-100 p-3">
                             <h3>人力總覽</h3>
@@ -792,6 +793,54 @@
                             <h3>職務缺額明細</h3>
                             <div class="table-responsive">
                                 <table id="recruitment-table" class="table table-hover table-bordered">
+                                    <thead>
+                                        <tr><th>職稱</th><th>編制</th><th>現有</th><th>缺額</th></tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 深耕計劃 -->
+                <div class="section-title"><h2>深耕計劃</h2></div>
+                <div class="row g-4" style="margin-bottom: 40px;">
+                    <div class="col-md-4">
+                        <div class="chart-card shadow-sm h-100 p-3">
+                            <h3>深耕計劃人力總覽</h3>
+                            <canvas id="deepplan-overview-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="data-table-card shadow-sm h-100 p-3">
+                            <h3>深耕計劃人員明細</h3>
+                            <div class="table-responsive">
+                                <table id="deepplan-table" class="table table-hover table-bordered">
+                                    <thead>
+                                        <tr><th>職稱</th><th>編制</th><th>現有</th><th>缺額</th></tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 兼任 -->
+                <div class="section-title"><h2>兼任</h2></div>
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="chart-card shadow-sm h-100 p-3">
+                            <h3>兼任人力總覽</h3>
+                            <canvas id="parttime-overview-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="data-table-card shadow-sm h-100 p-3">
+                            <h3>兼任人員明細</h3>
+                            <div class="table-responsive">
+                                <table id="parttime-table" class="table table-hover table-bordered">
                                     <thead>
                                         <tr><th>職稱</th><th>編制</th><th>現有</th><th>缺額</th></tr>
                                     </thead>
