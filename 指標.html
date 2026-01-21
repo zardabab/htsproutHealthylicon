@@ -779,73 +779,98 @@
             </div>
 
             <div class="tab-pane fade" id="recruitment" role="tabpanel" aria-labelledby="recruitment-tab">
-                <!-- 本院現況 -->
-                <div class="section-title"><h2>本院現況</h2></div>
-                <div class="row g-4" style="margin-bottom: 40px;">
-                    <div class="col-md-4">
-                        <div class="chart-card shadow-sm h-100 p-3">
-                            <h3>人力總覽</h3>
-                            <canvas id="recruitment-overview-chart"></canvas>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="data-table-card shadow-sm h-100 p-3">
-                            <h3>職務缺額明細</h3>
-                            <div class="table-responsive">
-                                <table id="recruitment-table" class="table table-hover table-bordered">
-                                    <thead>
-                                        <tr><th>職稱</th><th>編制</th><th>現有</th><th>缺額</th></tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
+                <!-- 人力儀表板子標籤頁 -->
+                <ul class="nav nav-tabs" id="recruitmentTab" role="tablist" style="margin-bottom: 20px;">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="hospital-tab" data-bs-toggle="tab" data-bs-target="#hospital-current" type="button" role="tab" aria-controls="hospital-current" aria-selected="true">
+                            深耕計劃
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="deepplan-tab" data-bs-toggle="tab" data-bs-target="#deepplan-content" type="button" role="tab" aria-controls="deepplan-content" aria-selected="false">
+                            本院現況
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="parttime-tab" data-bs-toggle="tab" data-bs-target="#parttime-content" type="button" role="tab" aria-controls="parttime-content" aria-selected="false">
+                            兼任
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- 人力儀表板子標籤頁內容 -->
+                <div class="tab-content" id="recruitmentTabContent">
+                    <!-- 本院現況 -->
+                    <div class="tab-pane fade show active" id="hospital-current" role="tabpanel" aria-labelledby="hospital-tab">
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="chart-card shadow-sm h-100 p-3">
+                                    <h3>人力總覽</h3>
+                                    <canvas id="recruitment-overview-chart"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="data-table-card shadow-sm h-100 p-3">
+                                    <h3>職務缺額明細</h3>
+                                    <div class="table-responsive">
+                                        <table id="recruitment-table" class="table table-hover table-bordered">
+                                            <thead>
+                                                <tr><th>職稱</th><th>編制</th><th>現有</th><th>缺額</th></tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- 深耕計劃 -->
-                <div class="section-title"><h2>深耕計劃</h2></div>
-                <div class="row g-4" style="margin-bottom: 40px;">
-                    <div class="col-md-4">
-                        <div class="chart-card shadow-sm h-100 p-3">
-                            <h3>深耕計劃人力總覽</h3>
-                            <canvas id="deepplan-overview-chart"></canvas>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="data-table-card shadow-sm h-100 p-3">
-                            <h3>深耕計劃人員明細</h3>
-                            <div class="table-responsive">
-                                <table id="deepplan-table" class="table table-hover table-bordered">
-                                    <thead>
-                                        <tr><th>職稱</th><th>編制</th><th>現有</th><th>缺額</th></tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
+                    <!-- 深耕計劃 -->
+                    <div class="tab-pane fade" id="deepplan-content" role="tabpanel" aria-labelledby="deepplan-tab">
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="chart-card shadow-sm h-100 p-3">
+                                    <h3>深耕計劃人力總覽</h3>
+                                    <canvas id="deepplan-overview-chart"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="data-table-card shadow-sm h-100 p-3">
+                                    <h3>深耕計劃人員明細</h3>
+                                    <div class="table-responsive">
+                                        <table id="deepplan-table" class="table table-hover table-bordered">
+                                            <thead>
+                                                <tr><th>職稱</th><th>編制</th><th>現有</th><th>缺額</th></tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- 兼任 -->
-                <div class="section-title"><h2>兼任</h2></div>
-                <div class="row g-4">
-                    <div class="col-md-4">
-                        <div class="chart-card shadow-sm h-100 p-3">
-                            <h3>兼任人力總覽</h3>
-                            <canvas id="parttime-overview-chart"></canvas>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="data-table-card shadow-sm h-100 p-3">
-                            <h3>兼任人員明細</h3>
-                            <div class="table-responsive">
-                                <table id="parttime-table" class="table table-hover table-bordered">
-                                    <thead>
-                                        <tr><th>職稱</th><th>編制</th><th>現有</th><th>缺額</th></tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
+                    <!-- 兼任 -->
+                    <div class="tab-pane fade" id="parttime-content" role="tabpanel" aria-labelledby="parttime-tab">
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="chart-card shadow-sm h-100 p-3">
+                                    <h3>兼任人力總覽</h3>
+                                    <canvas id="parttime-overview-chart"></canvas>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="data-table-card shadow-sm h-100 p-3">
+                                    <h3>兼任人員明細</h3>
+                                    <div class="table-responsive">
+                                        <table id="parttime-table" class="table table-hover table-bordered">
+                                            <thead>
+                                                <tr><th>職稱</th><th>編制</th><th>現有</th><th>缺額</th></tr>
+                                            </thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -982,18 +1007,18 @@
             
             // 人力招募數據 (保持不變)
             const recruitmentRawData = [
-                { title: "資訊經理", total: 1, current: 1, gap: 0 },
-                { title: "資訊專員", total: 1, current: 0, gap: 1 },
-                { title: "計畫管理師", total: 2, current: 0, gap: 2 },
-                { title: "人資專員", total: 1, current: 1, gap: 0 },
-                { title: "研究助理", total: 5, current: 3, gap: 2 },
-                { title: "職能/物理治療師", total: 5, current: 1, gap: 4 },
-                { title: "護理督導", total: 1, current: 1, gap: 0 },
-                { title: "個管師", total: 4, current: 2, gap: 2 },
-                { title: "營養師", total: 1, current: 0, gap: 1 },
-                { title: "社工", total: 1, current: 0, gap: 1 },
-                { title: "心理師", total: 1, current: 0, gap: 1 },
-                { title: "司機", total: 2, current: 0, gap: 2 }
+                { title: "資訊經理", total: 1, current: 1, gap: 0, remark: "" },
+                { title: "資訊專員", total: 2, current: 0, gap: 1, remark: "" },
+                // { title: "計畫管理師", total: 2, current: 0, gap: 2, remark: "此職關閉" },
+                { title: "人資專員", total: 1, current: 1, gap: 0, remark: "" },
+                { title: "研究助理", total: 5, current: 2, gap: 3, remark: "" },
+                { title: "職能/物理治療師", total: 5, current: 1, gap: 4, remark: "" },
+                { title: "辦公室主任", total: 1, current: 1, gap: 0, remark: "" },
+                { title: "個管師", total: 4, current: 1, gap: 3, remark: "" },
+                { title: "營養師", total: 1, current: 0, gap: 1, remark: "" },
+                { title: "社工", total: 1, current: 0, gap: 1, remark: "" },
+                { title: "心理師", total: 1, current: 0, gap: 1, remark: "" },
+                { title: "司機", total: 2, current: 0, gap: 2, remark: "" }
             ];
 
             // 經費預估數據 (保持不變)
