@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>資產管理統計看板｜深耕計畫</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap"
+        rel="stylesheet" />
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #020617;
+            --primary: #38bdf8;
+            --primary-soft: rgba(56, 189, 248, 0.25);
+            --accent: #a855f7;
+            --card-bg: rgba(15, 23, 42, 0.85);
+            --card-border: rgba(148, 163, 184, 0.4);
+            --text-main: #e5e7eb;
+            --text-muted: #9ca3af;
+            --glow-primary: 0 0 25px rgba(56, 189, 248, 0.7);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Noto Sans TC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top left, #0f172a 0, #020617 50%, #020617 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        /* Background Effects */
+        .bg-orbit {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background:
+                radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.15) 0, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.15) 0, transparent 55%);
+            filter: blur(40px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            margin: 0;
+            background: linear-gradient(120deg, #38bdf8, #a855f7);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(148, 163, 184, 0.4);
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(15, 23, 42, 0.9);
+            color: var(--text-main);
+            border-color: var(--primary);
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 20px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-card h3 {
+            margin: 0 0 16px 0;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Specific Grid Placements */
+        .col-span-3 {
+            grid-column: span 3;
+        }
+
+        .col-span-4 {
+            grid-column: span 4;
+        }
+
+        .col-span-6 {
+            grid-column: span 6;
+        }
+
+        .col-span-8 {
+            grid-column: span 8;
+        }
+
+        .col-span-12 {
+            grid-column: span 12;
+        }
+
+        @media (max-width: 1024px) {
+
+            .col-span-3,
+            .col-span-4,
+            .col-span-6,
+            .col-span-8 {
+                grid-column: span 12;
+            }
+        }
+
+        /* Summary Metrics */
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .metric-delta {
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .delta-up {
+            color: #4ade80;
+        }
+
+        .delta-down {
+            color: #f87171;
+        }
+
+        /* Chart Containers */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        .chart-container-sm {
+            height: 220px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-orbit"></div>
+
+    <div class="container">
+        <header>
+            <div class="header-title">
+                <i class="fas fa-boxes-stacked" style="font-size: 1.8rem; color: var(--primary);"></i>
+                <h1>資產管理統計看板</h1>
+            </div>
+            <a href="index-gpt.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> 回首頁
+            </a>
+        </header>
+
+        <!-- Use JavaScript to render Date -->
+        <div style="margin-bottom: 20px; color: var(--text-muted); text-align: right;">
+            最後更新時間: <span id="last-updated">Loading...</span>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Key Metrics -->
+            <div class="stat-card col-span-3">
+                <h3>資產總數 <i class="fas fa-cube"></i></h3>
+                <div class="metric-value">1,248</div>
+                <div class="metric-delta delta-up">
+                    <i class="fas fa-arrow-up"></i> +12 本月新增
+                </div>
+            </div>
+
+            <div class="stat-card col-span-3">
+                <h3>總資產價值 (NTD) <i class="fas fa-sack-dollar"></i></h3>
+                <div class="metric-value">15.8M</div>
+                <div class="metric-delta delta-up">
+                    <i class="fas fa-minus"></i> 持平
+                </div>
+            </div>
+
+            <div class="stat-card col-span-3">
+                <h3>維修中資產 <i class="fas fa-tools"></i></h3>
+                <div class="metric-value">42</div>
+                <div class="metric-delta delta-down">
+                    <i class="fas fa-arrow-down"></i> -5 較上週減少
+                </div>
+            </div>
+
+            <div class="stat-card col-span-3">
+                <h3>報廢預警 <i class="fas fa-triangle-exclamation"></i></h3>
+                <div class="metric-value">18</div>
+                <div class="metric-delta" style="color: #facc15;">
+                    即將屆齡
+                </div>
+            </div>
+
+            <!-- Charts Row 1 -->
+            <div class="stat-card col-span-8">
+                <h3>資產類別分佈與趨勢</h3>
+                <div class="chart-container">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+
+            <div class="stat-card col-span-4">
+                <h3>資產狀態佔比</h3>
+                <div class="chart-container">
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Charts Row 2 -->
+            <div class="stat-card col-span-6">
+                <h3>部門保管資產統計</h3>
+                <div class="chart-container-sm">
+                    <canvas id="deptChart"></canvas>
+                </div>
+            </div>
+
+            <div class="stat-card col-span-6">
+                <h3>月度維修案件統計 (近半年)</h3>
+                <div class="chart-container-sm">
+                    <canvas id="maintenanceChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set Date
+        document.getElementById('last-updated').textContent = new Date().toLocaleString();
+
+        // Chart.js Configuration Defaults
+        Chart.defaults.color = '#9ca3af';
+        Chart.defaults.borderColor = 'rgba(148, 163, 184, 0.1)';
+        Chart.defaults.font.family = '"Noto Sans TC", sans-serif';
+
+        // 1. Category Chart (Bar)
+        const ctxCategory = document.getElementById('categoryChart').getContext('2d');
+        new Chart(ctxCategory, {
+            type: 'bar',
+            data: {
+                labels: ['醫療設備', '資訊設備', '辦公家具', '復健輔具', '護理耗材', '其他'],
+                datasets: [{
+                    label: '資產數量',
+                    data: [320, 450, 180, 150, 100, 48],
+                    backgroundColor: [
+                        'rgba(56, 189, 248, 0.7)',
+                        'rgba(168, 85, 247, 0.7)',
+                        'rgba(248, 113, 113, 0.7)',
+                        'rgba(52, 211, 153, 0.7)',
+                        'rgba(251, 191, 36, 0.7)',
+                        'rgba(148, 163, 184, 0.7)'
+                    ],
+                    borderRadius: 6,
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // 2. Status Chart (Doughnut)
+        const ctxStatus = document.getElementById('statusChart').getContext('2d');
+        new Chart(ctxStatus, {
+            type: 'doughnut',
+            data: {
+                labels: ['使用中', '閒置', '維修中', '報廢待處理'],
+                datasets: [{
+                    data: [850, 200, 42, 156],
+                    backgroundColor: [
+                        '#38bdf8', // Blue
+                        '#34d399', // Green
+                        '#f87171', // Red
+                        '#64748b'  // Slate
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { boxWidth: 12 }
+                    }
+                },
+                cutout: '70%'
+            }
+        });
+
+        // 3. Department Chart (Horizontal Bar)
+        const ctxDept = document.getElementById('deptChart').getContext('2d');
+        new Chart(ctxDept, {
+            type: 'bar', // Chart.js v3+ uses 'bar' with indexAxis: 'y' for horizontal
+            data: {
+                labels: ['護理部', '復健科', '行政中心', '資訊室', '藥劑科'],
+                datasets: [{
+                    label: '保管數量',
+                    data: [420, 380, 150, 210, 88],
+                    backgroundColor: 'rgba(56, 189, 248, 0.5)',
+                    borderColor: '#38bdf8',
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // 4. Maintenance Chart (Line)
+        const ctxMaint = document.getElementById('maintenanceChart').getContext('2d');
+        new Chart(ctxMaint, {
+            type: 'line',
+            data: {
+                labels: ['8月', '9月', '10月', '11月', '12月', '1月'],
+                datasets: [{
+                    label: '維修案件數',
+                    data: [12, 19, 15, 25, 22, 18],
+                    borderColor: '#a855f7',
+                    backgroundColor: 'rgba(168, 85, 247, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#a855f7'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
