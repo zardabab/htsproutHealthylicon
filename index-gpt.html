@@ -1180,7 +1180,7 @@
     </style>
 </head>
 
-<body class="christmas-theme">
+<body>
     <div class="bg-orbit"></div>
     <div class="bg-grid"></div>
 
@@ -1219,9 +1219,9 @@
     </div>
 
     <!-- 隱藏的主題切換按鈕 -->
-    <button class="theme-toggle-btn show" id="theme-toggle">
-        <i class="fas fa-microchip"></i>
-        <span id="theme-text">原始模式</span>
+    <button class="theme-toggle-btn" id="theme-toggle">
+        <i class="fas fa-gifts"></i>
+        <span id="theme-text">聖誕模式</span>
     </button>
 
     <div class="shell">
@@ -1604,14 +1604,9 @@
             const themeText = document.getElementById('theme-text');
             let clickCount = 0;
             let clickTimer = null;
-            let isChristmasTheme = false; // 預設為聖誕主題
+            let isChristmasTheme = false; // 預設為原始模式
 
-            // 頁面載入時顯示聖誕祝福
-            window.addEventListener('load', function () {
-                setTimeout(() => {
-                    showChristmasMessage();
-                }, 500);
-            });
+
 
             // 監聽副標題點擊
             secretTrigger.addEventListener('click', function () {

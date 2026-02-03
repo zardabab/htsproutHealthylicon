@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>深耕計畫委員會 - 互動式指標儀表板 (已修正 KPI 顯示)</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
-    
+
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -19,22 +20,27 @@
             background-color: #f4f6f9;
             color: #333;
         }
+
         .dashboard-header {
-            background-color: #0078d4 !important; /* Power BI Blue */
+            background-color: #0078d4 !important;
+            /* Power BI Blue */
         }
+
         .section-title {
             border-bottom: 2px solid #ddd;
             margin: 20px 0 15px;
             padding-bottom: 5px;
         }
+
         .section-title h2 {
             color: #005a9e;
             font-size: 20px;
             margin: 0;
         }
+
         /* KPI 範疇標題樣式 */
         .kpi-category-title {
-            background-color: #e3f2fd; 
+            background-color: #e3f2fd;
             color: #005a9e;
             padding: 8px 15px;
             margin-bottom: 10px;
@@ -42,8 +48,9 @@
             border-radius: 4px;
             font-weight: bold;
             font-size: 18px;
-            width: 100%; 
+            width: 100%;
         }
+
         /* KPI 卡片容器 */
         .card-container {
             display: flex;
@@ -51,35 +58,44 @@
             gap: 15px;
             margin-bottom: 20px;
         }
+
         .kpi-card {
             background: white;
             border-radius: 8px;
             padding: 15px;
-            width: calc(33.33% - 10px); /* 調整為三張卡片一行 */
-            min-width: 280px; /* 最小寬度確保手機上不會太小 */
+            width: calc(33.33% - 10px);
+            /* 調整為三張卡片一行 */
+            min-width: 280px;
+            /* 最小寬度確保手機上不會太小 */
             box-sizing: border-box;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s ease;
         }
+
         .kpi-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
+
         .kpi-card h4 {
-            color: #555; /* 調整標題顏色，強調達成率 */
+            color: #555;
+            /* 調整標題顏色，強調達成率 */
             margin-top: 5px;
             font-size: 15px;
-            min-height: 30px; 
+            min-height: 30px;
             font-weight: normal;
         }
+
         /* KPI 主要數值：達成率百分比 */
         .kpi-value {
-            font-size: 28px; 
+            font-size: 28px;
             font-weight: bold;
-            color: #0078d4; /* 達成率使用主要藍色 */
+            color: #0078d4;
+            /* 達成率使用主要藍色 */
             margin-top: 5px;
             margin-bottom: 5px;
         }
+
         .kpi-target-info {
             font-size: 12px;
             color: #888;
@@ -87,14 +103,17 @@
             padding-top: 5px;
             margin-top: 5px;
         }
+
         /* 進度條調整：變高、顏色和圓角 */
         .progress-bar-container {
             height: 12px;
             background-color: #e0e0e0;
             border-radius: 6px;
-            margin-bottom: 10px; /* 移到最上方 */
+            margin-bottom: 10px;
+            /* 移到最上方 */
             overflow: hidden;
         }
+
         .progress-bar-fill {
             height: 100%;
             transition: width 0.5s ease-in-out;
@@ -102,46 +121,58 @@
         }
 
         /* 統一圖表/表格卡片樣式 */
-        .chart-card, .data-table-card {
+        .chart-card,
+        .data-table-card {
             background: white;
             border-radius: 8px;
             padding: 20px;
         }
-        .chart-card h3, .data-table-card h3 {
+
+        .chart-card h3,
+        .data-table-card h3 {
             color: #333;
             border-bottom: 1px solid #eee;
             padding-bottom: 10px;
             margin-top: 0;
             font-size: 18px;
         }
+
         /* 表格優化 */
-        #recruitment-table td, #finance-personnel-table td {
+        #recruitment-table td,
+        #finance-personnel-table td {
             vertical-align: middle;
         }
+
         .tab-content {
             min-height: 500px;
         }
+
         /* 確保 Chart.js 容器在 h-100 時能夠正確佔用空間 */
         .chart-card canvas {
-            max-height: 300px; /* 限制圖表最大高度，避免過高 */
+            max-height: 300px;
+            /* 限制圖表最大高度，避免過高 */
         }
+
         /* 可點選的 KPI 卡片樣式 */
         .clickable-kpi {
             cursor: pointer !important;
             pointer-events: all !important;
         }
+
         .clickable-kpi:hover {
             transform: translateY(-5px) scale(1.02) !important;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2) !important;
             background-color: #f8f9fa !important;
         }
+
         .clickable-kpi:active {
             transform: translateY(-3px) scale(1.01) !important;
         }
     </style>
 </head>
+
 <body>
-    
+
     <div class="dashboard-header bg-primary text-white p-4 shadow-sm">
         <div class="d-flex justify-content-between align-items-center">
             <div>
@@ -162,39 +193,47 @@
     <div class="container-fluid p-4">
         <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="kpi-tab" data-bs-toggle="tab" data-bs-target="#kpi" type="button" role="tab" aria-controls="kpi" aria-selected="true">
+                <button class="nav-link active" id="kpi-tab" data-bs-toggle="tab" data-bs-target="#kpi" type="button"
+                    role="tab" aria-controls="kpi" aria-selected="true">
                     ✨ 績效概覽 (KPI)
                 </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="common-tab" data-bs-toggle="tab" data-bs-target="#common" type="button" role="tab" aria-controls="common" aria-selected="false">
+                <button class="nav-link" id="common-tab" data-bs-toggle="tab" data-bs-target="#common" type="button"
+                    role="tab" aria-controls="common" aria-selected="false">
                     📋 共同性指標達成情形
                 </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="recruitment-tab" data-bs-toggle="tab" data-bs-target="#recruitment" type="button" role="tab" aria-controls="recruitment" aria-selected="false">
+                <button class="nav-link" id="recruitment-tab" data-bs-toggle="tab" data-bs-target="#recruitment"
+                    type="button" role="tab" aria-controls="recruitment" aria-selected="false">
                     👥 人力儀表板
                 </button>
             </li>
             <li class="nav-item" role="presentation" style="display: none;">
-                <button class="nav-link" id="finance-tab" data-bs-toggle="tab" data-bs-target="#finance" type="button" role="tab" aria-controls="finance" aria-selected="false">
+                <button class="nav-link" id="finance-tab" data-bs-toggle="tab" data-bs-target="#finance" type="button"
+                    role="tab" aria-controls="finance" aria-selected="false">
                     💰 經費預估
                 </button>
             </li>
         </ul>
 
         <div class="tab-content pt-3" id="myTabContent">
-            
+
             <div class="tab-pane fade show active" id="kpi" role="tabpanel" aria-labelledby="kpi-tab">
                 <!-- 將查核點折頁放在 KPI 標籤後面（KPI 分頁頂部） -->
                 <div class="accordion" id="checkpointAccordion" style="margin: 12px 0 16px 0;">
-                    <div class="accordion-item" style="border: 1px solid #e6edf3; border-radius: 8px; overflow: hidden;">
+                    <div class="accordion-item"
+                        style="border: 1px solid #e6edf3; border-radius: 8px; overflow: hidden;">
                         <h2 class="accordion-header" id="heading-115-0331">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-115-0331" aria-expanded="false" aria-controls="collapse-115-0331">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse-115-0331" aria-expanded="false"
+                                aria-controls="collapse-115-0331">
                                 115 年 3 月 31 日查核點
                             </button>
                         </h2>
-                        <div id="collapse-115-0331" class="accordion-collapse collapse" aria-labelledby="heading-115-0331" data-bs-parent="#checkpointAccordion">
+                        <div id="collapse-115-0331" class="accordion-collapse collapse"
+                            aria-labelledby="heading-115-0331" data-bs-parent="#checkpointAccordion">
                             <div class="accordion-body" style="background: #f9fbfd;">
                                 <div class="card-container">
                                     <div class="kpi-card">
@@ -231,7 +270,8 @@
                                                 width: 100%;
                                             ">
                                                 <span style="display: flex; align-items: center; gap: 8px;">
-                                                    <span style="display: inline-block; animation: bounce 2s ease-in-out infinite;">🚀</span>
+                                                    <span
+                                                        style="display: inline-block; animation: bounce 2s ease-in-out infinite;">🚀</span>
                                                     制定初步轉診協議
                                                 </span>
                                             </span>
@@ -247,38 +287,81 @@
                                         </h3>
                                         <style>
                                             @keyframes slideInGlow {
-                                                0% { transform: translateY(-30px) scale(0.8); opacity: 0; filter: blur(10px); }
-                                                50% { transform: translateY(-5px) scale(1.05); opacity: 0.7; filter: blur(2px); }
-                                                100% { transform: translateY(0) scale(1); opacity: 1; filter: blur(0); }
+                                                0% {
+                                                    transform: translateY(-30px) scale(0.8);
+                                                    opacity: 0;
+                                                    filter: blur(10px);
+                                                }
+
+                                                50% {
+                                                    transform: translateY(-5px) scale(1.05);
+                                                    opacity: 0.7;
+                                                    filter: blur(2px);
+                                                }
+
+                                                100% {
+                                                    transform: translateY(0) scale(1);
+                                                    opacity: 1;
+                                                    filter: blur(0);
+                                                }
                                             }
+
                                             @keyframes pulseGlow {
-                                                0% { box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3), 0 0 0 1px rgba(255,255,255,0.1), inset 0 1px 0 rgba(255,255,255,0.2); }
-                                                100% { box-shadow: 0 12px 40px rgba(102, 126, 234, 0.5), 0 0 0 1px rgba(255,255,255,0.2), inset 0 1px 0 rgba(255,255,255,0.3); }
+                                                0% {
+                                                    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                                                }
+
+                                                100% {
+                                                    box-shadow: 0 12px 40px rgba(102, 126, 234, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+                                                }
                                             }
+
                                             @keyframes shimmer {
-                                                0% { left: -100%; }
-                                                50% { left: 100%; }
-                                                100% { left: 100%; }
+                                                0% {
+                                                    left: -100%;
+                                                }
+
+                                                50% {
+                                                    left: 100%;
+                                                }
+
+                                                100% {
+                                                    left: 100%;
+                                                }
                                             }
+
                                             @keyframes bounce {
-                                                0%, 100% { transform: translateY(0) rotate(0deg); }
-                                                25% { transform: translateY(-3px) rotate(-5deg); }
-                                                75% { transform: translateY(-1px) rotate(5deg); }
+
+                                                0%,
+                                                100% {
+                                                    transform: translateY(0) rotate(0deg);
+                                                }
+
+                                                25% {
+                                                    transform: translateY(-3px) rotate(-5deg);
+                                                }
+
+                                                75% {
+                                                    transform: translateY(-1px) rotate(5deg);
+                                                }
                                             }
                                         </style>
                                         <p style="color:#666; font-size: 13px; margin: 6px 0 8px;">訂定初期的轉診協議</p>
                                         <div style="margin: 10px 0;">
                                             <div class="d-flex justify-content-between align-items-center mb-2">
                                                 <small style="color: #666;">執行進度：</small>
-                                                <span class="badge" id="status-badge-1" style="background-color: #667eea;">進行中</span>
+                                                <span class="badge" id="status-badge-1"
+                                                    style="background-color: #667eea;">進行中</span>
                                             </div>
                                             <div class="progress" style="height: 8px;">
-                                                <div id="progress-bar-1" class="progress-bar" role="progressbar" style="width: 0%; background-color: #667eea;"></div>
+                                                <div id="progress-bar-1" class="progress-bar" role="progressbar"
+                                                    style="width: 0%; background-color: #667eea;"></div>
                                             </div>
                                             <small class="text-muted" id="progress-text-1">0%</small>
                                         </div>
                                         <div>
-                                            <button class="btn btn-outline-primary btn-sm" onclick="showCheckpointDetail('制定初步轉診協議', '訂定初期的轉診協議', '查核點-轉診協議.html')">文件管理</button>
+                                            <button class="btn btn-outline-primary btn-sm"
+                                                onclick="showCheckpointDetail('制定初步轉診協議', '訂定初期的轉診協議', '查核點-轉診協議.html')">文件管理</button>
                                         </div>
                                     </div>
                                     <div class="kpi-card">
@@ -315,7 +398,8 @@
                                                 width: 100%;
                                             ">
                                                 <span style="display: flex; align-items: center; gap: 8px;">
-                                                    <span style="display: inline-block; animation: bounce 2s ease-in-out infinite;">🚀</span>
+                                                    <span
+                                                        style="display: inline-block; animation: bounce 2s ease-in-out infinite;">🚀</span>
                                                     培訓課程設計與執行
                                                 </span>
                                             </span>
@@ -333,15 +417,18 @@
                                         <div style="margin: 10px 0;">
                                             <div class="d-flex justify-content-between align-items-center mb-2">
                                                 <small style="color: #666;">執行進度：</small>
-                                                <span class="badge" id="status-badge-2" style="background-color: #667eea;">進行中</span>
+                                                <span class="badge" id="status-badge-2"
+                                                    style="background-color: #667eea;">進行中</span>
                                             </div>
                                             <div class="progress" style="height: 8px;">
-                                                <div id="progress-bar-2" class="progress-bar" role="progressbar" style="width: 0%; background-color: #667eea;"></div>
+                                                <div id="progress-bar-2" class="progress-bar" role="progressbar"
+                                                    style="width: 0%; background-color: #667eea;"></div>
                                             </div>
                                             <small class="text-muted" id="progress-text-2">0%</small>
                                         </div>
                                         <div>
-                                            <button class="btn btn-outline-primary btn-sm" onclick="showCheckpointDetail('培訓課程設計與執行', '培訓 5 名種子人員', '查核點-培訓課程.html')">文件管理</button>
+                                            <button class="btn btn-outline-primary btn-sm"
+                                                onclick="showCheckpointDetail('培訓課程設計與執行', '培訓 5 名種子人員', '查核點-培訓課程.html')">文件管理</button>
                                         </div>
                                     </div>
                                     <div class="kpi-card">
@@ -378,7 +465,8 @@
                                                 width: 100%;
                                             ">
                                                 <span style="display: flex; align-items: center; gap: 8px;">
-                                                    <span style="display: inline-block; animation: bounce 2s ease-in-out infinite;">🚀</span>
+                                                    <span
+                                                        style="display: inline-block; animation: bounce 2s ease-in-out infinite;">🚀</span>
                                                     健康雲平台雛型 (FHIR/TW Core IG)
                                                 </span>
                                             </span>
@@ -392,19 +480,23 @@
                                                 animation: shimmer 3s ease-in-out infinite;
                                             "></div>
                                         </h3>
-                                        <p style="color:#666; font-size: 13px; margin: 6px 0 8px;">試點 10 例 AI 個人化健康促進建議；建置健康雲平台及其資料格式標準</p>
+                                        <p style="color:#666; font-size: 13px; margin: 6px 0 8px;">試點 10 例 AI
+                                            個人化健康促進建議；建置健康雲平台及其資料格式標準</p>
                                         <div style="margin: 10px 0;">
                                             <div class="d-flex justify-content-between align-items-center mb-2">
                                                 <small style="color: #666;">執行進度：</small>
-                                                <span class="badge" id="status-badge-3" style="background-color: #667eea;">進行中</span>
+                                                <span class="badge" id="status-badge-3"
+                                                    style="background-color: #667eea;">進行中</span>
                                             </div>
                                             <div class="progress" style="height: 8px;">
-                                                <div id="progress-bar-3" class="progress-bar" role="progressbar" style="width: 0%; background-color: #667eea;"></div>
+                                                <div id="progress-bar-3" class="progress-bar" role="progressbar"
+                                                    style="width: 0%; background-color: #667eea;"></div>
                                             </div>
                                             <small class="text-muted" id="progress-text-3">0%</small>
                                         </div>
                                         <div>
-                                            <button class="btn btn-outline-primary btn-sm" onclick="showCheckpointDetail('健康雲平台雛型 (FHIR/TW Core IG)', '試點 10 例 AI 個人化健康促進建議；建置健康雲平台及其資料格式標準', '查核點-健康雲平台.html')">文件管理</button>
+                                            <button class="btn btn-outline-primary btn-sm"
+                                                onclick="showCheckpointDetail('健康雲平台雛型 (FHIR/TW Core IG)', '試點 10 例 AI 個人化健康促進建議；建置健康雲平台及其資料格式標準', '查核點-健康雲平台.html')">文件管理</button>
                                         </div>
                                     </div>
                                     <div class="kpi-card">
@@ -441,7 +533,8 @@
                                                 width: 100%;
                                             ">
                                                 <span style="display: flex; align-items: center; gap: 8px;">
-                                                    <span style="display: inline-block; animation: bounce 2s ease-in-out infinite;">🚀</span>
+                                                    <span
+                                                        style="display: inline-block; animation: bounce 2s ease-in-out infinite;">🚀</span>
                                                     巡迴復健車部署與服務
                                                 </span>
                                             </span>
@@ -455,19 +548,23 @@
                                                 animation: shimmer 3s ease-in-out infinite;
                                             "></div>
                                         </h3>
-                                        <p style="color:#666; font-size: 13px; margin: 6px 0 8px;">部署 1 輛巡迴復健車，服務 2 個偏鄉站點（每月 30 人次檢查與遠距診療）</p>
+                                        <p style="color:#666; font-size: 13px; margin: 6px 0 8px;">部署 1 輛巡迴復健車，服務 2
+                                            個偏鄉站點（每月 30 人次檢查與遠距診療）</p>
                                         <div style="margin: 10px 0;">
                                             <div class="d-flex justify-content-between align-items-center mb-2">
                                                 <small style="color: #666;">執行進度：</small>
-                                                <span class="badge" id="status-badge-4" style="background-color: #667eea;">進行中</span>
+                                                <span class="badge" id="status-badge-4"
+                                                    style="background-color: #667eea;">進行中</span>
                                             </div>
                                             <div class="progress" style="height: 8px;">
-                                                <div id="progress-bar-4" class="progress-bar" role="progressbar" style="width: 0%; background-color: #667eea;"></div>
+                                                <div id="progress-bar-4" class="progress-bar" role="progressbar"
+                                                    style="width: 0%; background-color: #667eea;"></div>
                                             </div>
                                             <small class="text-muted" id="progress-text-4">0%</small>
                                         </div>
                                         <div>
-                                            <button class="btn btn-outline-primary btn-sm" onclick="showCheckpointDetail('巡迴復健車部署與服務', '部署 1 輛巡迴復健車，服務 2 個偏鄉站點（每月 30 人次檢查與遠距診療）', '查核點-巡迴復健車.html')">文件管理</button>
+                                            <button class="btn btn-outline-primary btn-sm"
+                                                onclick="showCheckpointDetail('巡迴復健車部署與服務', '部署 1 輛巡迴復健車，服務 2 個偏鄉站點（每月 30 人次檢查與遠距診療）', '查核點-巡迴復健車.html')">文件管理</button>
                                         </div>
                                     </div>
                                     <div class="kpi-card">
@@ -504,7 +601,8 @@
                                                 width: 100%;
                                             ">
                                                 <span style="display: flex; align-items: center; gap: 8px;">
-                                                    <span style="display: inline-block; animation: bounce 2s ease-in-out infinite;">🚀</span>
+                                                    <span
+                                                        style="display: inline-block; animation: bounce 2s ease-in-out infinite;">🚀</span>
                                                     部署 5G 網路基礎設施
                                                 </span>
                                             </span>
@@ -518,20 +616,24 @@
                                                 animation: shimmer 3s ease-in-out infinite;
                                             "></div>
                                         </h3>
-                                        <p style="color:#666; font-size: 13px; margin: 6px 0 6px;">部署 5G 網路基礎設施於 3 家診所、2 處 C 級巷弄長照站及岡山秀傳智慧醫療示範中心，確保覆蓋率 90%</p>
+                                        <p style="color:#666; font-size: 13px; margin: 6px 0 6px;">部署 5G 網路基礎設施於 3 家診所、2
+                                            處 C 級巷弄長照站及岡山秀傳智慧醫療示範中心，確保覆蓋率 90%</p>
                                         <p style="color:#666; font-size: 13px; margin: 0 0 8px;">說明：社會責任醫療永續</p>
                                         <div style="margin: 10px 0;">
                                             <div class="d-flex justify-content-between align-items-center mb-2">
                                                 <small style="color: #666;">執行進度：</small>
-                                                <span class="badge" id="status-badge-5" style="background-color: #667eea;">進行中</span>
+                                                <span class="badge" id="status-badge-5"
+                                                    style="background-color: #667eea;">進行中</span>
                                             </div>
                                             <div class="progress" style="height: 8px;">
-                                                <div id="progress-bar-5" class="progress-bar" role="progressbar" style="width: 0%; background-color: #667eea;"></div>
+                                                <div id="progress-bar-5" class="progress-bar" role="progressbar"
+                                                    style="width: 0%; background-color: #667eea;"></div>
                                             </div>
                                             <small class="text-muted" id="progress-text-5">0%</small>
                                         </div>
                                         <div>
-                                            <button class="btn btn-outline-primary btn-sm" onclick="showCheckpointDetail('部署 5G 網路基礎設施', '部署 5G 網路基礎設施於 3 家診所、2 處 C 級巷弄長照站及岡山秀傳智慧醫療示範中心，確保覆蓋率 90%<br>說明：社會責任醫療永續', '查核點-5G基礎設施.html')">文件管理</button>
+                                            <button class="btn btn-outline-primary btn-sm"
+                                                onclick="showCheckpointDetail('部署 5G 網路基礎設施', '部署 5G 網路基礎設施於 3 家診所、2 處 C 級巷弄長照站及岡山秀傳智慧醫療示範中心，確保覆蓋率 90%<br>說明：社會責任醫療永續', '查核點-5G基礎設施.html')">文件管理</button>
                                         </div>
                                     </div>
                                 </div>
@@ -540,7 +642,9 @@
                     </div>
                 </div>
 
-                <div class="section-title"><h2>關鍵績效指標 (KPI) - 年度目標達成概況</h2></div>
+                <div class="section-title">
+                    <h2>關鍵績效指標 (KPI) - 年度目標達成概況</h2>
+                </div>
                 <div id="kpi-container">
                     <div id="kpi-dynamic"></div>
 
@@ -549,7 +653,8 @@
                         <div class="card-body" style="background: #fff; border: 1px solid #e6edf3; border-radius: 8px;">
                             <h4 style="font-size: 18px; color: #0b5ed7; margin-bottom: 8px;">共通性指標區域</h4>
                             <p style="color: #555; margin-bottom: 12px;">共通性指標詳細填寫請至「共同性指標達成情形」分頁。</p>
-                            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="tab" data-bs-target="#common" type="button" role="tab" aria-controls="common" aria-selected="false">
+                            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="tab" data-bs-target="#common"
+                                type="button" role="tab" aria-controls="common" aria-selected="false">
                                 前往共同性指標分頁
                             </button>
                         </div>
@@ -558,13 +663,18 @@
             </div>
 
             <div class="tab-pane fade" id="common" role="tabpanel" aria-labelledby="common-tab">
-                <div class="section-title"><h2>共同性指標達成情形</h2></div>
+                <div class="section-title">
+                    <h2>共同性指標達成情形</h2>
+                </div>
                 <p style="color: #666; margin-bottom: 20px; font-size: 14px;">依所執行之各範疇擇共同性指標表中指標填寫</p>
-                
+
                 <!-- 第一個表格：範疇一、二 -->
                 <div style="margin-bottom: 30px;">
-                    <h5 style="background-color: #e3f2fd; padding: 10px 15px; border-left: 4px solid #0078d4; margin-bottom: 15px; color: #005a9e;">範疇一、二 - 績效指標達成情形</h5>
-                    <div class="table-responsive" style="background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                    <h5
+                        style="background-color: #e3f2fd; padding: 10px 15px; border-left: 4px solid #0078d4; margin-bottom: 15px; color: #005a9e;">
+                        範疇一、二 - 績效指標達成情形</h5>
+                    <div class="table-responsive"
+                        style="background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                         <table class="table table-bordered table-hover" style="font-size: 13px; margin-bottom: 0;">
                             <thead style="background-color: #0078d4; color: white;">
                                 <tr>
@@ -584,39 +694,63 @@
                                 </tr>
                                 <tr>
                                     <td style="text-align: center;">一</td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><textarea class="form-control form-control-sm" style="font-size: 12px; min-height: 35px;"></textarea></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><textarea class="form-control form-control-sm"
+                                            style="font-size: 12px; min-height: 35px;"></textarea></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align: center;">一</td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><textarea class="form-control form-control-sm" style="font-size: 12px; min-height: 35px;"></textarea></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><textarea class="form-control form-control-sm"
+                                            style="font-size: 12px; min-height: 35px;"></textarea></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align: center;">一</td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><textarea class="form-control form-control-sm" style="font-size: 12px; min-height: 35px;"></textarea></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><textarea class="form-control form-control-sm"
+                                            style="font-size: 12px; min-height: 35px;"></textarea></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align: center;">一</td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><textarea class="form-control form-control-sm" style="font-size: 12px; min-height: 35px;"></textarea></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><textarea class="form-control form-control-sm"
+                                            style="font-size: 12px; min-height: 35px;"></textarea></td>
                                 </tr>
 
                                 <!-- 範疇二 -->
@@ -625,39 +759,63 @@
                                 </tr>
                                 <tr>
                                     <td style="text-align: center;">二</td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><textarea class="form-control form-control-sm" style="font-size: 12px; min-height: 35px;"></textarea></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><textarea class="form-control form-control-sm"
+                                            style="font-size: 12px; min-height: 35px;"></textarea></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align: center;">二</td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><textarea class="form-control form-control-sm" style="font-size: 12px; min-height: 35px;"></textarea></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><textarea class="form-control form-control-sm"
+                                            style="font-size: 12px; min-height: 35px;"></textarea></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align: center;">二</td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><textarea class="form-control form-control-sm" style="font-size: 12px; min-height: 35px;"></textarea></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><textarea class="form-control form-control-sm"
+                                            style="font-size: 12px; min-height: 35px;"></textarea></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align: center;">二</td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><textarea class="form-control form-control-sm" style="font-size: 12px; min-height: 35px;"></textarea></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><textarea class="form-control form-control-sm"
+                                            style="font-size: 12px; min-height: 35px;"></textarea></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -666,8 +824,11 @@
 
                 <!-- 第二個表格：範疇三、四 -->
                 <div>
-                    <h5 style="background-color: #e3f2fd; padding: 10px 15px; border-left: 4px solid #0078d4; margin-bottom: 15px; color: #005a9e;">範疇三、四 - 績效指標達成情形</h5>
-                    <div class="table-responsive" style="background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
+                    <h5
+                        style="background-color: #e3f2fd; padding: 10px 15px; border-left: 4px solid #0078d4; margin-bottom: 15px; color: #005a9e;">
+                        範疇三、四 - 績效指標達成情形</h5>
+                    <div class="table-responsive"
+                        style="background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);">
                         <table class="table table-bordered table-hover" style="font-size: 13px; margin-bottom: 0;">
                             <thead style="background-color: #0078d4; color: white;">
                                 <tr>
@@ -687,39 +848,63 @@
                                 </tr>
                                 <tr>
                                     <td style="text-align: center;">三</td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><textarea class="form-control form-control-sm" style="font-size: 12px; min-height: 35px;"></textarea></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><textarea class="form-control form-control-sm"
+                                            style="font-size: 12px; min-height: 35px;"></textarea></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align: center;">三</td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><textarea class="form-control form-control-sm" style="font-size: 12px; min-height: 35px;"></textarea></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><textarea class="form-control form-control-sm"
+                                            style="font-size: 12px; min-height: 35px;"></textarea></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align: center;">三</td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><textarea class="form-control form-control-sm" style="font-size: 12px; min-height: 35px;"></textarea></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><textarea class="form-control form-control-sm"
+                                            style="font-size: 12px; min-height: 35px;"></textarea></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align: center;">三</td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><textarea class="form-control form-control-sm" style="font-size: 12px; min-height: 35px;"></textarea></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><textarea class="form-control form-control-sm"
+                                            style="font-size: 12px; min-height: 35px;"></textarea></td>
                                 </tr>
 
                                 <!-- 範疇四 -->
@@ -728,39 +913,63 @@
                                 </tr>
                                 <tr>
                                     <td style="text-align: center;">四</td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><textarea class="form-control form-control-sm" style="font-size: 12px; min-height: 35px;"></textarea></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><textarea class="form-control form-control-sm"
+                                            style="font-size: 12px; min-height: 35px;"></textarea></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align: center;">四</td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><textarea class="form-control form-control-sm" style="font-size: 12px; min-height: 35px;"></textarea></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><textarea class="form-control form-control-sm"
+                                            style="font-size: 12px; min-height: 35px;"></textarea></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align: center;">四</td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><textarea class="form-control form-control-sm" style="font-size: 12px; min-height: 35px;"></textarea></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><textarea class="form-control form-control-sm"
+                                            style="font-size: 12px; min-height: 35px;"></textarea></td>
                                 </tr>
                                 <tr>
                                     <td style="text-align: center;">四</td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><input type="text" class="form-control form-control-sm" style="font-size: 12px;"></td>
-                                    <td><textarea class="form-control form-control-sm" style="font-size: 12px; min-height: 35px;"></textarea></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><input type="text" class="form-control form-control-sm"
+                                            style="font-size: 12px;"></td>
+                                    <td><textarea class="form-control form-control-sm"
+                                            style="font-size: 12px; min-height: 35px;"></textarea></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -782,17 +991,23 @@
                 <!-- 人力儀表板子標籤頁 -->
                 <ul class="nav nav-tabs" id="recruitmentTab" role="tablist" style="margin-bottom: 20px;">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="hospital-tab" data-bs-toggle="tab" data-bs-target="#hospital-current" type="button" role="tab" aria-controls="hospital-current" aria-selected="true">
+                        <button class="nav-link active" id="hospital-tab" data-bs-toggle="tab"
+                            data-bs-target="#hospital-current" type="button" role="tab" aria-controls="hospital-current"
+                            aria-selected="true">
                             深耕計劃
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="deepplan-tab" data-bs-toggle="tab" data-bs-target="#deepplan-content" type="button" role="tab" aria-controls="deepplan-content" aria-selected="false">
+                        <button class="nav-link" id="deepplan-tab" data-bs-toggle="tab"
+                            data-bs-target="#deepplan-content" type="button" role="tab" aria-controls="deepplan-content"
+                            aria-selected="false">
                             本院現況
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="parttime-tab" data-bs-toggle="tab" data-bs-target="#parttime-content" type="button" role="tab" aria-controls="parttime-content" aria-selected="false">
+                        <button class="nav-link" id="parttime-tab" data-bs-toggle="tab"
+                            data-bs-target="#parttime-content" type="button" role="tab" aria-controls="parttime-content"
+                            aria-selected="false">
                             兼任
                         </button>
                     </li>
@@ -801,7 +1016,8 @@
                 <!-- 人力儀表板子標籤頁內容 -->
                 <div class="tab-content" id="recruitmentTabContent">
                     <!-- 本院現況 -->
-                    <div class="tab-pane fade show active" id="hospital-current" role="tabpanel" aria-labelledby="hospital-tab">
+                    <div class="tab-pane fade show active" id="hospital-current" role="tabpanel"
+                        aria-labelledby="hospital-tab">
                         <div class="row g-4">
                             <div class="col-md-4">
                                 <div class="chart-card shadow-sm h-100 p-3">
@@ -815,7 +1031,12 @@
                                     <div class="table-responsive">
                                         <table id="recruitment-table" class="table table-hover table-bordered">
                                             <thead>
-                                                <tr><th>職稱</th><th>編制</th><th>現有</th><th>缺額</th></tr>
+                                                <tr>
+                                                    <th>職稱</th>
+                                                    <th>編制</th>
+                                                    <th>現有</th>
+                                                    <th>缺額</th>
+                                                </tr>
                                             </thead>
                                             <tbody></tbody>
                                         </table>
@@ -840,7 +1061,12 @@
                                     <div class="table-responsive">
                                         <table id="deepplan-table" class="table table-hover table-bordered">
                                             <thead>
-                                                <tr><th>職稱</th><th>編制</th><th>現有</th><th>缺額</th></tr>
+                                                <tr>
+                                                    <th>職稱</th>
+                                                    <th>編制</th>
+                                                    <th>現有</th>
+                                                    <th>缺額</th>
+                                                </tr>
                                             </thead>
                                             <tbody></tbody>
                                         </table>
@@ -865,7 +1091,12 @@
                                     <div class="table-responsive">
                                         <table id="parttime-table" class="table table-hover table-bordered">
                                             <thead>
-                                                <tr><th>職稱</th><th>編制</th><th>現有</th><th>缺額</th></tr>
+                                                <tr>
+                                                    <th>職稱</th>
+                                                    <th>編制</th>
+                                                    <th>現有</th>
+                                                    <th>缺額</th>
+                                                </tr>
                                             </thead>
                                             <tbody></tbody>
                                         </table>
@@ -878,7 +1109,9 @@
             </div>
 
             <div class="tab-pane fade" id="finance" role="tabpanel" aria-labelledby="finance-tab">
-                <div class="section-title"><h2>經費預估與分析</h2></div>
+                <div class="section-title">
+                    <h2>經費預估與分析</h2>
+                </div>
                 <div class="row g-4">
                     <div class="col-md-4">
                         <div class="chart-card shadow-sm h-100 p-3">
@@ -887,12 +1120,17 @@
                         </div>
                     </div>
                     <div class="col-md-8">
-                         <div class="data-table-card shadow-sm h-100 p-3">
+                        <div class="data-table-card shadow-sm h-100 p-3">
                             <h3>人事費用明細 (年度)</h3>
                             <div class="table-responsive">
                                 <table id="finance-personnel-table" class="table table-hover table-bordered table-sm">
                                     <thead>
-                                        <tr><th>職稱</th><th>編制人數</th><th>月單價</th><th class="text-end">年度小計</th></tr>
+                                        <tr>
+                                            <th>職稱</th>
+                                            <th>編制人數</th>
+                                            <th>月單價</th>
+                                            <th class="text-end">年度小計</th>
+                                        </tr>
                                     </thead>
                                     <tbody></tbody>
                                 </table>
@@ -907,118 +1145,114 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
-    
+
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             // --- 數據模擬 (強調四大範疇和僅年度數據) ---
 
             const kpiData = [
                 {
-                    category: "一、優化醫療工作條件", 
+                    category: "一、優化醫療工作條件",
                     name: "多元獎酬收入", definition: "(1-1-1) 其他收入/個人目前收入 >5% | 負責人: 陳俊伍人資",
                     currentYear: 0, targetYear: 0.05,
                 },
                 {
-                    category: "一、優化醫療工作條件", 
+                    category: "一、優化醫療工作條件",
                     name: "流動工時", definition: "(1-1-2) 業外專案服務工時/每月工時 >5% | 負責人: 陳俊伍人資",
                     currentYear: 0, targetYear: 0.05,
                 },
                 {
-                    category: "一、優化醫療工作條件", 
+                    category: "一、優化醫療工作條件",
                     name: "轉銜流程資訊化", definition: "(1-2-1) 建立數位標準化轉介流程，減少工作時數 15% | 負責人: 夏瑞鄉督導",
                     currentYear: 0, targetYear: 0.15,
                 },
                 {
-                    category: "二、規劃多元人才培訓", 
+                    category: "二、規劃多元人才培訓",
                     name: "認證課程制度上線", definition: "(2-1-1) 透過認證課程制度正式上線，學習成效追蹤精準度，確保培育專業人才符合認證標準 | 負責人: 陳俊伍人資",
                     currentYear: 0, targetYear: 1.00,
                 },
                 {
-                    category: "二、規劃多元人才培訓", 
+                    category: "二、規劃多元人才培訓",
                     name: "岡山健康雲平台應用", definition: "(2-2-1) 擴大「岡山健康雲」平台應用，整合病歷、復健進度、家屬回饋與社區資源，提升偏鄉地區數位醫療服務的可近性、整合性與效率 | 負責人: 夏瑞鄉督導",
                     currentYear: 0, targetYear: 1.00,
                 },
                 {
-                    category: "三、導入智慧科技醫療", 
+                    category: "三、導入智慧科技醫療",
                     name: "AI健康照顧方案數", definition: "(3-1-1) AI生成健康照顧方案數 (病種分類、年齡分類、照服員、病人、家屬) | 負責人: 楊智傑資訊經理",
                     currentYear: 0, targetYear: 1.00,
                 },
                 {
-                    category: "三、導入智慧科技醫療", 
+                    category: "三、導入智慧科技醫療",
                     name: "生命徵象數據上傳成功率", definition: "(3-2-1) 生命徵象數據上傳成功率 (上傳比數/測量比數數據傳輸成功比例%) | 負責人: 楊智傑資訊經理",
                     currentYear: 0, targetYear: 0.95,
                 },
                 {
-                    category: "三、導入智慧科技醫療", 
+                    category: "三、導入智慧科技醫療",
                     name: "出院病人銜接服務率", definition: "(3-3-1) 出院病人銜接示範中心服務 (接受示範中心服務人數/出院病人數) | 負責人: 夏瑞鄉督導",
                     currentYear: 0, targetYear: 0.80,
                 },
                 {
-                    category: "三、導入智慧科技醫療", 
+                    category: "三、導入智慧科技醫療",
                     name: "個管服務效率提升", definition: "(3-4-1) 出院準備服務個管服務解釋時間比率 (AI介入前後個管平均服務解釋時間差/原服務時間) | 負責人: 夏瑞鄉督導",
                     currentYear: 0, targetYear: 0.30,
                 },
                 {
-                    category: "四、社會責任醫療永續", 
+                    category: "四、社會責任醫療永續",
                     name: "完成轉介人數", definition: "(4-1-1) 完成轉介人數 (轉入、轉出、社區、中心、醫院) | 負責人: 吳宜泰研究助理",
                     currentYear: 0, targetYear: 1.00,
                 },
                 {
-                    category: "四、社會責任醫療永續", 
+                    category: "四、社會責任醫療永續",
                     name: "偏鄉居民巡迴醫療服務比例", definition: "(4-2-1) 接受巡迴車或遠距診療偏鄉居民比例 | 負責人: 吳宜泰研究助理",
                     currentYear: 0, targetYear: 0.60,
                 },
                 {
-                    category: "四、社會責任醫療永續", 
+                    category: "四、社會責任醫療永續",
                     name: "計畫照顧模式受照人數", definition: "(4-3-1) 接受計畫照顧模式的人數 | 負責人: 楊智傑資訊經理",
                     currentYear: 0, targetYear: 1.00,
                 },
                 {
-                    category: "四、社會責任醫療永續", 
+                    category: "四、社會責任醫療永續",
                     name: "照顧服務人員培訓比例", definition: "(4-4-1) 投入照顧服務人員/接受培訓人員 | 負責人: 陳俊伍人資",
                     currentYear: 0, targetYear: 0.90,
                 },
                 {
-                    category: "四、社會責任醫療永續", 
+                    category: "四、社會責任醫療永續",
                     name: "PAC再入院率", definition: "(4-5-1) 同一疾病(PAC)年度內再入院次數/同一疾病(PAC)年度總就醫次數 | 負責人: 職能-邱蓮樺",
                     currentYear: 0, targetYear: 0.15,
                 },
                 {
-                    category: "四、社會責任醫療永續", 
+                    category: "四、社會責任醫療永續",
                     name: "碳排指標統計數量", definition: "(4-6-1) 碳排統計與相關碳排指標數量 | 負責人: ---",
                     currentYear: 0, targetYear: 1.00,
                 },
                 {
-                    category: "四、社會責任醫療永續", 
+                    category: "四、社會責任醫療永續",
                     name: "永續委員會會議次數", definition: "(4-7-1) 召開永續發展委員會會議次數 (以簽到表或會議紀錄為憑) | 負責人: ---",
                     currentYear: 0, targetYear: 1.00,
                 },
                 {
-                    category: "四、社會責任醫療永續", 
+                    category: "四、社會責任醫療永續",
                     name: "永續發展報告書", definition: "(4-7-2) 發佈永續發展報告書 | 負責人: ---",
                     currentYear: 0, targetYear: 1.00,
                 },
                 {
-                    category: "四、社會責任醫療永續", 
+                    category: "四、社會責任醫療永續",
                     name: "累計合作機構家數", definition: "(4-8-1) 累計合作機構家數 | 負責人: 夏瑞鄉督導",
                     currentYear: 0, targetYear: 1.00,
                 },
             ];
-            
-            // 人力招募數據 (保持不變)
+
+            // 人力招募數據 (已更新)
             const recruitmentRawData = [
                 { title: "資訊經理", total: 1, current: 1, gap: 0, remark: "" },
-                { title: "資訊專員", total: 2, current: 0, gap: 1, remark: "" },
-                // { title: "計畫管理師", total: 2, current: 0, gap: 2, remark: "此職關閉" },
+                { title: "資訊專員", total: 2, current: 1, gap: 1, remark: "" },
                 { title: "人資專員", total: 1, current: 1, gap: 0, remark: "" },
-                { title: "研究助理", total: 5, current: 2, gap: 3, remark: "" },
+                { title: "研究助理", total: 5, current: 3, gap: 2, remark: "" },
                 { title: "職能/物理治療師", total: 5, current: 1, gap: 4, remark: "" },
-                { title: "辦公室主任", total: 1, current: 1, gap: 0, remark: "" },
+                { title: "主任", total: 1, current: 1, gap: 0, remark: "" },
                 { title: "個管師", total: 4, current: 1, gap: 3, remark: "" },
-                { title: "營養師", total: 1, current: 0, gap: 1, remark: "" },
-                { title: "社工", total: 1, current: 0, gap: 1, remark: "" },
-                { title: "心理師", total: 1, current: 0, gap: 1, remark: "" },
-                { title: "司機", total: 2, current: 0, gap: 2, remark: "" }
+                { title: "駕駛員", total: 1, current: 1, gap: 0, remark: "" }
             ];
 
             // 經費預估數據 (保持不變)
@@ -1036,18 +1270,18 @@
                 { title: "心理師", total: 1, monthlyPrice: 40000, subtotal: 540000 },
                 { title: "司機", total: 2, monthlyPrice: 35000, subtotal: 945000 }
             ];
-            
+
             const totalPersonnelCost = 17531500;
-            const totalBudget = 25000000; 
+            const totalBudget = 25000000;
             const otherCost = totalBudget - totalPersonnelCost;
 
             const financeData = {
-                totalBudget: totalBudget, 
+                totalBudget: totalBudget,
                 personnelCost: totalPersonnelCost,
-                otherCost: otherCost, 
+                otherCost: otherCost,
                 personnelDetail: personnelDetailData
             };
-            
+
             // 格式化金額 (加入千分位)
             function formatCurrency(num) {
                 if (num === undefined || num === null) return 'N/A';
@@ -1059,7 +1293,7 @@
             function generateKpiCard(kpi, index) {
                 const value = kpi.currentYear;
                 const target = kpi.targetYear;
-                
+
                 let isStatus = typeof target === 'string'; // 判斷是否為「建置完成」等狀態類指標
                 let progressHtml = '';
                 let achievementText = 'N/A';
@@ -1071,7 +1305,7 @@
                     const isAchieved = value === target;
                     achievementText = isAchieved ? `<span style="color:#107c10;">✔ ${target}</span>` : `<span style="color:#e81123;">✘ ${value}</span>`;
                     targetInfoText = `狀態目標: ${target}`;
-                    
+
                     const displayProgress = isAchieved ? 100 : 30; // 未完成時進度條顯示30%作為進行中
                     barColor = isAchieved ? '#107c10' : '#ffb900';
 
@@ -1085,18 +1319,18 @@
                     // 數值類指標
                     const progressValue = (value / target) * 100;
                     const displayProgress = Math.min(progressValue, 100);
-                    
+
                     const isPercentageTarget = target < 1;
-                    
+
                     if (isPercentageTarget) {
                         targetInfoText = `現況/目標: ${(value * 100).toFixed(1)}% / ${(target * 100).toFixed(1)}%`;
                     } else {
                         targetInfoText = `現況/目標: ${value} / ${target}`;
                     }
-                    
+
                     // 達成率文字
                     achievementText = `${displayProgress.toFixed(1)}%`;
-                    
+
                     // 進度條顏色判斷
                     barColor = displayProgress >= 100 ? '#107c10' : (displayProgress >= 80 ? '#0078d4' : (displayProgress >= 50 ? '#ffb900' : '#e81123'));
 
@@ -1230,7 +1464,7 @@
             function renderKpiCards() {
                 const $kpiDynamic = $('#kpi-dynamic');
                 $kpiDynamic.empty();
-                
+
                 const groupedKpis = kpiData.reduce((acc, kpi) => {
                     const category = kpi.category || "未分類";
                     if (!acc[category]) {
@@ -1242,10 +1476,10 @@
 
                 for (const category in groupedKpis) {
                     $kpiDynamic.append(`<div class="kpi-category-title">${category}</div>`);
-                    
+
                     // 只需一個卡片容器，每個 KPI 只需要一個卡片（年度目標）
                     const $cardContainer = $('<div class="card-container"></div>');
-                    
+
                     groupedKpis[category].forEach((kpi, index) => {
                         // 計算全局索引 - 計算當前分類之前所有分類的KPI總數
                         const categoriesArray = Object.keys(groupedKpis);
@@ -1253,7 +1487,7 @@
                         const globalIndex = categoriesArray.slice(0, currentCategoryIndex).reduce((acc, cat) => {
                             return acc + groupedKpis[cat].length;
                         }, 0) + index;
-                        
+
                         // 只渲染年度目標卡片
                         $cardContainer.append(generateKpiCard(kpi, globalIndex));
                     });
@@ -1272,7 +1506,7 @@
                 let totalHeadcount = 0;
                 let totalCurrent = 0;
                 let totalGap = 0;
-                
+
                 const $recruitmentTableBody = $('#recruitment-table tbody');
                 $recruitmentTableBody.empty();
 
@@ -1291,6 +1525,17 @@
                     `;
                     $recruitmentTableBody.append(tableRow);
                 });
+
+                // 新增小計列
+                const subtotalRow = `
+                    <tr class="table-info fw-bold">
+                        <td>小計</td>
+                        <td>${totalHeadcount}</td>
+                        <td>${totalCurrent}</td>
+                        <td>${totalGap}</td>
+                    </tr>
+                `;
+                $recruitmentTableBody.append(subtotalRow);
 
                 const ctx = document.getElementById('recruitment-overview-chart').getContext('2d');
                 if (recruitmentChartInstance) {
@@ -1339,7 +1584,7 @@
                         labels: [`人事費 (${personnelPercentage.toFixed(1)}%)`, `其他費用 (${otherPercentage.toFixed(1)}%)`],
                         datasets: [{
                             data: [financeData.personnelCost, financeData.otherCost],
-                            backgroundColor: ['#0078d4', '#ffb900'], 
+                            backgroundColor: ['#0078d4', '#ffb900'],
                             hoverOffset: 4
                         }]
                     },
@@ -1353,8 +1598,8 @@
                                 text: `總預算: NT$ ${formatCurrency(financeData.totalBudget)}`
                             },
                             tooltip: {
-                                 callbacks: {
-                                    label: function(context) {
+                                callbacks: {
+                                    label: function (context) {
                                         let label = context.label || '';
                                         if (label) {
                                             label += ': ';
@@ -1370,7 +1615,7 @@
 
                 const $financeTableBody = $('#finance-personnel-table tbody');
                 $financeTableBody.empty();
-                
+
                 let tableTotalCost = 0;
 
                 financeData.personnelDetail.forEach(item => {
@@ -1385,7 +1630,7 @@
                     `;
                     $financeTableBody.append(tableRow);
                 });
-                
+
                 const totalRow = `
                     <tr class="table-primary fw-bold">
                         <td colspan="3" class="text-end">人事費總計 (經常門)</td>
@@ -1396,7 +1641,7 @@
             }
 
             // --- 啟動渲染與 Tab 互動 (保持上一次修正的邏輯) ---
-            
+
             renderKpiCards();
             renderRecruitment();
             renderFinance();
@@ -1405,16 +1650,16 @@
             const tabEl = document.getElementById('myTab');
             tabEl.addEventListener('shown.bs.tab', function (event) {
                 const targetId = event.target.getAttribute('data-bs-target');
-                
+
                 setTimeout(() => {
                     if (targetId === '#recruitment' && recruitmentChartInstance) {
                         recruitmentChartInstance.resize();
-                    } 
-                    
+                    }
+
                     if (targetId === '#finance' && financeChartInstance) {
                         financeChartInstance.resize();
                     }
-                }, 10); 
+                }, 10);
             });
         });
 
@@ -1440,7 +1685,7 @@
         }
 
         // 載入保存的共同性指標資料
-        window.addEventListener('load', function() {
+        window.addEventListener('load', function () {
             const savedData = localStorage.getItem('commonIndicatorData');
             if (savedData) {
                 const data = JSON.parse(savedData);
@@ -1461,21 +1706,21 @@
                 { id: 4, key: 'checkpoint-mobile-rehab' },
                 { id: 5, key: 'checkpoint-5g-infrastructure' }
             ];
-            
+
             checkpoints.forEach(checkpoint => {
                 const progressData = JSON.parse(localStorage.getItem(checkpoint.key + '-progress') || '{}');
                 const progressBar = document.getElementById('progress-bar-' + checkpoint.id);
                 const progressText = document.getElementById('progress-text-' + checkpoint.id);
                 const statusBadge = document.getElementById('status-badge-' + checkpoint.id);
-                
+
                 if (progressBar && progressData.value) {
                     const value = progressData.value || 0;
                     const status = progressData.status || '進行中';
-                    
+
                     progressBar.style.width = value + '%';
                     progressText.textContent = value + '%';
                     statusBadge.textContent = status;
-                    
+
                     // 根據狀態改變顏色
                     let color = '#667eea';
                     if (status === '已完成') {
@@ -1485,49 +1730,56 @@
                     } else if (status === '未開始') {
                         color = '#6c757d';
                     }
-                    
+
                     progressBar.style.backgroundColor = color;
                     statusBadge.style.backgroundColor = color;
                 }
             });
         }
-        
+
         // 顯示查核點詳細內容的模態框
         function showCheckpointDetail(title, content, docPageUrl) {
             const modal = document.getElementById('checkpointModal');
             const modalTitle = document.getElementById('checkpointModalTitle');
             const modalContent = document.getElementById('checkpointModalContent');
             const manageDocBtn = document.getElementById('manageDocBtn');
-            
+
             modalTitle.textContent = title;
             modalContent.innerHTML = '<p style="color:#555; font-size: 14px; line-height: 1.6;">' + content + '</p>';
-            
+
             // 設置管理文件按鈕的連結
             if (docPageUrl) {
-                manageDocBtn.onclick = function() {
+                manageDocBtn.onclick = function () {
                     window.open(docPageUrl, '_blank');
                 };
             }
-            
+
             const bsModal = new bootstrap.Modal(modal);
             bsModal.show();
         }
     </script>
 
     <!-- 查核點詳細內容模態框 -->
-    <div class="modal fade" id="checkpointModal" tabindex="-1" aria-labelledby="checkpointModalLabel" aria-hidden="true">
+    <div class="modal fade" id="checkpointModal" tabindex="-1" aria-labelledby="checkpointModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
-                <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <div class="modal-header"
+                    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
                     <h5 class="modal-title" id="checkpointModalLabel">查核點詳情</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body" style="padding: 25px;">
                     <h4 id="checkpointModalTitle" style="color: #0078d4; margin-bottom: 15px;"></h4>
-                    <div id="checkpointModalContent" style="background: #f9fbfd; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea;"></div>
+                    <div id="checkpointModalContent"
+                        style="background: #f9fbfd; padding: 20px; border-radius: 8px; border-left: 4px solid #667eea;">
+                    </div>
                     <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #ddd;">
-                        <p style="font-size: 13px; color: #666; margin-bottom: 8px;"><strong>📅 查核期限：</strong>115 年 3 月 31 日</p>
-                        <p style="font-size: 13px; color: #666; margin: 0;"><strong>📊 狀態：</strong><span style="color: #ffb900; font-weight: bold;">進行中</span></p>
+                        <p style="font-size: 13px; color: #666; margin-bottom: 8px;"><strong>📅 查核期限：</strong>115 年 3 月
+                            31 日</p>
+                        <p style="font-size: 13px; color: #666; margin: 0;"><strong>📊 狀態：</strong><span
+                                style="color: #ffb900; font-weight: bold;">進行中</span></p>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -1538,4 +1790,5 @@
         </div>
     </div>
 </body>
+
 </html>
