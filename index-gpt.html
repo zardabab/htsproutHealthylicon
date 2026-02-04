@@ -641,14 +641,16 @@
             box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
         }
 
-        .portal-footer span.action {
+        .portal-footer .action {
             display: inline-flex;
             align-items: center;
             gap: 4px;
             color: var(--primary);
+            text-decoration: none;
+            cursor: pointer;
         }
 
-        .portal-footer span.action i {
+        .portal-footer .action i {
             font-size: 0.8rem;
         }
 
@@ -1407,7 +1409,7 @@
                 </a>
 
                 <!-- 資產管理系統 -->
-                <a href="https://zardabab.github.io/Asset-Management-System/" class="portal-card" target="_blank">
+                <div class="portal-card">
                     <div class="portal-top">
                         <div class="portal-icon">
                             <i class="fas fa-boxes-stacked"></i>
@@ -1428,12 +1430,13 @@
                                 style="text-decoration: none; color: var(--accent); font-size: 0.8rem; display: flex; align-items: center; gap: 4px;">
                                 <i class="fas fa-chart-pie"></i> 統計圖表
                             </a>
-                            <span class="action">
+                            <a href="https://zardabab.github.io/Asset-Management-System/" target="_blank"
+                                class="action">
                                 進入系統 <i class="fas fa-arrow-right"></i>
-                            </span>
+                            </a>
                         </div>
                     </div>
-                </a>
+                </div>
 
                 <!-- 指標顯示系統 -->
                 <!-- TODO: 將 href 換成實際指標看板網址 -->
